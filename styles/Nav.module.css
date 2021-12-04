@@ -1,20 +1,80 @@
 .nav {
   width: 100%;
-  background-color: #7e33e0;
 }
 
-.navInnerContainer {
+/* nav top container */
+.navTopContainer {
+  width: 100%;
+  background-color: #7e33e0;
   max-height: 44px;
   min-height: 44px;
   display: flex;
   align-items: center;
   justify-content: flex-end;
+  padding: 0 376px;
 }
 
-.navLinksContainer {
+.navTopLinksContainer {
   max-width: max-content;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-right: 376px;
+}
+
+.topNavLink {
+  width: max-content;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.topNavLink > :first-child {
+  margin-right: 3px;
+}
+
+/* nav bottom container */
+
+.navBottomContainer {
+  background-color: #fff;
+  padding: 19px 0;
+}
+
+.navBottomInnerContainer {
+  max-width: 1177px;
+  max-height: 40px;
+  min-height: 40px;
+  margin: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.navBottomLinksContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-right: 226px;
+}
+
+.navBottomLinksContainer > :not(:last-child) {
+  margin-right: 35px;
+}
+
+.navBottomForm {
+  max-width: 317px;
+  min-width: 317px;
+  max-height: 40px;
+  display: flex;
+}
+
+.navBottomInput {
+  width: 100%;
+  height: 40px;
+  border: 1px solid #e7e6ef;
+  border-radius: 0;
+  padding: 0 5px;
+}
+
+.navBottomInput:focus {
+  outline: none;
 }

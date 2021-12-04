@@ -2,6 +2,7 @@ import { createTheme } from "@material-ui/core";
 
 const theme = createTheme({
   typography: {
+    fontFamily: "Josefin Sans, sans-serif",
     /// heading 1 - only used once on home page
     h1: {
       fontSize: 53,
@@ -50,6 +51,7 @@ const theme = createTheme({
     subtitle2: {
       fontSize: 16,
       lineHeight: "20px",
+      fontFamily: "Lato",
     },
     caption: {
       fontSize: 14,
@@ -61,8 +63,18 @@ const theme = createTheme({
     },
   },
   palette: {
+    primary: {
+      main: "#8A8FB9",
+    },
+    secondary: {
+      main: "#FB2E86", // pink
+      dark: "#EC2F80",
+    },
     text: {
       primary: "#000",
+      secondary: "#f1f1f1",
     },
   },
 });
+
+export default theme;
