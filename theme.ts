@@ -8,11 +8,13 @@ const theme = createTheme({
       fontSize: 53,
       lineHeight: "82px",
       letterSpacing: ".015em",
+      fontWeight: 600,
     },
     // heading 2 - used for product category heading eg: Featured Product, Latest Product, What Shopex Offer
     h2: {
       fontSize: 42,
       lineHeight: "49.22px",
+      fontWeight: "bold",
     },
     //heading 3 - used in header except in home-page to show what page is about eg : Shop Grid, Shop List, Product Detail
     h3: {
@@ -38,6 +40,7 @@ const theme = createTheme({
       fontSize: 18,
       lineHeight: "21.6px",
       fontWeight: 700,
+      fontFamily: "lato",
     },
     // used in many places for eg: product short descriptiondescription
     body2: {
@@ -56,10 +59,12 @@ const theme = createTheme({
     caption: {
       fontSize: 14,
       lineHeight: "14px",
+      fontWeight: 400,
+      fontFamily: "lato",
     },
     overline: {
       fontSize: 12,
-      lineHeight: "14.4px",
+      lineHeight: "14.6px",
     },
   },
   palette: {

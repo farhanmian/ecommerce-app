@@ -10,6 +10,10 @@ import {
 } from "@material-ui/core";
 import { FormControl } from "@mui/material";
 import { User, Heart, AddToCart, SearchGlass } from "../../icons/icons";
+import { useRouter } from "next/dist/client/router";
+import NextLink from "next/link";
+
+const pagesLink = ["pages", "product", "shop", "contact"];
 
 const useStyles = makeStyles({
   navLink: {
@@ -18,6 +22,14 @@ const useStyles = makeStyles({
   topNavLinkText: {
     lineHeight: "16px",
     fontWeight: 600,
+  },
+  BottomNavLinkText: {
+    color: "#0D0E43",
+    cursor: "pointer",
+    textTransform: "capitalize",
+  },
+  activeLink: {
+    color: "#FB2E86",
   },
   select: {
     fontSize: 16,
@@ -41,6 +53,7 @@ const useStyles = makeStyles({
     fontWeight: 400,
     color: "#000",
     textTransform: "capitalize",
+    padding: 0,
   },
   pageSelect: {
     fontSize: 16,
@@ -51,6 +64,8 @@ const useStyles = makeStyles({
 });
 
 export default function Nav() {
+  const router = useRouter();
+
   const classes = useStyles();
 
   const [currency, setCurrency] = React.useState("usd");
@@ -127,54 +142,78 @@ export default function Nav() {
             Hekto
           </Typography>
           <div className={styles.navBottomLinksContainer}>
-            <Link
-              className={classes.navLink}
-              style={{ marginRight: 23 }}
-              variant="subtitle2"
-            >
-              <FormControl variant="standard">
-                <Select
-                  className={classes.pageSelect}
-                  labelId="customized-select-label"
-                  id="customized-select"
-                  value={page}
-                  onChange={pageChangeHandler}
-                  disableUnderline
-                >
-                  {page === "home" ? (
-                    <MenuItem className={classes.menuItem} value={page}>
-                      <Typography color="secondary" variant="subtitle2">
+            <FormControl variant="standard">
+              <Select
+                className={classes.pageSelect}
+                labelId="customized-select-label"
+                id="customized-select"
+                value={page}
+                onChange={pageChangeHandler}
+                disableUnderline
+                ref={React.createRef()}
+              >
+                {page === "home" ? (
+                  <MenuItem className={classes.menuItem} value={page}>
+                    <NextLink href="/">
+                      <Typography
+                        className={
+                          router.pathname === "/" ? classes.activeLink : ""
+                        }
+                        style={{ width: "100%", padding: 3 }}
+                        variant="subtitle2"
+                      >
                         Home
                       </Typography>
-                    </MenuItem>
-                  ) : (
-                    <MenuItem className={classes.menuItem} value="home">
-                      <Typography color="secondary" variant="subtitle2">
+                    </NextLink>
+                  </MenuItem>
+                ) : (
+                  <MenuItem className={classes.menuItem} value="home">
+                    <NextLink href="/">
+                      <Typography
+                        className={
+                          router.pathname === "/" ? classes.activeLink : ""
+                        }
+                        style={{ width: "100%", padding: 3 }}
+                        variant="subtitle2"
+                      >
                         Home
                       </Typography>
-                    </MenuItem>
-                  )}
-                  <MenuItem className={classes.menuItem} value="another-page">
-                    <Typography color="secondary" variant="subtitle2">
+                    </NextLink>
+                  </MenuItem>
+                )}
+                <MenuItem className={classes.menuItem} value="another-page">
+                  <NextLink href="/anotherpage">
+                    <Typography
+                      className={
+                        router.asPath === "/anotherpage"
+                          ? classes.activeLink
+                          : ""
+                      }
+                      style={{
+                        width: "100%",
+                        padding: 3,
+                      }}
+                      variant="subtitle2"
+                    >
                       AnotherPage
                     </Typography>
-                  </MenuItem>
-                </Select>
-              </FormControl>
-            </Link>
+                  </NextLink>
+                </MenuItem>
+              </Select>
+            </FormControl>
 
-            <Link className={classes.navLink}>
-              <Typography variant="subtitle2">Pages</Typography>
-            </Link>
-            <Link className={classes.navLink}>
-              <Typography variant="subtitle2">Product</Typography>
-            </Link>
-            <Link className={classes.navLink}>
-              <Typography variant="subtitle2">Shop</Typography>
-            </Link>
-            <Link className={classes.navLink}>
-              <Typography variant="subtitle2">Contact</Typography>
-            </Link>
+            {pagesLink.map((link) => {
+              return (
+                <NextLink href={link} key={link}>
+                  <Typography
+                    variant="subtitle2"
+                    className={classes.BottomNavLinkText}
+                  >
+                    {link}
+                  </Typography>
+                </NextLink>
+              );
+            })}
           </div>
 
           <form className={styles.navBottomForm}>
