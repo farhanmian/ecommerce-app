@@ -46,23 +46,27 @@
   position: absolute;
   left: 50%;
   bottom: 52.93px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   transform: translateX(-50%);
 }
 .btnContainer > * {
   transform: rotate(45deg);
 }
 
-.btnContainer > :not(:last-child) {
-  margin-right: 11.93px;
+@media only screen and (max-width: 1650px) {
+  .lampImg {
+    width: 20vw;
+  }
 }
 
-/*////////////////////// Featured Products */
+/*////////////////////////////////// Featured Products */
 
 .featuredProducts {
   max-width: 1168px;
   margin: auto;
   text-align: center;
-  margin-bottom: 71px;
 }
 .featuredProductsContainer {
   display: flex;
@@ -91,6 +95,7 @@
   box-shadow: 0px 0px 25px rgba(0, 0, 0, 0.1);
   transition: all 0.2s;
   position: relative;
+  cursor: pointer;
 }
 .featuredProduct > :not(:last-child :first-child) {
   margin-bottom: 12px;
@@ -156,10 +161,10 @@
   max-height: 200px;
 }
 .featuredProductImgContainer img {
-  transition: all 0.2s;
+  transition: all 0.3s;
 }
 .featuredProduct:hover .featuredProductImgContainer img {
-  transform: scale(0.8);
+  transform: scale(0.85);
 }
 
 .productImageBtnContainer {
@@ -207,12 +212,13 @@
   width: 24px;
 }
 
-/* Latest Products */
+/*//////////////////////////////////////////////// Latest Products */
 
 .latestProducts {
   max-width: 1164px;
   margin: auto;
   text-align: center;
+  margin-top: 71px;
 }
 .latestProductsLinkContainer {
   max-width: 527px;
@@ -229,6 +235,8 @@
 
 .latestProductsContainer {
   margin-top: 62px;
+  max-width: 1164px;
+  height: 739px;
 }
 .latestProduct {
   width: 360px;
@@ -236,11 +244,13 @@
   transform: translateX(100rem);
   animation: slideIn 0.5s ease-in-out forwards;
   transition: all 0.3s;
+  cursor: pointer;
 }
 .latestProduct:hover {
   width: 370px;
   height: 314px;
 }
+
 .latestProduct:hover .latestProductImgContainer {
   background-color: #fff;
 }
@@ -278,8 +288,225 @@
   }
 }
 
-@media only screen and (max-width: 1650px) {
-  .lampImg {
-    width: 20vw;
-  }
+/*////////////////////////////////// shopex Features */
+
+.shopexFeatures {
+  max-width: 1164px;
+  margin: auto;
+  text-align: center;
+  margin-top: 58px;
+  margin-bottom: 135px;
+}
+
+.feature {
+  width: 270px;
+  height: 320px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0px 8px 40px rgba(49, 32, 138, 0.05);
+  transition: all 0.3s;
+}
+.feature:hover {
+  transform: translateY(5px);
+}
+.feature:hover .featureImage {
+  margin-top: 56px;
+  margin-bottom: 27px;
+}
+
+.featureImage {
+  margin-top: 61px;
+  margin-bottom: 22px;
+  width: 65px;
+  height: 65px;
+  transition: all 0.3s;
+}
+
+/*///////////////////////////// feature Of Latest Trending Products */
+
+.featureOfLatestTrendingProducts {
+  padding: 14px 0;
+  background-color: #f1f0ff;
+  padding: 15px;
+}
+.featureOfLatestTrendingInnerContainer {
+  max-width: 1059px;
+  /* height: 550px; */
+  margin: auto;
+  position: relative;
+  display: flex;
+}
+.featureOfLatestTrendingImage {
+  max-width: 558px;
+  max-height: 550px;
+  /* position: absolute; */
+  /* left: -9px; */
+}
+
+.featureOfLatestTrendingText {
+  max-width: 507px;
+  margin-top: 82px;
+}
+.featureOfLatestTrendingText > :not(:last-child) {
+  margin-bottom: 13px;
+}
+
+.fetureText {
+  display: flex;
+  align-items: center;
+}
+.featureTextBall {
+  min-width: 11px;
+  min-height: 11px;
+  border-radius: 100px;
+  display: inline-block;
+  margin-right: 12px;
+}
+.featureOfLatestTrendingPinkBall {
+  background-color: #f52b70;
+}
+.featureOfLatestTrendingBlueBall {
+  background-color: #2b2bf5;
+}
+.featureOfLatestTrendingSkyblueBall {
+  background-color: #2bf5cc;
+}
+
+.featureOfLatestTrendingBtnAndPrice {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+.featureOfLatestTrendingPrice {
+  display: flex;
+  flex-direction: column;
+}
+
+/*////////////////////////////////// section trending Products //////////*/
+
+/* trendingProduct: main container */
+.trendingProducts {
+  text-align: center;
+  margin-top: 132px;
+}
+.trendingProductsContainer {
+  max-width: 1167px;
+  margin: auto;
+}
+.mainTrendingProduct {
+  width: 270px;
+  height: 350px;
+  padding: 11px;
+  background-color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  transition: all 0.3s;
+  cursor: pointer;
+  filter: drop-shadow(0px 8px 40px rgba(49, 32, 138, 0.05));
+}
+.mainTrendingProduct:hover {
+  padding: 0;
+}
+.mainTrendingProduct:hover .mainTrendingProductImage {
+  /* width: 258px;
+  height: 255px; */
+  padding: 30px; /* test */
+}
+
+.mainTrendingProductImage {
+  width: 247px;
+  height: 244px;
+  background-color: #f5f6f8;
+  padding: 25px;
+  margin-bottom: 15px;
+  padding: 40px; /* test */
+  transition: all 0.3s;
+}
+.mainTrendingProductPriceContainer {
+  margin-top: 8px;
+}
+.mainTrendingProductPriceContainer > :first-child {
+  margin-right: 12px;
+}
+
+/* section trending products (same section) otherTrendingProducts eg: clock, drawer */
+.otherTrendingProduct {
+  width: 420px;
+  height: 270px;
+  margin-top: 39px;
+  padding: 34px 25px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  flex-direction: column;
+  position: relative;
+  box-shadow: 0px 8px 40px rgba(49, 32, 138, 0.05);
+  cursor: pointer;
+  transition: all 0.3s;
+}
+.otherTrendingProduct:hover {
+  box-shadow: 0px 8px 30px rgba(15, 9, 47, 0.082);
+}
+
+.otherTrendingProductImage {
+  position: absolute;
+  right: 6px;
+  bottom: 2px;
+}
+
+.otherTrendingProduct0 {
+  background-color: #fff6fb;
+}
+.otherTrendingProduct1 {
+  background-color: #eeeffb;
+}
+
+/* section trending products (same section) otherTrendingChair */
+.otherTrendingChairContainer {
+  width: 267px;
+  height: 262px;
+  margin-top: 44px;
+  margin-left: -5px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.otherTrendingChairContainer > :not(:last-child) {
+  margin-bottom: 20px;
+}
+.otherTrendingChair {
+  width: 267px;
+  height: 74px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+.otherTrendingChair:hover {
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.055);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.otherTrendingChairImage {
+  width: 107px;
+  height: 74px;
+  background-color: #f5f6f8;
+  margin-right: 9px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+.otherTrendingChairText {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
 }

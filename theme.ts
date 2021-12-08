@@ -24,7 +24,6 @@ const theme = createTheme({
     h4: {
       fontSize: 35,
       lineHeight: "46.2px",
-      letterSpacing: ".015em",
     },
     // heading 5 - used in nav for website name
     h5: {
