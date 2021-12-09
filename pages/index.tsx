@@ -3,11 +3,19 @@ import Image from "next/image";
 import NextLink from "next/link";
 import { Button, Typography, makeStyles } from "@material-ui/core";
 import { Grid } from "@mui/material";
-import { ZoomGlass, AddToCart, Heart, Sale } from "../components/icons/icons";
+import {
+  ZoomGlass,
+  AddToCart,
+  Heart,
+  Sale,
+  Tick,
+} from "../components/icons/icons";
 import React, { useState } from "react";
 import lamp from "../assets/img/headerlamp.png";
 import couch from "../assets/img/headerCouch.png";
 import couch2 from "../assets/img/featureOfLatestTrending.png";
+import discountItemCouch from "../assets/img/couch.png";
+import discountItemPlasticChair from "../assets/img/discountItemChair.png";
 import chair1 from "../assets/img/chair1.png";
 import chair2 from "../assets/img/chair2.png";
 import chair3 from "../assets/img/chair3.png";
@@ -19,15 +27,18 @@ import chair8 from "../assets/img/chair8.png";
 import chair9 from "../assets/img/chair9.png";
 import chair10 from "../assets/img/chair10.png";
 import chair11 from "../assets/img/chair11.png";
+import chair12 from "../assets/img/chair12.png";
 import otherTrendingChair1 from "../assets/img/other-trending-chair1.png";
 import otherTrendingChair2 from "../assets/img/other-trending-chair2.png";
 import otherTrendingChair3 from "../assets/img/other-trending-chair3.png";
+import woodChair from "../assets/img/wood-chair.png";
 import trendingClock from "../assets/img/trending-clock.png";
 import trendingDrawer from "../assets/img/trending-drawer.png";
 import freeDelivery from "../assets/img/free-delivery.png";
 import fullHoursSupport from "../assets/img/24-hours-support.png";
 import cashback from "../assets/img/cashback.png";
 import premiumQuality from "../assets/img/premium-quality.png";
+import FriendCompanies from "../components/partials/FriendCompanies/FriendCompanies";
 
 const featuredProductData = [
   {
@@ -202,6 +213,146 @@ const otherTrendingChairData = [
     img: otherTrendingChair3,
   },
 ];
+const discountItemLink = ["Wood Chair", "Plastic Chair", "Sofa Collection"];
+const discountItemData = [
+  {
+    offer: "20% Discount Of All Products",
+    img: woodChair,
+    imgStyle: { width: 699 },
+    productTitle: "Eams Wood Chair Compact",
+    text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Eu eget feugiat habitasse nec, bibendum condimentum.",
+    category: "Wood Chair",
+    id: 1,
+    features: [
+      "High Quality Soft foam.",
+      "Adjustable Seat Height, Armrest.",
+      "Simple neutral colours.",
+      "Frame Material: Solid Wood.",
+    ],
+  },
+  {
+    offer: "18% Discount Of All Products",
+    img: discountItemPlasticChair,
+    imgStyle: {
+      width: 500,
+      height: "max-content",
+      top: "50%",
+      transform: "translateY(-50%)",
+    },
+    productTitle: "Eams Plastic Chair Compact",
+    text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Eu eget feugiat habitasse nec, bibendum condimentum.",
+    category: "Plastic Chair",
+    id: 2,
+    features: [
+      "High Quality Frame Material",
+      "Clear lines and geomatric figures",
+      "Simple neutral colours.",
+      "Material expose like metals",
+    ],
+  },
+  {
+    offer: "25% Discount Of All Products",
+    img: discountItemCouch,
+    imgStyle: { width: 580 },
+    productTitle: "Sofa Collection",
+    text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Eu eget feugiat habitasse nec, bibendum condimentum.",
+    category: "Sofa Collection",
+    id: 3,
+    features: [
+      "Material expose like metals",
+      "Clear lines and geomatric figures",
+      "Simple neutral colours.",
+      "Material expose like metals",
+    ],
+  },
+];
+const topCategoriesItemData = [
+  {
+    img: chair12,
+    title: "Mini LCW Chair",
+    price: 56,
+    category: 1,
+    id: 1,
+  },
+  {
+    img: chair1,
+    title: "Mini LCW Chair",
+    price: 56,
+    category: 1,
+    id: 2,
+  },
+  {
+    img: chair9,
+    title: "Mini LCW Chair",
+    price: 56,
+    category: 1,
+    id: 3,
+  },
+  {
+    img: chair2,
+    title: "Mini LCW Chair",
+    price: 56,
+    category: 1,
+    id: 4,
+  },
+  {
+    img: chair3,
+    title: "Mini LCW Chair",
+    price: 56,
+    category: 2,
+    id: 5,
+  },
+  {
+    img: chair11,
+    title: "Mini LCW Chair",
+    price: 56,
+    category: 2,
+    id: 6,
+  },
+  {
+    img: chair5,
+    title: "Mini LCW Chair",
+    price: 56,
+    category: 2,
+    id: 7,
+  },
+  {
+    img: chair6,
+    title: "Mini LCW Chair",
+    price: 56,
+    category: 2,
+    id: 8,
+  },
+  {
+    img: chair7,
+    title: "Mini LCW Chair",
+    price: 56,
+    category: 3,
+    id: 9,
+  },
+  {
+    img: chair8,
+    title: "Mini LCW Chair",
+    price: 56,
+    category: 3,
+    id: 10,
+  },
+  {
+    img: chair10,
+    title: "Mini LCW Chair",
+    price: 56,
+    category: 3,
+    id: 11,
+  },
+  {
+    img: chair4,
+    title: "Mini LCW Chair",
+    price: 56,
+    category: 3,
+    id: 12,
+  },
+];
+const topCategoryBtnData = [1, 2, 3];
 
 const useStyles = makeStyles({
   darkPurple: {
@@ -231,11 +382,14 @@ const useStyles = makeStyles({
 export default function Home() {
   const classes = useStyles();
   const [latestProductLink, setLatestProductLink] = useState("New Arrival");
+  const [discountItemActiveLink, setDiscountItemActiveLink] =
+    useState("Wood Chair");
+  const [topCategoryActiveLink, setTopCategoryActiveLink] = useState(1);
 
   return (
     <React.Fragment>
       {/* header section */}
-      <div className={styles.header}>
+      <section className={styles.header}>
         <div className={styles.textContainer}>
           <div className={styles.lampImg}>
             <Image src={lamp} alt="img" />
@@ -315,10 +469,10 @@ export default function Home() {
             disableElevation
           />
         </div>
-      </div>
+      </section>
 
       {/* featured product section */}
-      <div className={styles.featuredProducts}>
+      <section className={styles.featuredProducts}>
         <Typography variant="h2" className={classes.darkPurple}>
           Featured Products
         </Typography>
@@ -387,20 +541,20 @@ export default function Home() {
             <span className={styles.featuredProductsBtn} />
           </div>
         </div>
-      </div>
+      </section>
 
       {/* latest product section */}
-      <div className={styles.latestProducts}>
+      <section className={styles.latestProducts}>
         <Typography variant="h2" style={{ color: "#151875" }}>
           Leatest Products
         </Typography>
 
         {/* latestProducts links */}
         <div className={styles.latestProductsLinkContainer}>
-          {latestProductsLink.map((link) => {
+          {latestProductsLink.map((link, i) => {
             return (
               <Typography
-                key={link}
+                key={i}
                 variant="body1"
                 className={`${classes.latestProductsLink}`}
                 style={{
@@ -425,10 +579,10 @@ export default function Home() {
           rowGap="120px"
           className={styles.latestProductsContainer}
         >
-          {latestProductsData.map((product) => {
+          {latestProductsData.map((product, i) => {
             return (
               product.category === latestProductLink && (
-                <Grid item key={product.id} className={styles.latestProduct}>
+                <Grid item key={i} className={styles.latestProduct}>
                   <div className={styles.latestProductImgContainer}>
                     {product.sale && (
                       <span className={styles.latestProductSaleImg}>
@@ -474,10 +628,10 @@ export default function Home() {
             );
           })}
         </Grid>
-      </div>
+      </section>
 
       {/* feature shopex to offer section  */}
-      <div className={styles.shopexFeatures}>
+      <section className={styles.shopexFeatures}>
         <Typography
           variant="h2"
           className={classes.color151875}
@@ -514,10 +668,10 @@ export default function Home() {
             );
           })}
         </Grid>
-      </div>
+      </section>
 
       {/* feature of latest and trending products */}
-      <div className={styles.featureOfLatestTrendingProducts}>
+      <section className={styles.featureOfLatestTrendingProducts}>
         <div className={styles.featureOfLatestTrendingInnerContainer}>
           <div className={styles.featureOfLatestTrendingImage}>
             <Image src={couch2} alt="couch2" />
@@ -615,10 +769,10 @@ export default function Home() {
             </div>
           </div>
         </div>
-      </div>
+      </section>
 
       {/* trending products */}
-      <div className={styles.trendingProducts}>
+      <section className={styles.trendingProducts}>
         <Typography
           variant="h2"
           className={classes.color151875}
@@ -634,48 +788,46 @@ export default function Home() {
         >
           {trendingProductsData.map((product) => {
             return (
-              <React.Fragment>
-                <Grid
-                  item
-                  key={product.id}
-                  className={styles.mainTrendingProduct}
+              <Grid
+                item
+                key={product.id}
+                className={styles.mainTrendingProduct}
+              >
+                <div className={styles.mainTrendingProductImage}>
+                  <Image src={product.img} alt={product.title} />
+                </div>
+                <Typography
+                  variant="body2"
+                  style={{
+                    lineHeight: "25.6px",
+                    fontFamily: "lato",
+                    fontWeight: 700,
+                  }}
+                  className={classes.color151875}
                 >
-                  <div className={styles.mainTrendingProductImage}>
-                    <Image src={product.img} alt={product.title} />
-                  </div>
+                  {product.title}
+                </Typography>
+                <span className={styles.mainTrendingProductPriceContainer}>
                   <Typography
-                    variant="body2"
-                    style={{
-                      lineHeight: "25.6px",
-                      fontFamily: "lato",
-                      fontWeight: 700,
-                    }}
+                    variant="caption"
+                    style={{ fontFamily: "Josefin Sans" }}
                     className={classes.color151875}
                   >
-                    {product.title}
+                    ${product.price.toFixed(2)}
                   </Typography>
-                  <span className={styles.mainTrendingProductPriceContainer}>
-                    <Typography
-                      variant="caption"
-                      style={{ fontFamily: "Josefin Sans" }}
-                      className={classes.color151875}
-                    >
-                      ${product.price.toFixed(2)}
-                    </Typography>
-                    <Typography
-                      variant="overline"
-                      style={{
-                        color: "#b9bad6",
-                        lineHeight: "12px",
-                        fontWeight: 400,
-                        textDecoration: "line-through",
-                      }}
-                    >
-                      ${product.orignalPrice.toFixed(2)}
-                    </Typography>
-                  </span>
-                </Grid>
-              </React.Fragment>
+                  <Typography
+                    variant="overline"
+                    style={{
+                      color: "#b9bad6",
+                      lineHeight: "12px",
+                      fontWeight: 400,
+                      textDecoration: "line-through",
+                    }}
+                  >
+                    ${product.orignalPrice.toFixed(2)}
+                  </Typography>
+                </span>
+              </Grid>
             );
           })}
 
@@ -750,7 +902,220 @@ export default function Home() {
             })}
           </div>
         </Grid>
-      </div>
+      </section>
+
+      {/* discount item section */}
+      <section className={styles.discountItemMainContainer}>
+        <Typography variant="h2" className={classes.color151875}>
+          Discount Item
+        </Typography>
+        <div className={styles.discountItemInnerContainer}>
+          <div className={styles.discountItemLinkContainer}>
+            {discountItemLink.map((link, i) => {
+              return (
+                <Typography
+                  key={i}
+                  variant="body1"
+                  className={classes.color151875}
+                  style={{
+                    color: discountItemActiveLink === link ? "#FB2E86" : "",
+                    fontWeight: 400,
+                  }}
+                  onClick={() => {
+                    setDiscountItemActiveLink(link);
+                  }}
+                >
+                  {link}
+                </Typography>
+              );
+            })}
+          </div>
+
+          {discountItemData.map((item) => {
+            return (
+              item.category === discountItemActiveLink && (
+                <div key={item.id} className={styles.discountItem}>
+                  <div className={styles.discountItemText}>
+                    <Typography
+                      variant="h4"
+                      className={classes.color151875}
+                      style={{
+                        marginBottom: 16,
+                        fontWeight: "bold",
+                      }}
+                    >
+                      {item.offer}
+                    </Typography>
+                    <Typography
+                      variant="h6"
+                      style={{
+                        fontSize: 21,
+                        lineHeight: "27.72px",
+                        letterSpacing: "0.015em",
+                        marginBottom: 20,
+                      }}
+                      color="secondary"
+                    >
+                      {item.productTitle}
+                    </Typography>
+                    <Typography
+                      variant="body2"
+                      style={{
+                        fontSize: 17,
+                        fontFamily: "lato",
+                        lineHeight: "30px",
+                        fontWeight: 400,
+                        marginBottom: 28,
+                        color: "#B7BACB",
+                      }}
+                    >
+                      {item.text}
+                    </Typography>
+
+                    <Grid
+                      container
+                      justifyContent="space-between"
+                      rowGap="10px"
+                      className={styles.discountItemFeatures}
+                    >
+                      {item.features.map((feature, i) => {
+                        return (
+                          <Grid
+                            key={i}
+                            item
+                            className={styles.discountItemFeature}
+                          >
+                            <Tick />
+                            <Typography
+                              variant="body2"
+                              style={{
+                                lineHeight: "30px",
+                                letterSpacing: "0.02em",
+                                color: "#B8B8DC",
+                                fontFamily: "lato",
+                              }}
+                            >
+                              {feature}
+                            </Typography>
+                          </Grid>
+                        );
+                      })}
+                    </Grid>
+
+                    <Button
+                      variant="contained"
+                      color="secondary"
+                      style={{
+                        width: 200,
+                        height: 57,
+                        textTransform: "capitalize",
+                        borderRadius: 0,
+                        fontSize: 17,
+                        lineHeight: "20px",
+                      }}
+                      disableElevation
+                    >
+                      Shop Now
+                    </Button>
+                  </div>
+                  <div
+                    className={styles.discountItemImage}
+                    style={item.imgStyle}
+                  >
+                    <Image src={item.img} alt={item.productTitle} />
+                  </div>
+                </div>
+              )
+            );
+          })}
+        </div>
+      </section>
+
+      {/* top categories section */}
+      <section className={styles.topCategories}>
+        <Typography variant="h2" className={classes.color151875}>
+          Top Categories
+        </Typography>
+        <Grid
+          container
+          columnGap="39px"
+          className={styles.topCategoriesInnerContainer}
+        >
+          {topCategoriesItemData.map((product) => {
+            return (
+              product.category === topCategoryActiveLink && (
+                <Grid key={product.id} item className={styles.topCategory}>
+                  <div className={styles.topCategoryImageContainer}>
+                    <div className={styles.topCategoryImage}>
+                      <Image src={product.img} alt={product.title} />
+                    </div>
+                    <Button
+                      variant="contained"
+                      style={{
+                        backgroundColor: "#08D15F",
+                        color: "#fff",
+                        position: "absolute",
+                        padding: "9px 18px",
+                      }}
+                      className={styles.topCategoryImageBtn}
+                      disableElevation
+                    >
+                      <Typography
+                        variant="overline"
+                        style={{
+                          textTransform: "capitalize",
+                          lineHeight: "12px",
+                        }}
+                      >
+                        View Shop
+                      </Typography>
+                    </Button>
+                  </div>
+                  <Typography
+                    variant="subtitle1"
+                    style={{
+                      fontSize: 20,
+                      lineHeight: "20px",
+                      marginBottom: 13,
+                    }}
+                    className={classes.color151875}
+                  >
+                    {product.title}
+                  </Typography>
+                  <Typography
+                    variant="subtitle2"
+                    style={{ lineHeight: "16px", fontFamily: "Josefin Sans" }}
+                    className={classes.color151875}
+                  >
+                    {product.price}
+                  </Typography>
+                </Grid>
+              )
+            );
+          })}
+
+          <div className={styles.topCategoryBtnContainer}>
+            {topCategoryBtnData.map((btn) => {
+              return (
+                <span
+                  key={btn}
+                  className={`${styles.topCategoryBtn} ${
+                    topCategoryActiveLink === btn
+                      ? styles.topCategoryActiveBtn
+                      : ""
+                  }`}
+                  onClick={() => {
+                    setTopCategoryActiveLink(btn);
+                  }}
+                />
+              );
+            })}
+          </div>
+        </Grid>
+      </section>
+
+      {/* friend companies */}
+      <FriendCompanies />
     </React.Fragment>
   );
 }
