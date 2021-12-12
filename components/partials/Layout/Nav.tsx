@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import styles from "../../../styles/Nav.module.css";
 import {
   Link,
@@ -64,6 +64,7 @@ const useStyles = makeStyles({
 });
 
 export default function Nav() {
+  const searchInputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
 
   const classes = useStyles();
@@ -76,6 +77,15 @@ export default function Nav() {
   };
   const pageChangeHandler = (event) => {
     setPage(event.target.value);
+  };
+
+  const formSubmitHandler = (e: React.FormEvent) => {
+    e.preventDefault();
+    const searchValue = searchInputRef.current?.value;
+    if (searchValue.trim().length < 1) {
+      return;
+    }
+    router.push(`/${searchValue}`);
   };
 
   return (
@@ -138,9 +148,14 @@ export default function Nav() {
 
       <div className={styles.navBottomContainer}>
         <div className={styles.navBottomInnerContainer}>
-          <Typography style={{ marginRight: 88 }} variant="h5">
-            Hekto
-          </Typography>
+          <NextLink href="/">
+            <Typography
+              style={{ marginRight: 88, cursor: "pointer", color: "#101750" }}
+              variant="h5"
+            >
+              Hekto
+            </Typography>
+          </NextLink>
           <div className={styles.navBottomLinksContainer}>
             <FormControl variant="standard">
               <Select
@@ -216,8 +231,13 @@ export default function Nav() {
             })}
           </div>
 
-          <form className={styles.navBottomForm}>
-            <input type="text" className={styles.navBottomInput} required />
+          <form onSubmit={formSubmitHandler} className={styles.navBottomForm}>
+            <input
+              ref={searchInputRef}
+              type="text"
+              className={styles.navBottomInput}
+              required
+            />
             <Button
               type="submit"
               variant="contained"

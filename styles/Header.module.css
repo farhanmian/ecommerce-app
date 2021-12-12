@@ -1,0 +1,14 @@
+.header {
+  background-color: #f6f5ff;
+  padding: 96px 0 126px 0;
+}
+
+.innerContainer {
+  max-width: 314px;
+  height: 64px;
+  margin-left: 374px;
+}
+
+.path {
+  color: #fb2e86;
+}

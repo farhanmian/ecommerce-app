@@ -237,12 +237,12 @@
   margin-top: 62px;
   max-width: 1164px;
   height: 739px;
+  opacity: 0;
+  animation: fadeIn 0.5s ease-in-out forwards;
 }
 .latestProduct {
   width: 360px;
   height: 306px;
-  transform: translateX(100rem);
-  animation: slideIn 0.5s ease-in-out forwards;
   transition: all 0.3s;
   cursor: pointer;
 }

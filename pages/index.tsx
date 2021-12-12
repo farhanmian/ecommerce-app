@@ -1,8 +1,15 @@
+import React, { useEffect, useState } from "react";
 import styles from "../styles/Home.module.css";
 import Image from "next/image";
 import NextLink from "next/link";
 import { Button, Typography, makeStyles } from "@material-ui/core";
 import { Grid } from "@mui/material";
+
+import lamp from "../assets/img/headerlamp.png";
+import couch from "../assets/img/headerCouch.png";
+import couch2 from "../assets/img/featureOfLatestTrending.png";
+import FriendCompanies from "../components/partials/FriendCompanies/FriendCompanies";
+
 import {
   ZoomGlass,
   AddToCart,
@@ -10,349 +17,21 @@ import {
   Sale,
   Tick,
 } from "../components/icons/icons";
-import React, { useState } from "react";
-import lamp from "../assets/img/headerlamp.png";
-import couch from "../assets/img/headerCouch.png";
-import couch2 from "../assets/img/featureOfLatestTrending.png";
-import discountItemCouch from "../assets/img/couch.png";
-import discountItemPlasticChair from "../assets/img/discountItemChair.png";
-import chair1 from "../assets/img/chair1.png";
-import chair2 from "../assets/img/chair2.png";
-import chair3 from "../assets/img/chair3.png";
-import chair4 from "../assets/img/chair4.png";
-import chair5 from "../assets/img/chair5.png";
-import chair6 from "../assets/img/chair6.png";
-import chair7 from "../assets/img/chair7.png";
-import chair8 from "../assets/img/chair8.png";
-import chair9 from "../assets/img/chair9.png";
-import chair10 from "../assets/img/chair10.png";
-import chair11 from "../assets/img/chair11.png";
-import chair12 from "../assets/img/chair12.png";
-import otherTrendingChair1 from "../assets/img/other-trending-chair1.png";
-import otherTrendingChair2 from "../assets/img/other-trending-chair2.png";
-import otherTrendingChair3 from "../assets/img/other-trending-chair3.png";
-import woodChair from "../assets/img/wood-chair.png";
-import trendingClock from "../assets/img/trending-clock.png";
-import trendingDrawer from "../assets/img/trending-drawer.png";
-import freeDelivery from "../assets/img/free-delivery.png";
-import fullHoursSupport from "../assets/img/24-hours-support.png";
-import cashback from "../assets/img/cashback.png";
-import premiumQuality from "../assets/img/premium-quality.png";
-import FriendCompanies from "../components/partials/FriendCompanies/FriendCompanies";
 
-const featuredProductData = [
-  {
-    img: chair1,
-    name: "Cantilever chair",
-    code: "Code - Y523201",
-    price: "42.00",
-  },
-  {
-    img: chair2,
-    name: "Cantilever chair",
-    code: "Code - Y523201",
-    price: "42.00",
-  },
-  {
-    img: chair3,
-    name: "Cantilever chair",
-    code: "Code - Y523201",
-    price: "42.00",
-  },
-  {
-    img: chair4,
-    name: "Cantilever chair",
-    code: "Code - Y523201",
-    price: "42.00",
-  },
-];
-
-const latestProductsLink = [
-  "New Arrival",
-  "Best Seller",
-  "Featured",
-  "Special Offer",
-];
-
-const shopexFeaturesData = [
-  {
-    img: freeDelivery,
-  },
-  {
-    img: cashback,
-  },
-  {
-    img: premiumQuality,
-  },
-  {
-    img: fullHoursSupport,
-  },
-];
-
-const latestProductsData = [
-  {
-    img: chair8,
-    title: "title",
-    price: 42,
-    orignalPrice: 65,
-    category: "New Arrival",
-    sale: false,
-    id: 1,
-  },
-  {
-    img: chair5,
-    title: "title",
-    price: 42,
-    orignalPrice: 65,
-    category: "New Arrival",
-    sale: true,
-    id: 2,
-  },
-  {
-    img: chair1,
-    title: "title",
-    price: 42,
-    orignalPrice: 65,
-    category: "New Arrival",
-    sale: false,
-    id: 3,
-  },
-  {
-    img: chair6,
-    title: "title",
-    price: 42,
-    orignalPrice: 65,
-    category: "New Arrival",
-    sale: false,
-    id: 4,
-  },
-  {
-    img: chair7,
-    title: "title",
-    price: 42,
-    orignalPrice: 65,
-    category: "New Arrival",
-    sale: false,
-    id: 5,
-  },
-  {
-    img: chair4,
-    title: "title",
-    price: 42,
-    orignalPrice: 65,
-    category: "New Arrival",
-    sale: false,
-    id: 6,
-  },
-];
-
-const trendingProductsData = [
-  {
-    title: "Cantilever chair",
-    img: chair9,
-    price: 26.0,
-    orignalPrice: 42,
-    id: 1,
-    category: "mainTrendingProduct",
-  },
-  {
-    title: "Cantilever chair",
-    img: chair10,
-    price: 26.0,
-    orignalPrice: 42,
-    id: 2,
-    category: "mainTrendingProduct",
-  },
-  {
-    title: "Cantilever chair",
-    img: chair11,
-    price: 26.0,
-    orignalPrice: 42,
-    id: 3,
-    category: "mainTrendingProduct",
-  },
-  {
-    title: "Cantilever chair",
-    img: chair7,
-    price: 26.0,
-    orignalPrice: 42,
-    id: 4,
-    category: "mainTrendingProduct",
-  },
-];
-const trendingProductsOtherTrendingData = [
-  {
-    title: "23% off in all products",
-    link: "Shop Now",
-    goto: "clock",
-    img: trendingClock,
-    imgStyle: { width: 213, height: 207 },
-  },
-  {
-    title: "23% off in all products",
-    link: "View Collection",
-    goto: "drawer",
-    img: trendingDrawer,
-    imgStyle: { width: 312, height: 173 },
-  },
-];
-const otherTrendingChairData = [
-  {
-    title: "Executive Seat chair",
-    price: 32,
-    img: otherTrendingChair1,
-  },
-  {
-    title: "Executive Seat chair",
-    price: 32,
-    img: otherTrendingChair2,
-  },
-  {
-    title: "Executive Seat chair",
-    price: 32,
-    img: otherTrendingChair3,
-  },
-];
-const discountItemLink = ["Wood Chair", "Plastic Chair", "Sofa Collection"];
-const discountItemData = [
-  {
-    offer: "20% Discount Of All Products",
-    img: woodChair,
-    imgStyle: { width: 699 },
-    productTitle: "Eams Wood Chair Compact",
-    text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Eu eget feugiat habitasse nec, bibendum condimentum.",
-    category: "Wood Chair",
-    id: 1,
-    features: [
-      "High Quality Soft foam.",
-      "Adjustable Seat Height, Armrest.",
-      "Simple neutral colours.",
-      "Frame Material: Solid Wood.",
-    ],
-  },
-  {
-    offer: "18% Discount Of All Products",
-    img: discountItemPlasticChair,
-    imgStyle: {
-      width: 500,
-      height: "max-content",
-      top: "50%",
-      transform: "translateY(-50%)",
-    },
-    productTitle: "Eams Plastic Chair Compact",
-    text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Eu eget feugiat habitasse nec, bibendum condimentum.",
-    category: "Plastic Chair",
-    id: 2,
-    features: [
-      "High Quality Frame Material",
-      "Clear lines and geomatric figures",
-      "Simple neutral colours.",
-      "Material expose like metals",
-    ],
-  },
-  {
-    offer: "25% Discount Of All Products",
-    img: discountItemCouch,
-    imgStyle: { width: 580 },
-    productTitle: "Sofa Collection",
-    text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Eu eget feugiat habitasse nec, bibendum condimentum.",
-    category: "Sofa Collection",
-    id: 3,
-    features: [
-      "Material expose like metals",
-      "Clear lines and geomatric figures",
-      "Simple neutral colours.",
-      "Material expose like metals",
-    ],
-  },
-];
-const topCategoriesItemData = [
-  {
-    img: chair12,
-    title: "Mini LCW Chair",
-    price: 56,
-    category: 1,
-    id: 1,
-  },
-  {
-    img: chair1,
-    title: "Mini LCW Chair",
-    price: 56,
-    category: 1,
-    id: 2,
-  },
-  {
-    img: chair9,
-    title: "Mini LCW Chair",
-    price: 56,
-    category: 1,
-    id: 3,
-  },
-  {
-    img: chair2,
-    title: "Mini LCW Chair",
-    price: 56,
-    category: 1,
-    id: 4,
-  },
-  {
-    img: chair3,
-    title: "Mini LCW Chair",
-    price: 56,
-    category: 2,
-    id: 5,
-  },
-  {
-    img: chair11,
-    title: "Mini LCW Chair",
-    price: 56,
-    category: 2,
-    id: 6,
-  },
-  {
-    img: chair5,
-    title: "Mini LCW Chair",
-    price: 56,
-    category: 2,
-    id: 7,
-  },
-  {
-    img: chair6,
-    title: "Mini LCW Chair",
-    price: 56,
-    category: 2,
-    id: 8,
-  },
-  {
-    img: chair7,
-    title: "Mini LCW Chair",
-    price: 56,
-    category: 3,
-    id: 9,
-  },
-  {
-    img: chair8,
-    title: "Mini LCW Chair",
-    price: 56,
-    category: 3,
-    id: 10,
-  },
-  {
-    img: chair10,
-    title: "Mini LCW Chair",
-    price: 56,
-    category: 3,
-    id: 11,
-  },
-  {
-    img: chair4,
-    title: "Mini LCW Chair",
-    price: 56,
-    category: 3,
-    id: 12,
-  },
-];
-const topCategoryBtnData = [1, 2, 3];
+import {
+  // featuredProductData,
+  latestProductsLink,
+  shopexFeaturesData,
+  // latestProductsData,
+  trendingProductsData,
+  trendingProductsOtherTrendingData,
+  otherTrendingChairData,
+  discountItemLink,
+  discountItemData,
+  topCategoriesItemData,
+  topCategoryBtnData,
+} from "../data/indexData";
+import { storedData } from "../data/allData";
 
 const useStyles = makeStyles({
   darkPurple: {
@@ -380,16 +59,30 @@ const useStyles = makeStyles({
 });
 
 export default function Home() {
+  // useEffect(() => {
+  //   window.scroll(0, 0);
+  // }, []);
+
   const classes = useStyles();
-  const [latestProductLink, setLatestProductLink] = useState("New Arrival");
+  const [latestProductLink, setLatestProductLink] = useState(
+    "LatestProductsNew Arrival"
+  );
   const [discountItemActiveLink, setDiscountItemActiveLink] =
     useState("Wood Chair");
   const [topCategoryActiveLink, setTopCategoryActiveLink] = useState(1);
 
+  /// filtering data
+  const featuredProductData = storedData.filter((product) => {
+    return product.category.includes("FeaturedProducts");
+  });
+  const latestProductsData = storedData.filter((product) => {
+    return product.category.includes("LatestProducts");
+  });
+
   return (
     <React.Fragment>
       {/* header section */}
-      <section className={styles.header}>
+      <header className={styles.header}>
         <div className={styles.textContainer}>
           <div className={styles.lampImg}>
             <Image src={lamp} alt="img" />
@@ -469,7 +162,7 @@ export default function Home() {
             disableElevation
           />
         </div>
-      </section>
+      </header>
 
       {/* featured product section */}
       <section className={styles.featuredProducts}>
@@ -481,53 +174,54 @@ export default function Home() {
           <div className={styles.featuredProductsInnerContainer}>
             {featuredProductData.map((product, i) => {
               return (
-                <div
-                  className={`${styles.featuredProduct} ${classes.featuredProduct}`}
-                  key={i}
-                >
-                  <div className={styles.featuredProductIconContainer}>
-                    <div
-                      className={`${styles.featuredProductIcon} ${styles.addToCart}`}
+                <NextLink key={i} href={product.link}>
+                  <div
+                    className={`${styles.featuredProduct} ${classes.featuredProduct}`}
+                  >
+                    <div className={styles.featuredProductIconContainer}>
+                      <div
+                        className={`${styles.featuredProductIcon} ${styles.addToCart}`}
+                      >
+                        <AddToCart />
+                      </div>
+                      <div className={styles.featuredProductIcon}>
+                        <Heart />
+                      </div>
+                      <div className={styles.featuredProductIcon}>
+                        <ZoomGlass />
+                      </div>
+                    </div>
+                    <div className={styles.featuredProductImgContainer}>
+                      <Image src={product.img} alt={product.title} />
+                    </div>
+                    <Typography
+                      variant="subtitle1"
+                      color="secondary"
+                      style={{ lineHeight: "21.6px", fontWeight: 700 }}
                     >
-                      <AddToCart />
+                      {product.title}
+                    </Typography>
+                    <div className={styles.productImageBtnContainer}>
+                      <span className={styles.productImgBtn1} />
+                      <span className={styles.productImgBtn2} />
+                      <span className={styles.productImgBtn3} />
                     </div>
-                    <div className={styles.featuredProductIcon}>
-                      <Heart />
-                    </div>
-                    <div className={styles.featuredProductIcon}>
-                      <ZoomGlass />
-                    </div>
+                    <Typography
+                      variant="caption"
+                      style={{ lineHeight: "16.41px" }}
+                    >
+                      Code - Y523201
+                    </Typography>
+                    <Typography
+                      variant="caption"
+                      style={{
+                        lineHeight: "16.41px",
+                      }}
+                    >
+                      ${product.price}
+                    </Typography>
                   </div>
-                  <div className={styles.featuredProductImgContainer}>
-                    <Image src={product.img} alt={product.name} />
-                  </div>
-                  <Typography
-                    variant="subtitle1"
-                    color="secondary"
-                    style={{ lineHeight: "21.6px", fontWeight: 700 }}
-                  >
-                    {product.name}
-                  </Typography>
-                  <div className={styles.productImageBtnContainer}>
-                    <span className={styles.productImgBtn1} />
-                    <span className={styles.productImgBtn2} />
-                    <span className={styles.productImgBtn3} />
-                  </div>
-                  <Typography
-                    variant="caption"
-                    style={{ lineHeight: "16.41px" }}
-                  >
-                    {product.code}
-                  </Typography>
-                  <Typography
-                    variant="caption"
-                    style={{
-                      lineHeight: "16.41px",
-                    }}
-                  >
-                    ${product.price}
-                  </Typography>
-                </div>
+                </NextLink>
               );
             })}
           </div>
@@ -546,7 +240,7 @@ export default function Home() {
       {/* latest product section */}
       <section className={styles.latestProducts}>
         <Typography variant="h2" style={{ color: "#151875" }}>
-          Leatest Products
+          Latest Products
         </Typography>
 
         {/* latestProducts links */}
@@ -558,10 +252,13 @@ export default function Home() {
                 variant="body1"
                 className={`${classes.latestProductsLink}`}
                 style={{
-                  color: latestProductLink === link ? "#FB2E86" : "#151875",
+                  color:
+                    latestProductLink === `LatestProducts${link}`
+                      ? "#FB2E86"
+                      : "#151875",
                 }}
                 onClick={() => {
-                  setLatestProductLink(link);
+                  setLatestProductLink(`LatestProducts${link}`);
                 }}
               >
                 {link}
@@ -581,49 +278,51 @@ export default function Home() {
         >
           {latestProductsData.map((product, i) => {
             return (
-              product.category === latestProductLink && (
-                <Grid item key={i} className={styles.latestProduct}>
-                  <div className={styles.latestProductImgContainer}>
-                    {product.sale && (
-                      <span className={styles.latestProductSaleImg}>
-                        <Sale />
-                      </span>
-                    )}
-                    <Image src={product.img} alt={product.title} />
-                  </div>
-                  <div className={styles.productText}>
-                    <Typography
-                      variant="body2"
-                      className={classes.color151875}
-                      style={{
-                        lineHeight: "18.75px",
-                        borderBottom: "2px solid #EEEFFB",
-                        transform: "rotate(0.36deg)",
-                      }}
-                    >
-                      Comfort Handy Craft
-                    </Typography>
-                    <span>
+              product.categoryLink.includes(latestProductLink) && (
+                <NextLink href={product.link} key={i}>
+                  <Grid item className={styles.latestProduct}>
+                    <div className={styles.latestProductImgContainer}>
+                      {product.sale && (
+                        <span className={styles.latestProductSaleImg}>
+                          <Sale />
+                        </span>
+                      )}
+                      <Image src={product.img} alt={product.title} />
+                    </div>
+                    <div className={styles.productText}>
                       <Typography
-                        variant="caption"
-                        style={{ fontFamily: "Josefin Sans" }}
+                        variant="body2"
                         className={classes.color151875}
-                      >
-                        ${product.price}
-                      </Typography>
-                      <Typography
-                        variant="overline"
                         style={{
-                          fontFamily: "Josefin Sans",
-                          textDecoration: "line-through",
+                          lineHeight: "18.75px",
+                          borderBottom: "2px solid #EEEFFB",
+                          transform: "rotate(0.36deg)",
                         }}
-                        color="secondary"
                       >
-                        ${product.orignalPrice}
+                        {product.title}
                       </Typography>
-                    </span>
-                  </div>
-                </Grid>
+                      <span>
+                        <Typography
+                          variant="caption"
+                          style={{ fontFamily: "Josefin Sans" }}
+                          className={classes.color151875}
+                        >
+                          ${product.price}
+                        </Typography>
+                        <Typography
+                          variant="overline"
+                          style={{
+                            fontFamily: "Josefin Sans",
+                            textDecoration: "line-through",
+                          }}
+                          color="secondary"
+                        >
+                          ${product.orignalPrice}
+                        </Typography>
+                      </span>
+                    </div>
+                  </Grid>
+                </NextLink>
               )
             );
           })}
