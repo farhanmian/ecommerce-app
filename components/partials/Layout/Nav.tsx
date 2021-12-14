@@ -13,7 +13,7 @@ import { User, Heart, AddToCart, SearchGlass } from "../../icons/icons";
 import { useRouter } from "next/dist/client/router";
 import NextLink from "next/link";
 
-const pagesLink = ["pages", "product", "shop", "contact"];
+const pagesLink = ["pages", "products", "contact"];
 
 const useStyles = makeStyles({
   navLink: {
@@ -81,11 +81,14 @@ export default function Nav() {
 
   const formSubmitHandler = (e: React.FormEvent) => {
     e.preventDefault();
-    const searchValue = searchInputRef.current?.value;
+    const searchValue = searchInputRef.current?.value
+      .replace(/\s/g, "-")
+      .toLocaleLowerCase();
     if (searchValue.trim().length < 1) {
       return;
     }
-    router.push(`/${searchValue}`);
+    router.push(`/products/${searchValue}`);
+    searchInputRef.current.value = "";
   };
 
   return (
@@ -219,7 +222,7 @@ export default function Nav() {
 
             {pagesLink.map((link) => {
               return (
-                <NextLink href={link} key={link}>
+                <NextLink href={`/${link}`} key={link}>
                   <Typography
                     variant="subtitle2"
                     className={classes.BottomNavLinkText}

@@ -1,9 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/dist/client/router";
-import { Typography, makeStyles, Select, MenuItem } from "@material-ui/core";
+import {
+  Typography,
+  makeStyles,
+  Select,
+  MenuItem,
+  Card,
+} from "@material-ui/core";
 import { Pagination } from "@mui/material";
-import Header from "../../components/partials/Header/Header";
-import styles from "../../styles/SearchResultPage.module.css";
+import Header from "../../../components/partials/Header/Header";
+import styles from "../../../styles/SearchResultPage.module.css";
 import Image from "next/image";
 import NextLink from "next/link";
 
@@ -15,9 +21,9 @@ import {
   Menu,
   Star,
   ZoomGlass,
-} from "../../components/icons/icons";
-import { storedData } from "../../data/allData";
-import FriendCompanies from "../../components/partials/FriendCompanies/FriendCompanies";
+} from "../../../components/icons/icons";
+import { storedData } from "../../../data/allData";
+import FriendCompanies from "../../../components/partials/FriendCompanies/FriendCompanies";
 
 const useStyles = makeStyles({
   color151875: {
@@ -49,17 +55,32 @@ const useStyles = makeStyles({
     textTransform: "capitalize",
     padding: "5px 10px",
   },
+  searchResultCard: {
+    boxShadow: "0px 2px 2px rgba(0,0,0,.2)",
+    transition: "all .3s",
+  },
+  productTitle: {
+    color: "#111C85",
+    marginBottom: 13,
+    fontSize: 18,
+    fontWeight: "bold",
+    lineHeight: "20px",
+    cursor: "pointer",
+    textTransform: "capitalize",
+  },
 });
 
 let isInitial = true;
 
-export default function Pages() {
+export default function ProductsList() {
   const classes = useStyles();
   const router = useRouter();
-  const searchQuery = router.query.searchResult;
   const [sortBy, setSortBy] = useState("best match");
   const [page, setPage] = useState(1);
   const stars = [1, 2, 3, 4, 5];
+  const query = router.query.searchResult;
+  const searchQuery = query && query.toString().replace(/-/g, " ");
+  console.log(searchQuery);
 
   useEffect(() => {
     if (isInitial) {
@@ -85,6 +106,7 @@ export default function Pages() {
     data.type.includes(`${searchQuery}`)
   );
   console.log(filteredData);
+  const pageCount = Math.ceil(filteredData.length / 10);
 
   return filteredData.length > 0 ? (
     <React.Fragment>
@@ -182,101 +204,98 @@ export default function Pages() {
         <div className={styles.searchResultsInnerContainer}>
           {filteredData.slice((page - 1) * 10, page * 10).map((product) => {
             return (
-              <div key={product.id} className={styles.searchResult}>
-                <NextLink href={product.link}>
+              <NextLink href={`${searchQuery}/${product.id}`}>
+                <Card
+                  key={product.id}
+                  className={`${styles.searchResult} ${classes.searchResultCard}`}
+                >
                   <div className={styles.searchResultImage}>
                     <Image src={product.img} alt="product img" />
                   </div>
-                </NextLink>
-                <div className={styles.searchResultText}>
-                  <NextLink href={product.link}>
+                  <div className={styles.searchResultText}>
                     <Typography
                       variant="subtitle1"
-                      style={{
-                        color: "#111C85",
-                        marginBottom: 13,
-                        fontSize: 18,
-                        fontWeight: "bold",
-                        lineHeight: "20px",
-                        cursor: "pointer",
-                      }}
+                      className={classes.productTitle}
                     >
                       {product.title.trim().length > 19
                         ? `${product.title.slice(0, 19)}...`
-                        : product.id}
+                        : product.title}
                     </Typography>
-                  </NextLink>
-                  <div className={styles.colorFulDotsContainer}>
-                    <span className={styles.colorFulDot} />
-                    <span className={styles.colorFulDot} />
-                    <span className={styles.colorFulDot} />
+                    <div className={styles.colorFulDotsContainer}>
+                      <span className={styles.colorFulDot} />
+                      <span className={styles.colorFulDot} />
+                      <span className={styles.colorFulDot} />
+                    </div>
+                    <span className={styles.searchResultPriceRating}>
+                      <Typography
+                        variant="caption"
+                        style={{
+                          lineHeight: "16.41px",
+                          color: "#111C85",
+                          marginRight: 9,
+                        }}
+                      >
+                        ${product.price}
+                      </Typography>
+                      <Typography
+                        variant="caption"
+                        style={{
+                          lineHeight: "16.41px",
+                          color: "#FF2AAA",
+                          textDecoration: "line-through",
+                          marginRight: 16,
+                        }}
+                      >
+                        ${product.orignalPrice}
+                      </Typography>
+                      <span>
+                        {stars.map((star) => {
+                          return (
+                            <Star
+                              key={star}
+                              color={
+                                star <= product.rating ? "#FFC416" : "#B2B2B2"
+                              }
+                            />
+                          );
+                        })}
+                        {/* <Star color="#B2B2B2" /> */}
+                      </span>
+                    </span>
+
+                    <Typography variant="body2" style={{ color: "#9295AA" }}>
+                      {product.text}
+                    </Typography>
+
+                    <span className={styles.searchResultIconContainer}>
+                      <span>
+                        <AddToCart />
+                      </span>
+                      <span>
+                        <Heart />
+                      </span>
+                      <span>
+                        <ZoomGlass />
+                      </span>
+                    </span>
                   </div>
-                  <span className={styles.searchResultPriceRating}>
-                    <Typography
-                      variant="caption"
-                      style={{
-                        lineHeight: "16.41px",
-                        color: "#111C85",
-                        marginRight: 9,
-                      }}
-                    >
-                      ${product.price}
-                    </Typography>
-                    <Typography
-                      variant="caption"
-                      style={{
-                        lineHeight: "16.41px",
-                        color: "#FF2AAA",
-                        textDecoration: "line-through",
-                        marginRight: 16,
-                      }}
-                    >
-                      ${product.orignalPrice}
-                    </Typography>
-                    <span>
-                      {stars.map((star) => {
-                        return (
-                          <Star
-                            key={star}
-                            color={
-                              star <= product.rating ? "#FFC416" : "#B2B2B2"
-                            }
-                          />
-                        );
-                      })}
-                      {/* <Star color="#B2B2B2" /> */}
-                    </span>
-                  </span>
-
-                  <Typography variant="body2" style={{ color: "#9295AA" }}>
-                    {product.text}
-                  </Typography>
-
-                  <span className={styles.searchResultIconContainer}>
-                    <span>
-                      <AddToCart />
-                    </span>
-                    <span>
-                      <Heart />
-                    </span>
-                    <span>
-                      <ZoomGlass />
-                    </span>
-                  </span>
-                </div>
-              </div>
+                </Card>
+              </NextLink>
             );
           })}
         </div>
-        <div className={styles.paginationContainer}>
-          <Pagination
-            count={Math.ceil(filteredData.length / 10)}
-            variant="outlined"
-            className={styles.pagination}
-            page={page}
-            onChange={pageChangeHandler}
-          />
-        </div>
+
+        {pageCount > 1 && (
+          <div className={styles.paginationContainer}>
+            <Pagination
+              count={pageCount}
+              variant="outlined"
+              className={styles.pagination}
+              page={page}
+              onChange={pageChangeHandler}
+            />
+          </div>
+        )}
       </section>
 
       <FriendCompanies />

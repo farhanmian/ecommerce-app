@@ -13,6 +13,7 @@
   justify-content: center;
   padding-bottom: 36px;
   position: relative;
+  margin-bottom: 129px; /* using 2 times of deafult margin = 129*2= 258+2 = 260px, 260/2 = 130px */
 }
 
 .textContainer {
@@ -67,6 +68,8 @@
   max-width: 1168px;
   margin: auto;
   text-align: center;
+  margin-top: 130px; /* using 2 times of deafult margin = 129*2= 258+2 = 260px, 260/2 = 130px */
+  margin-bottom: 70px; /* using 2 times of deafult margin = 71*2= 142+2 = 144px, 144/2 = 71-divider = 70px */
 }
 .featuredProductsContainer {
   display: flex;
@@ -215,10 +218,11 @@
 /*//////////////////////////////////////////////// Latest Products */
 
 .latestProducts {
-  max-width: 1164px;
+  max-width: 1154px;
   margin: auto;
   text-align: center;
-  margin-top: 71px;
+  margin-top: 71px; /* using 2 times of deafult margin = 71*2= 142+2 = 144px, 144/2 = 71px */
+  margin-bottom: 57px; /* using 2 times of deafult margin = 58*2= 116, 116/2 = 58, 58px-divider = 57px */
 }
 .latestProductsLinkContainer {
   max-width: 527px;
@@ -246,14 +250,6 @@
   transition: all 0.3s;
   cursor: pointer;
 }
-.latestProduct:hover {
-  width: 370px;
-  height: 314px;
-}
-
-.latestProduct:hover .latestProductImgContainer {
-  background-color: #fff;
-}
 
 .latestProductImgContainer {
   height: 269px;
@@ -262,8 +258,9 @@
   justify-content: center;
   align-items: center;
   background-color: #f7f7f7;
-  transition: all 0.2s;
+  transition: all 0.3s;
   position: relative;
+  backface-visibility: hidden;
 }
 .latestProductSaleImg {
   position: absolute;
@@ -271,6 +268,14 @@
   left: 18px;
   z-index: 99;
 }
+.latestProduct:hover .latestProductImgContainer {
+  background-color: #fff;
+}
+.latestProduct:hover .latestProductCard {
+  transform: scale(1.03);
+  box-shadow: 0px 5px 8px rgba(0, 0, 0, 0.12);
+}
+
 .productText {
   width: 100%;
   display: flex;
@@ -288,8 +293,8 @@
   max-width: 1164px;
   margin: auto;
   text-align: center;
-  margin-top: 58px;
-  margin-bottom: 135px;
+  margin-top: 58px; /* using 2 times of deafult margin = 58*2= 116, 116/2 = 58px */
+  margin-bottom: 101px; /* using 1.5 times of deafult margin = 135*1.5= 202.5 + 1.5 = 204 / 204/2 = 102px / 102px-divider = 101px */
 }
 
 .feature {
@@ -324,6 +329,8 @@
   padding: 14px 0;
   background-color: #f1f0ff;
   padding: 15px;
+  margin-top: 102px; /* using 1.5 times of deafult margin = 135*1.5= 202.5 + 1.5 = 204 / 204/2 = 102 */
+  margin-bottom: 99px; /* using 1.5 times of deafult margin = 132*1.5= 198 + 2 = 200 / 200/2 = 100 / 100px-divider = 99px */
 }
 .featureOfLatestTrendingInnerContainer {
   max-width: 1059px;
@@ -383,7 +390,8 @@
 /* trendingProduct: main container */
 .trendingProducts {
   text-align: center;
-  margin-top: 132px;
+  margin-top: 100px; /* using 1.5 times of deafult margin = 132*1.5= 198 + 2 = 200 , 200/2 = 100px */
+  margin-bottom: 95px; /* using 1.5 times of deafult margin = 128*1.5= 192 / 2 = 96 , 96px-divider = 95px */
 }
 .trendingProductsContainer {
   max-width: 1167px;
@@ -431,7 +439,7 @@
 .otherTrendingProduct {
   width: 420px;
   height: 270px;
-  margin-top: 39px;
+  margin-top: 40px;
   padding: 34px 25px;
   display: flex;
   justify-content: flex-start;
@@ -464,7 +472,7 @@
   width: 267px;
   height: 262px;
   margin-top: 44px;
-  margin-left: -5px;
+  margin-left: -4px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -508,8 +516,9 @@
 /*//////////////////////////////////////////////// Discount Item /////////  */
 
 .discountItemMainContainer {
-  margin-top: 126px;
+  margin-top: 96px; /* using 1.5 times of deafult margin = 128*1.5= 192 / 2 = 96px*/
   text-align: center;
+  margin-bottom: 59px; /* using 1.5 times of deafult margin = 80*1.5= 120 / 2 = 60 , 60px-divider = 59px */
 }
 .discountItemInnerContainer {
   max-width: 1214px;
@@ -554,7 +563,7 @@
   text-align: start;
 }
 .discountItemFeatures {
-  margin-bottom: 37px;
+  margin-bottom: 36px;
 }
 .discountItemFeature {
   width: 263px;
@@ -575,11 +584,12 @@
 /*///////////////////////////////////////// Top Categories section  */
 
 .topCategories {
-  margin-top: 79px;
+  margin-top: 60px; /* using 1.5 times of deafult margin = 80*1.5= 120 / 2 = 60px */
   text-align: center;
+  margin-bottom: 85px; /* footer margin top will be 86px/*/ /* using 1.5 times of deafult margin = 115*1.5= 172.5-.5=172px, 172px/2 = 86px, 86px-divider = 85px */
 }
 .topCategoriesInnerContainer {
-  max-width: 1194px;
+  max-width: 1196px;
   height: 398px;
   margin: auto;
   margin-top: 56px;

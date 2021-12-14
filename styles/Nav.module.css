@@ -61,6 +61,9 @@
 .navBottomLinksContainer > :not(:last-child) {
   margin-right: 35px;
 }
+.navBottomLinksContainer > :first-child {
+  margin-right: 21px;
+}
 
 .navBottomForm {
   max-width: 317px;

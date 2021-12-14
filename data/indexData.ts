@@ -339,4 +339,4 @@ export const topCategoriesItemData = [
     id: 12,
   },
 ];
-export const topCategoryBtnData = [1, 2, 3];
+export const topCategoryBtnData = ["1", "2", "3"];

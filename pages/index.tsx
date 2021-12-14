@@ -1,14 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import styles from "../styles/Home.module.css";
 import Image from "next/image";
 import NextLink from "next/link";
-import { Button, Typography, makeStyles } from "@material-ui/core";
+import { Button, Typography, makeStyles, Card } from "@material-ui/core";
 import { Grid } from "@mui/material";
 
 import lamp from "../assets/img/headerlamp.png";
 import couch from "../assets/img/headerCouch.png";
 import couch2 from "../assets/img/featureOfLatestTrending.png";
-import FriendCompanies from "../components/partials/FriendCompanies/FriendCompanies";
 
 import {
   ZoomGlass,
@@ -23,20 +22,61 @@ import {
   latestProductsLink,
   shopexFeaturesData,
   // latestProductsData,
-  trendingProductsData,
+  // trendingProductsData,
   trendingProductsOtherTrendingData,
   otherTrendingChairData,
   discountItemLink,
   discountItemData,
-  topCategoriesItemData,
+  // topCategoriesItemData,
   topCategoryBtnData,
 } from "../data/indexData";
 import { storedData } from "../data/allData";
+import Divider from "../components/partials/Divider/Divider";
 
 const useStyles = makeStyles({
-  darkPurple: {
-    color: "#1A0B5B",
+  headerBtn: {
+    padding: "16px 40px",
+    borderRadius: 2,
+    textTransform: "capitalize",
   },
+  latestProductCard: {
+    transition: "all .3s",
+    borderRadius: 2,
+    padding: 3,
+  },
+  uniqueFeatureOfLatestTrendingProductsBtn: {
+    padding: "14px 24px",
+    minWidth: 157,
+    borderRadius: 2,
+    marginRight: 19,
+    textTransform: "capitalize",
+    fontWeight: "bold",
+  },
+  btnEffect: {
+    "&:hover": {
+      boxShadow: "1px 5px 5px rgba(0,0,0,.12)",
+    },
+    "&:active": {
+      boxShadow: "none",
+    },
+  },
+  topCategoryBtn: {
+    backgroundColor: "#08D15F",
+    color: "#fff",
+    position: "absolute",
+    padding: "9px 18px",
+    "&:hover": {
+      boxShadow: "0px 3px 4px rgba(0,0,0,.12)",
+      backgroundColor: "#03B851",
+    },
+    "&:active": {
+      boxShadow: "none",
+    },
+  },
+  fontJosefinSans: {
+    fontFamily: "Josefin Sans",
+  },
+
   featuredProduct: {
     transition: "all .2s",
     "& > span": {
@@ -53,8 +93,12 @@ const useStyles = makeStyles({
     fontFamily: "lato",
     cursor: "pointer",
   },
+
   color151875: {
     color: "#151875",
+  },
+  darkPurple: {
+    color: "#1A0B5B",
   },
 });
 
@@ -69,7 +113,7 @@ export default function Home() {
   );
   const [discountItemActiveLink, setDiscountItemActiveLink] =
     useState("Wood Chair");
-  const [topCategoryActiveLink, setTopCategoryActiveLink] = useState(1);
+  const [topCategoryActiveLink, setTopCategoryActiveLink] = useState("1");
 
   /// filtering data
   const featuredProductData = storedData.filter((product) => {
@@ -77,6 +121,12 @@ export default function Home() {
   });
   const latestProductsData = storedData.filter((product) => {
     return product.category.includes("LatestProducts");
+  });
+  const trendingProductsData = storedData.filter((product) => {
+    return product.category.includes("TrendingProducts");
+  });
+  const topCategoriesItemData = storedData.filter((product) => {
+    return product.category.includes("TopCategories");
   });
 
   return (
@@ -100,7 +150,7 @@ export default function Home() {
             </Typography>
             <Typography
               variant="body2"
-              style={{ marginBottom: 27 }}
+              style={{ marginBottom: 28 }}
               color="primary"
             >
               Lorem ipsum dolor sit amet, consectetur adipiscing elit. Magna in
@@ -108,14 +158,14 @@ export default function Home() {
             </Typography>
 
             <Button
-              style={{ padding: "16px 40px", borderRadius: 2 }}
+              className={`${classes.headerBtn} ${classes.btnEffect}`}
               variant="contained"
               color="secondary"
               disableElevation
             >
               <Typography
                 variant="subtitle2"
-                style={{ fontFamily: "Josefin Sans" }}
+                className={classes.fontJosefinSans}
               >
                 Shop Now
               </Typography>
@@ -163,6 +213,7 @@ export default function Home() {
           />
         </div>
       </header>
+      <Divider />
 
       {/* featured product section */}
       <section className={styles.featuredProducts}>
@@ -174,7 +225,10 @@ export default function Home() {
           <div className={styles.featuredProductsInnerContainer}>
             {featuredProductData.map((product, i) => {
               return (
-                <NextLink key={i} href={product.link}>
+                <NextLink
+                  key={i}
+                  href={`products/${product.type[0]}/${product.id}`}
+                >
                   <div
                     className={`${styles.featuredProduct} ${classes.featuredProduct}`}
                   >
@@ -236,6 +290,7 @@ export default function Home() {
           </div>
         </div>
       </section>
+      <Divider />
 
       {/* latest product section */}
       <section className={styles.latestProducts}>
@@ -279,48 +334,54 @@ export default function Home() {
           {latestProductsData.map((product, i) => {
             return (
               product.categoryLink.includes(latestProductLink) && (
-                <NextLink href={product.link} key={i}>
+                <NextLink
+                  href={`products/${product.type[0]}/${product.id}`}
+                  key={i}
+                >
                   <Grid item className={styles.latestProduct}>
-                    <div className={styles.latestProductImgContainer}>
-                      {product.sale && (
-                        <span className={styles.latestProductSaleImg}>
-                          <Sale />
-                        </span>
-                      )}
-                      <Image src={product.img} alt={product.title} />
-                    </div>
-                    <div className={styles.productText}>
-                      <Typography
-                        variant="body2"
-                        className={classes.color151875}
-                        style={{
-                          lineHeight: "18.75px",
-                          borderBottom: "2px solid #EEEFFB",
-                          transform: "rotate(0.36deg)",
-                        }}
-                      >
-                        {product.title}
-                      </Typography>
-                      <span>
+                    <Card
+                      className={`${styles.latestProductCard} ${classes.latestProductCard}`}
+                    >
+                      <div className={styles.latestProductImgContainer}>
+                        {product.sale && (
+                          <span className={styles.latestProductSaleImg}>
+                            <Sale />
+                          </span>
+                        )}
+                        <Image src={product.img} alt={product.title} />
+                      </div>
+                      <div className={styles.productText}>
                         <Typography
-                          variant="caption"
-                          style={{ fontFamily: "Josefin Sans" }}
+                          variant="body2"
                           className={classes.color151875}
-                        >
-                          ${product.price}
-                        </Typography>
-                        <Typography
-                          variant="overline"
                           style={{
-                            fontFamily: "Josefin Sans",
-                            textDecoration: "line-through",
+                            lineHeight: "18.75px",
+                            transform: "rotate(0.36deg)",
                           }}
-                          color="secondary"
                         >
-                          ${product.orignalPrice}
+                          {product.title}
                         </Typography>
-                      </span>
-                    </div>
+                        <span>
+                          <Typography
+                            variant="caption"
+                            style={{ fontFamily: "Josefin Sans" }}
+                            className={classes.color151875}
+                          >
+                            ${product.price}
+                          </Typography>
+                          <Typography
+                            variant="overline"
+                            style={{
+                              fontFamily: "Josefin Sans",
+                              textDecoration: "line-through",
+                            }}
+                            color="secondary"
+                          >
+                            ${product.orignalPrice}
+                          </Typography>
+                        </span>
+                      </div>
+                    </Card>
                   </Grid>
                 </NextLink>
               )
@@ -328,6 +389,7 @@ export default function Home() {
           })}
         </Grid>
       </section>
+      <Divider />
 
       {/* feature shopex to offer section  */}
       <section className={styles.shopexFeatures}>
@@ -368,6 +430,7 @@ export default function Home() {
           })}
         </Grid>
       </section>
+      <Divider />
 
       {/* feature of latest and trending products */}
       <section className={styles.featureOfLatestTrendingProducts}>
@@ -433,13 +496,7 @@ export default function Home() {
             <div className={styles.featureOfLatestTrendingBtnAndPrice}>
               <Button
                 variant="contained"
-                style={{
-                  padding: "14px 24px",
-                  minWidth: 157,
-                  borderRadius: 0,
-                  marginRight: 19,
-                  textTransform: "capitalize",
-                }}
+                className={`${classes.btnEffect} ${classes.uniqueFeatureOfLatestTrendingProductsBtn}`}
                 color="secondary"
                 disableElevation
               >
@@ -452,10 +509,11 @@ export default function Home() {
                     lineHeight: "16.41px",
                     marginBottom: 3,
                     fontFamily: "Josefin Sans",
+                    fontWeight: 600,
                   }}
                   className={classes.color151875}
                 >
-                  B&B Italian Sofa{" "}
+                  B&B Italian Sofa
                 </Typography>
                 <Typography
                   variant="caption"
@@ -469,64 +527,66 @@ export default function Home() {
           </div>
         </div>
       </section>
+      <Divider />
 
       {/* trending products */}
       <section className={styles.trendingProducts}>
         <Typography
           variant="h2"
           className={classes.color151875}
-          style={{ marginBottom: 39 }}
+          style={{ marginBottom: 38 }}
         >
           Trending Products
         </Typography>
 
         <Grid
           container
-          columnGap="29px"
+          columnGap="28px"
           className={styles.trendingProductsContainer}
         >
           {trendingProductsData.map((product) => {
             return (
-              <Grid
-                item
+              <NextLink
                 key={product.id}
-                className={styles.mainTrendingProduct}
+                href={`/products/${product.type[0]}/${product.id}`}
               >
-                <div className={styles.mainTrendingProductImage}>
-                  <Image src={product.img} alt={product.title} />
-                </div>
-                <Typography
-                  variant="body2"
-                  style={{
-                    lineHeight: "25.6px",
-                    fontFamily: "lato",
-                    fontWeight: 700,
-                  }}
-                  className={classes.color151875}
-                >
-                  {product.title}
-                </Typography>
-                <span className={styles.mainTrendingProductPriceContainer}>
+                <Grid item className={styles.mainTrendingProduct}>
+                  <div className={styles.mainTrendingProductImage}>
+                    <Image src={product.img} alt={product.title} />
+                  </div>
                   <Typography
-                    variant="caption"
-                    style={{ fontFamily: "Josefin Sans" }}
+                    variant="body2"
+                    style={{
+                      lineHeight: "25.6px",
+                      fontFamily: "lato",
+                      fontWeight: 700,
+                    }}
                     className={classes.color151875}
                   >
-                    ${product.price.toFixed(2)}
+                    {product.title}
                   </Typography>
-                  <Typography
-                    variant="overline"
-                    style={{
-                      color: "#b9bad6",
-                      lineHeight: "12px",
-                      fontWeight: 400,
-                      textDecoration: "line-through",
-                    }}
-                  >
-                    ${product.orignalPrice.toFixed(2)}
-                  </Typography>
-                </span>
-              </Grid>
+                  <span className={styles.mainTrendingProductPriceContainer}>
+                    <Typography
+                      variant="caption"
+                      style={{ fontFamily: "Josefin Sans" }}
+                      className={classes.color151875}
+                    >
+                      ${product.price.toFixed(2)}
+                    </Typography>
+                    <Typography
+                      variant="overline"
+                      style={{
+                        color: "#b9bad6",
+                        lineHeight: "12px",
+                        fontWeight: 400,
+                        textDecoration: "line-through",
+                      }}
+                    >
+                      ${product.orignalPrice.toFixed(2)}
+                    </Typography>
+                  </span>
+                </Grid>
+              </NextLink>
             );
           })}
 
@@ -602,6 +662,7 @@ export default function Home() {
           </div>
         </Grid>
       </section>
+      <Divider />
 
       {/* discount item section */}
       <section className={styles.discountItemMainContainer}>
@@ -708,10 +769,11 @@ export default function Home() {
                         width: 200,
                         height: 57,
                         textTransform: "capitalize",
-                        borderRadius: 0,
+                        borderRadius: 2,
                         fontSize: 17,
                         lineHeight: "20px",
                       }}
+                      className={classes.btnEffect}
                       disableElevation
                     >
                       Shop Now
@@ -729,6 +791,7 @@ export default function Home() {
           })}
         </div>
       </section>
+      <Divider />
 
       {/* top categories section */}
       <section className={styles.topCategories}>
@@ -737,38 +800,36 @@ export default function Home() {
         </Typography>
         <Grid
           container
-          columnGap="39px"
+          columnGap="40px"
           className={styles.topCategoriesInnerContainer}
         >
           {topCategoriesItemData.map((product) => {
             return (
-              product.category === topCategoryActiveLink && (
+              product.categoryLink.includes(topCategoryActiveLink) && (
                 <Grid key={product.id} item className={styles.topCategory}>
                   <div className={styles.topCategoryImageContainer}>
                     <div className={styles.topCategoryImage}>
                       <Image src={product.img} alt={product.title} />
                     </div>
-                    <Button
-                      variant="contained"
-                      style={{
-                        backgroundColor: "#08D15F",
-                        color: "#fff",
-                        position: "absolute",
-                        padding: "9px 18px",
-                      }}
-                      className={styles.topCategoryImageBtn}
-                      disableElevation
+                    <NextLink
+                      href={`products/${product.type[0]}/${product.id}`}
                     >
-                      <Typography
-                        variant="overline"
-                        style={{
-                          textTransform: "capitalize",
-                          lineHeight: "12px",
-                        }}
+                      <Button
+                        variant="contained"
+                        className={`${styles.topCategoryImageBtn} ${classes.topCategoryBtn}`}
+                        disableElevation
                       >
-                        View Shop
-                      </Typography>
-                    </Button>
+                        <Typography
+                          variant="overline"
+                          style={{
+                            textTransform: "capitalize",
+                            lineHeight: "12px",
+                          }}
+                        >
+                          View Shop
+                        </Typography>
+                      </Button>
+                    </NextLink>
                   </div>
                   <Typography
                     variant="subtitle1"
@@ -812,9 +873,7 @@ export default function Home() {
           </div>
         </Grid>
       </section>
-
-      {/* friend companies */}
-      <FriendCompanies />
+      <Divider />
     </React.Fragment>
   );
 }
@@ -832,3 +891,7 @@ export default function Home() {
 /// featureshopex feature on hover transform: translateY(5px)
 
 /// unique features of latest & trending products width = 1050px & height = 550px
+
+//// utility classes material-ui
+
+/// material ui theme spacing =  default spacing = 8px
