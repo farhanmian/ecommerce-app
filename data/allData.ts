@@ -38,6 +38,7 @@ import smartwatch4 from "../assets/img/smart-watch4.png";
 import smartwatch5 from "../assets/img/smart-watch5.png";
 import smartwatch6 from "../assets/img/smart-watch6.png";
 import smartwatch7 from "../assets/img/smart-watch7.png";
+import smartwatch8 from "../assets/img/smart-watch8.png";
 import watch1 from "../assets/img/watch1.png";
 import watch2 from "../assets/img/watch2.png";
 import watch3 from "../assets/img/watch3.png";
@@ -872,6 +873,19 @@ export const storedData: StoredDataType[] = [
     id: 50,
     sale: false,
   },
+  {
+    img: smartwatch8,
+    title: "lorem Smart Watch",
+    price: 13,
+    orignalPrice: 20,
+    rating: 3,
+    text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Magna in est adipiscing in phasellus non in justo.",
+    type: ["digital watch", "watch", "smart watch"],
+    category: [],
+    categoryLink: [],
+    id: 76,
+    sale: false,
+  },
 
   {
     img: watch1,
@@ -1209,7 +1223,7 @@ export const storedData: StoredDataType[] = [
     sale: false,
   },
 ];
-// id 60 is taken
+// id 60 and 76 is taken
 
 export const specificItem = (id: number) => {
   return storedData.filter((item) => item.id === id).pop();
