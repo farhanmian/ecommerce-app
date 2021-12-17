@@ -439,7 +439,6 @@
 .otherTrendingProduct {
   width: 420px;
   height: 270px;
-  margin-top: 40px;
   padding: 34px 25px;
   display: flex;
   justify-content: flex-start;
@@ -471,7 +470,7 @@
 .otherTrendingChairContainer {
   width: 267px;
   height: 262px;
-  margin-top: 44px;
+  margin-top: 4px;
   margin-left: -4px;
   display: flex;
   flex-direction: column;

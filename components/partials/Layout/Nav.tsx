@@ -22,6 +22,7 @@ const useStyles = makeStyles({
   topNavLinkText: {
     lineHeight: "16px",
     fontWeight: 600,
+    color: "#F1F1F1",
   },
   BottomNavLinkText: {
     color: "#0D0E43",
@@ -118,17 +119,21 @@ export default function Nav() {
               </MenuItem>
             </Select>
           </FormControl>
-
-          <Link
-            color="textSecondary"
-            className={`${classes.navLink} ${styles.topNavLink}`}
-            style={{ marginRight: 19 }}
-          >
-            <Typography className={classes.topNavLinkText} variant="subtitle2">
-              Login
-            </Typography>
-            <User />
-          </Link>
+          <NextLink href="/login">
+            <span
+              color="textSecondary"
+              className={styles.topNavLink}
+              style={{ marginRight: 19 }}
+            >
+              <Typography
+                className={classes.topNavLinkText}
+                variant="subtitle2"
+              >
+                Login
+              </Typography>
+              <User />
+            </span>
+          </NextLink>
           <Link
             color="textSecondary"
             className={`${classes.navLink} ${styles.topNavLink}`}
@@ -220,12 +225,16 @@ export default function Nav() {
               </Select>
             </FormControl>
 
-            {pagesLink.map((link) => {
+            {pagesLink.map((link, i) => {
               return (
-                <NextLink href={`/${link}`} key={link}>
+                <NextLink href={`/${link}`} key={i}>
                   <Typography
                     variant="subtitle2"
-                    className={classes.BottomNavLinkText}
+                    className={`${classes.BottomNavLinkText} ${
+                      router.pathname.replace("/", "") === link
+                        ? classes.activeLink
+                        : ""
+                    }`}
                   >
                     {link}
                   </Typography>

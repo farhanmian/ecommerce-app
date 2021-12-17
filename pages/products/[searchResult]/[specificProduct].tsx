@@ -13,6 +13,7 @@ import {
   Star,
   Twitter,
 } from "../../../components/icons/icons";
+import Divider from "../../../components/partials/Divider/Divider";
 
 const specificProductDetailsData = [
   {
@@ -226,7 +227,9 @@ const SpecificProduct = () => {
               )}
             </div>
           </section>
+          <Divider />
 
+          {/* product details */}
           <section className={styles.productDetails}>
             <div className={styles.productDetailsInnerContainer}>
               <div className={styles.productDetailsLinkContainer}>

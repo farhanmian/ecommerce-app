@@ -1,6 +1,6 @@
 .specificProduct {
-  margin-top: 121px;
-  margin-bottom: 131px;
+  margin-top: 90px;
+  margin-bottom: 65px;
 }
 
 .specificProductInnerContainer {
@@ -91,6 +91,7 @@
   background-color: #f9f8fe;
   text-align: start;
   padding: 110px 0 122px 0;
+  margin-top: 66px;
 }
 .productDetailsInnerContainer {
   max-width: 1195px;

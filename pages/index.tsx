@@ -9,6 +9,10 @@ import lamp from "../assets/img/headerlamp.png";
 import couch from "../assets/img/headerCouch.png";
 import couch2 from "../assets/img/featureOfLatestTrending.png";
 
+// import { getFirestore } from "firebase/firestore";
+// import { collection, addDoc } from "firebase/firestore";
+// const db = getFirestore();
+
 import {
   ZoomGlass,
   AddToCart,
@@ -104,7 +108,17 @@ const useStyles = makeStyles({
 
 export default function Home() {
   // useEffect(() => {
-  //   window.scroll(0, 0);
+  // const sendData = async () => {
+  //   try {
+  //     const docRef = await addDoc(collection(db, "productData"), {
+  //       storedData,
+  //     });
+  //     console.log("Document written with ID: ", docRef.id);
+  //   } catch (e) {
+  //     console.error("Error adding document: ", e);
+  //   }
+  // };
+  // sendData();
   // }, []);
 
   const classes = useStyles();
@@ -542,6 +556,7 @@ export default function Home() {
         <Grid
           container
           columnGap="28px"
+          rowGap="40px"
           className={styles.trendingProductsContainer}
         >
           {trendingProductsData.map((product) => {

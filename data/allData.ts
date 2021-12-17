@@ -31,6 +31,8 @@ import headphone3 from "../assets/img/head-phone3.png";
 import headphone4 from "../assets/img/head-phone4.png";
 import headphone5 from "../assets/img/head-phone5.png";
 import headphone6 from "../assets/img/head-phone6.png";
+import headphone7 from "../assets/img/head-phone8.png";
+import headphone8 from "../assets/img/head-phone7.png";
 import smartwatch1 from "../assets/img/smart-watch1.png";
 import smartwatch2 from "../assets/img/smart-watch2.png";
 import smartwatch3 from "../assets/img/smart-watch3.png";
@@ -307,8 +309,8 @@ export const storedData: StoredDataType[] = [
   {
     img: chair10,
     title: "Cantilever chair",
-    price: 0,
-    orignalPrice: 70,
+    price: 5,
+    orignalPrice: 10,
     rating: 5,
     text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Magna in est adipiscing in phasellus non in justo.",
     type: ["chair", "chairs"],
@@ -320,8 +322,8 @@ export const storedData: StoredDataType[] = [
   {
     img: otherTrendingChair1,
     title: "Executive Seat chair",
-    price: 56,
-    orignalPrice: 70,
+    price: 28,
+    orignalPrice: 35,
     rating: 1,
     text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Magna in est adipiscing in phasellus non in justo.",
     type: ["chair", "chairs"],
@@ -333,8 +335,8 @@ export const storedData: StoredDataType[] = [
   {
     img: otherTrendingChair2,
     title: "Mini LCW Chair",
-    price: 56,
-    orignalPrice: 70,
+    price: 38,
+    orignalPrice: 43,
     rating: 2,
     text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Magna in est adipiscing in phasellus non in justo.",
     type: ["chair", "chairs"],
@@ -346,7 +348,7 @@ export const storedData: StoredDataType[] = [
   {
     img: otherTrendingChair3,
     title: "Executive Seat chair",
-    price: 56,
+    price: 62,
     orignalPrice: 70,
     rating: 1,
     text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Magna in est adipiscing in phasellus non in justo.",
@@ -451,7 +453,7 @@ export const storedData: StoredDataType[] = [
     img: couch3,
     title: "pink 1 Seater Sofa",
     price: 42,
-    orignalPrice: 76,
+    orignalPrice: 53,
     rating: 4,
     text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Magna in est adipiscing in phasellus non in justo.",
     type: ["pink sofa", "chair", "chairs", "couch", "sofa", "couch"],
@@ -670,7 +672,7 @@ export const storedData: StoredDataType[] = [
       "earphones",
       "earphone",
       "wireless headset",
-      "pink wireless headset",
+      "yellow wireless headset",
       "headset",
     ],
     category: [],
@@ -680,7 +682,7 @@ export const storedData: StoredDataType[] = [
   },
   {
     img: headphone3,
-    title: "red and black wireless headset",
+    title: "yellow and black wireless headset",
     price: 63,
     orignalPrice: 68,
     rating: 4,
@@ -692,7 +694,7 @@ export const storedData: StoredDataType[] = [
       "earphones",
       "earphone",
       "wireless headset",
-      "red wireless headset",
+      "yellow wireless headset",
       "headset",
     ],
     category: [],
@@ -765,6 +767,52 @@ export const storedData: StoredDataType[] = [
     id: 43,
     sale: false,
   },
+  {
+    img: headphone7,
+    title: "pink wired  headset",
+    price: 53,
+    orignalPrice: 68,
+    rating: 3,
+    text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Magna in est adipiscing in phasellus non in justo.",
+    type: [
+      "head phone",
+      "headphone",
+      "headphones",
+      "earphones",
+      "earphone",
+      "wired  headset",
+      "headset",
+      "pink headset",
+      "pinkheadset",
+    ],
+    category: [],
+    categoryLink: [],
+    id: 77,
+    sale: false,
+  },
+  {
+    img: headphone8,
+    title: "sony wireless headset",
+    price: 53,
+    orignalPrice: 68,
+    rating: 3,
+    text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Magna in est adipiscing in phasellus non in justo.",
+    type: [
+      "head phone",
+      "headphone",
+      "headphones",
+      "earphones",
+      "earphone",
+      "wireless headset",
+      "headset",
+      "black headset",
+      "blackheadset",
+    ],
+    category: [],
+    categoryLink: [],
+    id: 78,
+    sale: false,
+  },
 
   {
     img: smartwatch1,
@@ -815,7 +863,7 @@ export const storedData: StoredDataType[] = [
 
   {
     img: smartwatch4,
-    title: "black smart band watch",
+    title: "2 black smart band watch",
     price: 23,
     orignalPrice: 28,
     rating: 3,
@@ -1223,7 +1271,7 @@ export const storedData: StoredDataType[] = [
     sale: false,
   },
 ];
-// id 60 and 76 is taken
+// id 60 and 76, 77 is taken
 
 export const specificItem = (id: number) => {
   return storedData.filter((item) => item.id === id).pop();
