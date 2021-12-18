@@ -10,12 +10,16 @@ import Divider from "../components/partials/Divider/Divider";
 import Header from "../components/partials/Header/Header";
 import styles from "../styles/Login.module.css";
 
+import { getFirestore } from "firebase/firestore";
+import { collection, addDoc } from "firebase/firestore";
 import {
   getAuth,
-  // createUserWithEmailAndPassword,
+  createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
-  onAuthStateChanged,
 } from "firebase/auth";
+import Loading from "../components/partials/Loading/Loading";
+
+const db = getFirestore();
 const auth = getAuth();
 
 const useStyles = makeStyles({
@@ -47,7 +51,9 @@ const useStyles = makeStyles({
     },
   },
   signinBtn: {
-    padding: "14px 190px",
+    width: 432,
+    minHeight: 47,
+    maxHeight: 47,
     textTransform: "capitalize",
     marginTop: 23,
     borderRadius: 3,
@@ -70,79 +76,123 @@ const useStyles = makeStyles({
     transition: "all .3s",
     marginBottom: 10,
   },
+  usernameField: {
+    marginBottom: 32,
+  },
+  emailField: {
+    marginBottom: 32,
+  },
 });
 
 export default function login() {
   const classes = useStyles();
+  const [haveAccount, setHaveAccount] = useState(true);
   const emailInputRef = useRef<HTMLInputElement>(null);
   const passwordInputRef = useRef<HTMLInputElement>(null);
-  const [userInfo, setUserInfo] = useState(null);
+  const usernameInputRef = useRef<HTMLInputElement>(null);
   const [error, setError] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
-  // checking if the user was logged in
+  const clearInputs = () => {
+    emailInputRef.current.value = "";
+    passwordInputRef.current.value = "";
+  };
+
   useEffect(() => {
-    const getLoggedInUser = () => {
-      onAuthStateChanged(auth, (user) => {
-        if (user) {
-          // User is signed in, see docs for a list of available properties
-          // https://firebase.google.com/docs/reference/js/firebase.User
-          // const uid = user.uid;
-          setUserInfo(user);
-          // ...
-        } else {
-          // User is signed out
-          console.log("user is signed out");
-          // ...
-        }
-      });
-    };
-    getLoggedInUser();
-  }, []);
+    clearInputs();
+    setError(null);
+  }, [haveAccount]);
 
   const formSubmitHandler = (e: React.FormEvent) => {
     e.preventDefault();
+    if (isLoading) {
+      return;
+    }
+
     const email = emailInputRef.current?.value;
     const password = passwordInputRef.current?.value;
+    const username = usernameInputRef.current?.value;
 
     const signIn = () => {
+      setIsLoading(true);
       signInWithEmailAndPassword(auth, email, password)
-        .then((userCredential) => {
+        .then(() => {
           // Signed in
-          const user = userCredential.user;
-          setUserInfo(user);
+          // const user = userCredential.user;
           setError(null);
-
-          emailInputRef.current.value = "";
-          passwordInputRef.current.value = "";
+          setIsLoading(false);
+          clearInputs();
           // ...
         })
         .catch((error) => {
-          const errorCode = error.code;
+          // const errorCode = error.code;
           const errorMessage: string = error.message;
           const message = errorMessage
             .replace("Firebase: Error (auth/", "")
             .replace(")", "")
             .replace(/-/g, " ");
           setError(message);
+          setIsLoading(false);
 
           passwordInputRef.current.value = "";
           if (message === "wrong password.") return;
           emailInputRef.current.value = "";
         });
     };
-    signIn();
+
+    const createAccount = () => {
+      setIsLoading(true);
+      createUserWithEmailAndPassword(auth, email, password)
+        .then(() => {
+          // Signed in
+          // const user = userCredential.user; //
+          clearInputs();
+          usernameInputRef.current.value = "";
+          setIsLoading(false);
+          // ...
+        })
+        .catch((error) => {
+          const errorMessage: string = error.message;
+          const message = errorMessage
+            .replace("Firebase: Error (auth/", "")
+            .replace(/-/g, " ")
+            .replace(")", "");
+          setError(message);
+          setIsLoading(false);
+          clearInputs();
+          usernameInputRef.current.value = "";
+
+          // ..
+        });
+
+      const sendData = async () => {
+        try {
+          const docRef = await addDoc(collection(db, "users"), {
+            name: username,
+            email: email,
+          });
+          console.log("Document written with ID: ", docRef.id);
+        } catch (e) {
+          console.error("Error adding document: ", e);
+        }
+      };
+      sendData();
+    };
+
+    haveAccount ? signIn() : createAccount();
   };
-  console.log(userInfo);
-  console.log(error);
 
   return (
     <React.Fragment>
-      <Header heading="My Account" path="My Account" />
+      <Header
+        heading={haveAccount ? "Login" : "SignUp"}
+        path={haveAccount ? "Login" : "SignUp"}
+      />
 
       <section className={styles.login}>
         <div className={styles.innerContainer}>
           <Typography variant="h5" className={classes.heading}>
-            Login
+            {haveAccount ? "Login" : "SignUp"}
           </Typography>
 
           {error && (
@@ -151,14 +201,28 @@ export default function login() {
             </Typography>
           )}
           <Typography variant="subtitle2" className={classes.logintext}>
-            Please login using account detail bellow.
+            Please {haveAccount ? "login" : "signup"} using account detail
+            bellow.
           </Typography>
           <form onSubmit={formSubmitHandler} className={styles.form}>
+            {!haveAccount && (
+              <TextField
+                type="text"
+                size="small"
+                inputRef={usernameInputRef}
+                className={`${classes.textField} ${classes.usernameField}`}
+                label="Username"
+                variant="outlined"
+                required
+                autoFocus
+                error={error ? true : false}
+              />
+            )}
             <TextField
               type="email"
               size="small"
               inputRef={emailInputRef}
-              className={classes.textField}
+              className={`${classes.textField} ${classes.emailField}`}
               label="Email Address"
               variant="outlined"
               required
@@ -175,9 +239,11 @@ export default function login() {
               error={error ? true : false}
             />
 
-            <Link className={`${classes.logintext} ${classes.forgotPass}`}>
-              Forgot your password?
-            </Link>
+            {haveAccount && (
+              <Link className={`${classes.logintext} ${classes.forgotPass}`}>
+                Forgot your password?
+              </Link>
+            )}
 
             <Button
               type="submit"
@@ -185,17 +251,31 @@ export default function login() {
               color="secondary"
               className={classes.signinBtn}
               disableElevation
+              disabled={isLoading ? true : false}
             >
-              <Typography
-                className={classes.logintext}
-                style={{ color: "#fff", fontWeight: 700 }}
-              >
-                Sign In
-              </Typography>
+              {!isLoading ? (
+                <Typography
+                  className={classes.logintext}
+                  style={{ color: "#fff", fontWeight: 700 }}
+                >
+                  Sign {haveAccount ? "In" : "Up"}
+                </Typography>
+              ) : (
+                <Loading width={25} color="#111111" />
+              )}
             </Button>
           </form>
-          <Link className={classes.logintext} style={{ cursor: "pointer" }}>
-            Don't have an Account? Create account
+
+          <Link
+            className={classes.logintext}
+            style={{ cursor: "pointer" }}
+            onClick={() => {
+              setHaveAccount((prev) => !prev);
+            }}
+          >
+            {haveAccount
+              ? "Don't have an Account? Create account"
+              : "Already a member? Login"}
           </Link>
         </div>
       </section>

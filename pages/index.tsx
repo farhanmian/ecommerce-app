@@ -9,10 +9,6 @@ import lamp from "../assets/img/headerlamp.png";
 import couch from "../assets/img/headerCouch.png";
 import couch2 from "../assets/img/featureOfLatestTrending.png";
 
-// import { getFirestore } from "firebase/firestore";
-// import { collection, addDoc } from "firebase/firestore";
-// const db = getFirestore();
-
 import {
   ZoomGlass,
   AddToCart,
@@ -36,6 +32,7 @@ import {
 } from "../data/indexData";
 import { storedData } from "../data/allData";
 import Divider from "../components/partials/Divider/Divider";
+import { useAppContext } from "../store/context/appContext";
 
 const useStyles = makeStyles({
   headerBtn: {
@@ -106,20 +103,9 @@ const useStyles = makeStyles({
   },
 });
 
-export default function Home() {
-  // useEffect(() => {
-  // const sendData = async () => {
-  //   try {
-  //     const docRef = await addDoc(collection(db, "productData"), {
-  //       storedData,
-  //     });
-  //     console.log("Document written with ID: ", docRef.id);
-  //   } catch (e) {
-  //     console.error("Error adding document: ", e);
-  //   }
-  // };
-  // sendData();
-  // }, []);
+const Home = () => {
+  const test = useAppContext();
+  console.log(test);
 
   const classes = useStyles();
   const [latestProductLink, setLatestProductLink] = useState(
@@ -891,7 +877,9 @@ export default function Home() {
       <Divider />
     </React.Fragment>
   );
-}
+};
+
+export default Home;
 
 /// full lamp img size = 387px
 /// overflow lamp img = 82px

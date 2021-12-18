@@ -1,0 +1,17 @@
+.profile {
+  margin-top: 60px;
+}
+.profileInnerContainer {
+  width: 800px;
+  min-height: 500px;
+  margin: auto;
+  background-color: #f6f5ff;
+}
+
+.profileDataField {
+  text-transform: capitalize;
+}
+
+.profileInnerContainer > :not(:last-child) {
+  margin-bottom: 70px;
+}

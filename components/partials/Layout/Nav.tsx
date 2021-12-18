@@ -1,7 +1,6 @@
 import React, { useRef } from "react";
 import styles from "../../../styles/Nav.module.css";
 import {
-  Link,
   Typography,
   makeStyles,
   Select,
@@ -12,13 +11,12 @@ import { FormControl } from "@mui/material";
 import { User, Heart, AddToCart, SearchGlass } from "../../icons/icons";
 import { useRouter } from "next/dist/client/router";
 import NextLink from "next/link";
+import { useAppContext } from "../../../store/context/appContext";
+import Loading from "../Loading/Loading";
 
 const pagesLink = ["pages", "products", "contact"];
 
 const useStyles = makeStyles({
-  navLink: {
-    cursor: "pointer",
-  },
   topNavLinkText: {
     lineHeight: "16px",
     fontWeight: 600,
@@ -67,6 +65,7 @@ const useStyles = makeStyles({
 export default function Nav() {
   const searchInputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
+  const loggedInUser = useAppContext();
 
   const classes = useStyles();
 
@@ -119,38 +118,48 @@ export default function Nav() {
               </MenuItem>
             </Select>
           </FormControl>
-          <NextLink href="/login">
+          <NextLink href={!loggedInUser.userInfo ? "/login" : "/profile"}>
             <span
               color="textSecondary"
               className={styles.topNavLink}
               style={{ marginRight: 19 }}
             >
+              {!loggedInUser.accountLoading ? (
+                <React.Fragment>
+                  <Typography
+                    className={classes.topNavLinkText}
+                    variant="subtitle2"
+                  >
+                    {!loggedInUser.userInfo ? "Login" : "Account"}
+                  </Typography>
+                  <User />
+                </React.Fragment>
+              ) : (
+                <Loading width={15} color="#f1f1f1" />
+              )}
+            </span>
+          </NextLink>
+          <NextLink href="#">
+            <span
+              color="textSecondary"
+              className={styles.topNavLink}
+              style={{ marginRight: 29.83 }}
+            >
               <Typography
                 className={classes.topNavLinkText}
                 variant="subtitle2"
               >
-                Login
+                Wishlist
               </Typography>
-              <User />
+              <Heart />
             </span>
           </NextLink>
-          <Link
-            color="textSecondary"
-            className={`${classes.navLink} ${styles.topNavLink}`}
-            style={{ marginRight: 29.83 }}
-          >
-            <Typography className={classes.topNavLinkText} variant="subtitle2">
-              Wishlist
-            </Typography>
-            <Heart />
-          </Link>
 
-          <Link
-            color="textSecondary"
-            className={`${classes.navLink} ${styles.topNavLink}`}
-          >
-            <AddToCart />
-          </Link>
+          <NextLink href="#">
+            <span color="textSecondary" className={styles.topNavLink}>
+              <AddToCart />
+            </span>
+          </NextLink>
         </div>
       </div>
 
@@ -234,7 +243,8 @@ export default function Nav() {
                       router.pathname.replace("/", "") === link
                         ? classes.activeLink
                         : ""
-                    }`}
+                    }
+                      `}
                   >
                     {link}
                   </Typography>

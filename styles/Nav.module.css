@@ -28,6 +28,10 @@
   align-items: center;
   line-height: "16px";
   font-weight: 600;
+  cursor: pointer;
+}
+.topNavLink:hover {
+  text-decoration: underline 1px #f1f1f1;
 }
 
 .topNavLink > :first-child {
