@@ -1,3 +1,9 @@
+import React, { useEffect, useRef, useState } from "react";
+import Divider from "../components/partials/Divider/Divider";
+import Header from "../components/partials/Header/Header";
+import styles from "../styles/Login.module.css";
+import Loading from "../components/partials/Loading/Loading";
+import { useRouter } from "next/dist/client/router";
 import {
   Typography,
   makeStyles,
@@ -5,10 +11,6 @@ import {
   Link,
   Button,
 } from "@material-ui/core";
-import React, { useEffect, useRef, useState } from "react";
-import Divider from "../components/partials/Divider/Divider";
-import Header from "../components/partials/Header/Header";
-import styles from "../styles/Login.module.css";
 
 import { getFirestore } from "firebase/firestore";
 import { collection, addDoc } from "firebase/firestore";
@@ -17,7 +19,6 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
 } from "firebase/auth";
-import Loading from "../components/partials/Loading/Loading";
 
 const db = getFirestore();
 const auth = getAuth();
@@ -86,6 +87,7 @@ const useStyles = makeStyles({
 
 export default function login() {
   const classes = useStyles();
+  const router = useRouter();
   const [haveAccount, setHaveAccount] = useState(true);
   const emailInputRef = useRef<HTMLInputElement>(null);
   const passwordInputRef = useRef<HTMLInputElement>(null);
@@ -119,6 +121,7 @@ export default function login() {
         .then(() => {
           // Signed in
           // const user = userCredential.user;
+          router.push("/");
           setError(null);
           setIsLoading(false);
           clearInputs();
@@ -146,6 +149,7 @@ export default function login() {
         .then(() => {
           // Signed in
           // const user = userCredential.user; //
+          router.push("/");
           clearInputs();
           usernameInputRef.current.value = "";
           setIsLoading(false);
