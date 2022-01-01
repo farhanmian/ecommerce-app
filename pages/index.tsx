@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "../styles/Home.module.css";
 import Image from "next/image";
 import NextLink from "next/link";
@@ -40,6 +40,10 @@ const useStyles = makeStyles({
     borderRadius: 2,
     textTransform: "capitalize",
   },
+  featuredProductViewBtnText: {
+    lineHeight: "12px",
+    textTransform: "capitalize",
+  },
   latestProductCard: {
     transition: "all .3s",
     borderRadius: 2,
@@ -61,11 +65,16 @@ const useStyles = makeStyles({
       boxShadow: "none",
     },
   },
-  topCategoryBtn: {
+  greenBtn: {
+    maxWidth: 94,
+    minWidth: 94,
+    minHeight: 29,
+    padding: 0,
+    borderRadius: 2,
     backgroundColor: "#08D15F",
     color: "#fff",
     position: "absolute",
-    padding: "9px 18px",
+    transition: "all .2s",
     "&:hover": {
       boxShadow: "0px 3px 4px rgba(0,0,0,.12)",
       backgroundColor: "#03B851",
@@ -94,6 +103,11 @@ const useStyles = makeStyles({
     fontFamily: "lato",
     cursor: "pointer",
   },
+  latestProductPrice: {
+    fontFamily: "Josefin Sans",
+    lineHeight: "16px",
+    marginRight: 8.57,
+  },
 
   color151875: {
     color: "#151875",
@@ -101,11 +115,20 @@ const useStyles = makeStyles({
   darkPurple: {
     color: "#1A0B5B",
   },
+  displayFlex: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+  },
 });
 
 const Home = () => {
-  const test = useAppContext();
-  console.log(test);
+  const { currencyType } = useAppContext();
+  const [currency, setCurrency] = useState(0);
+
+  useEffect(() => {
+    setCurrency(currencyType === "usd" ? 1 : 75);
+  }, [currencyType]);
 
   const classes = useStyles();
   const [latestProductLink, setLatestProductLink] = useState(
@@ -146,7 +169,7 @@ const Home = () => {
               Best Furniture For Your Castle....
             </Typography>
             <Typography variant="h1" style={{ marginBottom: 12 }}>
-              New Furniture Collection Trends in 2021
+              New Furniture Collection Trends in 2022
             </Typography>
             <Typography
               variant="body2"
@@ -225,57 +248,73 @@ const Home = () => {
           <div className={styles.featuredProductsInnerContainer}>
             {featuredProductData.map((product, i) => {
               return (
-                <NextLink
+                <div
                   key={i}
-                  href={`products/${product.type[0]}/${product.id}`}
+                  className={`${styles.featuredProduct} ${classes.featuredProduct}`}
                 >
-                  <div
-                    className={`${styles.featuredProduct} ${classes.featuredProduct}`}
-                  >
-                    <div className={styles.featuredProductIconContainer}>
-                      <div
-                        className={`${styles.featuredProductIcon} ${styles.addToCart}`}
-                      >
-                        <AddToCart />
-                      </div>
-                      <div className={styles.featuredProductIcon}>
-                        <Heart />
-                      </div>
-                      <div className={styles.featuredProductIcon}>
-                        <ZoomGlass />
-                      </div>
-                    </div>
-                    <div className={styles.featuredProductImgContainer}>
-                      <Image src={product.img} alt={product.title} />
-                    </div>
-                    <Typography
-                      variant="subtitle1"
-                      color="secondary"
-                      style={{ lineHeight: "21.6px", fontWeight: 700 }}
-                    >
-                      {product.title}
-                    </Typography>
-                    <div className={styles.productImageBtnContainer}>
-                      <span className={styles.productImgBtn1} />
-                      <span className={styles.productImgBtn2} />
-                      <span className={styles.productImgBtn3} />
-                    </div>
-                    <Typography
-                      variant="caption"
-                      style={{ lineHeight: "16.41px" }}
-                    >
-                      Code - Y523201
-                    </Typography>
-                    <Typography
-                      variant="caption"
-                      style={{
-                        lineHeight: "16.41px",
-                      }}
-                    >
-                      ${product.price}
-                    </Typography>
+                  <div className={styles.featuredProductIconContainer}>
+                    <span className={styles.featuredProductIcon}>
+                      <AddToCart />
+                    </span>
+                    <span className={styles.featuredProductIcon}>
+                      <Heart />
+                    </span>
+                    <span className={styles.featuredProductIcon}>
+                      <ZoomGlass />
+                    </span>
                   </div>
-                </NextLink>
+                  <div className={styles.featuredProductImgContainer}>
+                    <Image src={product.img} alt={product.title} />
+                    <NextLink
+                      href={`/products/${product.type[0]}/${product.id}`}
+                    >
+                      <Button
+                        variant="contained"
+                        className={`${styles.featuredProductViewBtn} ${classes.greenBtn}`}
+                        disableElevation
+                      >
+                        <Typography
+                          variant="overline"
+                          className={classes.featuredProductViewBtnText}
+                        >
+                          View Details
+                        </Typography>
+                      </Button>
+                    </NextLink>
+                  </div>
+                  <Typography
+                    variant="subtitle1"
+                    color="secondary"
+                    style={{ lineHeight: "21.6px", fontWeight: 700 }}
+                  >
+                    {product.title}
+                  </Typography>
+                  <div className={styles.productImageBtnContainer}>
+                    <span className={styles.productImgBtn1} />
+                    <span className={styles.productImgBtn2} />
+                    <span className={styles.productImgBtn3} />
+                  </div>
+                  <Typography
+                    variant="caption"
+                    style={{ lineHeight: "16.41px" }}
+                  >
+                    Code - Y523201
+                  </Typography>
+                  <Typography
+                    variant="caption"
+                    style={{
+                      lineHeight: "16.41px",
+                    }}
+                    className={classes.displayFlex}
+                  >
+                    {currency === 1 ? (
+                      <React.Fragment>&#36;</React.Fragment> // dollar
+                    ) : (
+                      <React.Fragment>&#8377;</React.Fragment> // rupee
+                    )}
+                    {(product.price * currency).toFixed(2)}
+                  </Typography>
+                </div>
               );
             })}
           </div>
@@ -361,13 +400,17 @@ const Home = () => {
                         >
                           {product.title}
                         </Typography>
-                        <span>
+                        <span className={styles.latestProductsPriceContainer}>
                           <Typography
                             variant="caption"
-                            style={{ fontFamily: "Josefin Sans" }}
-                            className={classes.color151875}
+                            className={`${classes.latestProductPrice} ${classes.displayFlex} ${classes.color151875}`}
                           >
-                            ${product.price}
+                            {currency === 1 ? (
+                              <React.Fragment>&#36;</React.Fragment> // dollar
+                            ) : (
+                              <React.Fragment>&#8377;</React.Fragment> // rupee
+                            )}
+                            {product.price * currency}
                           </Typography>
                           <Typography
                             variant="overline"
@@ -375,9 +418,15 @@ const Home = () => {
                               fontFamily: "Josefin Sans",
                               textDecoration: "line-through",
                             }}
+                            className={classes.displayFlex}
                             color="secondary"
                           >
-                            ${product.orignalPrice}
+                            {currency === 1 ? (
+                              <React.Fragment>&#36;</React.Fragment> // dollar
+                            ) : (
+                              <React.Fragment>&#8377;</React.Fragment> // rupee
+                            )}
+                            {product.orignalPrice}
                           </Typography>
                         </span>
                       </div>
@@ -518,9 +567,14 @@ const Home = () => {
                 <Typography
                   variant="caption"
                   style={{ lineHeight: "16.8px" }}
-                  className={classes.color151875}
+                  className={`${classes.displayFlex} ${classes.color151875}`}
                 >
-                  $32.00
+                  {currency === 1 ? (
+                    <React.Fragment>&#36;</React.Fragment> // dollar
+                  ) : (
+                    <React.Fragment>&#8377;</React.Fragment> // rupee
+                  )}
+                  {(32 * currency).toFixed(2)}
                 </Typography>
               </span>
             </div>
@@ -566,13 +620,20 @@ const Home = () => {
                   >
                     {product.title}
                   </Typography>
-                  <span className={styles.mainTrendingProductPriceContainer}>
+                  <span
+                    className={`${classes.displayFlex} ${styles.mainTrendingProductPriceContainer}`}
+                  >
                     <Typography
                       variant="caption"
                       style={{ fontFamily: "Josefin Sans" }}
-                      className={classes.color151875}
+                      className={`${classes.displayFlex} ${classes.color151875}`}
                     >
-                      ${product.price.toFixed(2)}
+                      {currency === 1 ? (
+                        <React.Fragment>&#36;</React.Fragment> // dollar
+                      ) : (
+                        <React.Fragment>&#8377;</React.Fragment> // rupee
+                      )}
+                      {(product.price * currency).toFixed(2)}
                     </Typography>
                     <Typography
                       variant="overline"
@@ -583,7 +644,7 @@ const Home = () => {
                         textDecoration: "line-through",
                       }}
                     >
-                      ${product.orignalPrice.toFixed(2)}
+                      ${(product.orignalPrice * currency).toFixed(2)}
                     </Typography>
                   </span>
                 </Grid>
@@ -652,9 +713,14 @@ const Home = () => {
                         lineHeight: "12px",
                         fontWeight: 400,
                       }}
-                      className={classes.color151875}
+                      className={`${classes.displayFlex} ${classes.color151875}`}
                     >
-                      ${product.price.toFixed(2)}
+                      {currency === 1 ? (
+                        <React.Fragment>&#36;</React.Fragment> // dollar
+                      ) : (
+                        <React.Fragment>&#8377;</React.Fragment> // rupee
+                      )}
+                      {(product.price * currency).toFixed(2)}
                     </Typography>
                   </div>
                 </div>
@@ -817,7 +883,7 @@ const Home = () => {
                     >
                       <Button
                         variant="contained"
-                        className={`${styles.topCategoryImageBtn} ${classes.topCategoryBtn}`}
+                        className={`${styles.topCategoryImageBtn} ${classes.greenBtn}`}
                         disableElevation
                       >
                         <Typography
@@ -846,9 +912,14 @@ const Home = () => {
                   <Typography
                     variant="subtitle2"
                     style={{ lineHeight: "16px", fontFamily: "Josefin Sans" }}
-                    className={classes.color151875}
+                    className={`${classes.displayFlex} ${classes.color151875}`}
                   >
-                    {product.price}
+                    {currency === 1 ? (
+                      <React.Fragment>&#36;</React.Fragment> // dollar
+                    ) : (
+                      <React.Fragment>&#8377;</React.Fragment> // rupee
+                    )}
+                    {product.price * currency}
                   </Typography>
                 </Grid>
               )
@@ -898,3 +969,18 @@ export default Home;
 //// utility classes material-ui
 
 /// material ui theme spacing =  default spacing = 8px
+
+/*
+
+
+#!/bin/sh
+if ! head -1 "$1" | grep -qE "^(feat|fix|ci|chore|docs|test|style|refactor|perf|build|revert)(\(.+?\))?: .{1,}$"; then
+    echo "Aborting commit. Your commit message is invalid." >&2
+    exit 1
+fi
+if ! head -1 "$1" | grep -qE "^.{1,88}$"; then
+    echo "Aborting commit. Your commit message is too long." >&2
+    exit 1
+fi
+
+*/

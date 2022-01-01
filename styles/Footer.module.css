@@ -22,7 +22,7 @@
   height: 44px;
   padding: 3px 2px;
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
   margin-bottom: 25px;
   background-color: #fff;

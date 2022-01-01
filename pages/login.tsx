@@ -174,6 +174,7 @@ export default function login() {
           const docRef = await addDoc(collection(db, "users"), {
             name: username,
             email: email,
+            currency: "usd",
           });
           console.log("Document written with ID: ", docRef.id);
         } catch (e) {

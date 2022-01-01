@@ -27,6 +27,7 @@
 
 .userInfoContainer {
   width: max-content;
+  min-width: 395px;
   position: relative;
 }
 .userInfoContainer > :not(:last-child) {
@@ -67,7 +68,15 @@
 
 /*//////////////// user change password */
 
-.userChangePasswordContainer {
+.userOptionsContainer {
+  width: max-content;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.changePasswordContainer {
+  text-align: center;
   width: max-content;
 }
 
@@ -81,4 +90,17 @@
 
 .changePasswordForm > :not(:last-child) {
   margin-bottom: 50px;
+}
+
+.userOptionsBtnContainer {
+  /* margin-top: 50px; */
+  padding: 20px 30px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  /* align-items: center; */
+}
+
+.userOptionsBtnContainer > :not(:last-child) {
+  margin-bottom: 20px;
 }

@@ -19,7 +19,7 @@ export default function Products() {
           rowGap="81px"
           className={styles.productsContainer}
         >
-          {productData.map((product, i) => {
+          {productData.map((product) => {
             return (
               <GridProduct
                 key={product.id}

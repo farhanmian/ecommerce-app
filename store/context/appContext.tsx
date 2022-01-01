@@ -18,11 +18,20 @@ import { getAuth, onAuthStateChanged } from "firebase/auth";
 const db = getFirestore();
 const auth = getAuth();
 
-const AppContext = createContext({ userInfo: null, accountLoading: true });
+const AppContext = createContext({
+  userInfo: null,
+  accountLoading: true,
+  currencyType: "usd",
+  setCurrencyType: null,
+  cartLength: null,
+  setCartLength: null,
+});
 
 export const AppWrapper = ({ children }) => {
   const [userInfo, setUserInfo] = useState(null);
   const [accountLoading, setAccountLoading] = useState(true);
+  const [currencyType, setCurrencyType] = useState("usd");
+  const [cartLength, setCartLength] = useState(null);
 
   // checking if the user was logged in and fetching his data
   useEffect(() => {
@@ -43,6 +52,8 @@ export const AppWrapper = ({ children }) => {
               // doc.data() is never undefined for query doc snapshots
               setUserInfo({ docId: doc.id, userData: doc.data() });
               setAccountLoading(false);
+              setCurrencyType(doc.data().currency);
+              setCartLength(doc.data().cart && doc.data().cart.length);
             });
           };
           getUserData();
@@ -60,7 +71,16 @@ export const AppWrapper = ({ children }) => {
   }, []);
 
   return (
-    <AppContext.Provider value={{ userInfo, accountLoading }}>
+    <AppContext.Provider
+      value={{
+        userInfo,
+        accountLoading,
+        currencyType,
+        setCurrencyType,
+        cartLength,
+        setCartLength,
+      }}
+    >
       {children}
     </AppContext.Provider>
   );

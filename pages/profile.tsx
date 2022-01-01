@@ -1,8 +1,14 @@
-import React, { useEffect, useReducer, useState } from "react";
+import React, { useEffect, useReducer, useRef, useState } from "react";
 import Header from "../components/partials/Header/Header";
 import styles from "../styles/Profile.module.css";
 import { useAppContext } from "../store/context/appContext";
 import { Edit } from "@mui/icons-material";
+import NextLink from "next/link";
+
+import { doc, getFirestore, updateDoc } from "firebase/firestore";
+import { getAuth, updatePassword } from "firebase/auth";
+const auth = getAuth();
+const db = getFirestore();
 
 import {
   Typography,
@@ -10,7 +16,12 @@ import {
   TextField,
   Card,
   Button,
+  Select,
+  MenuItem,
 } from "@material-ui/core";
+import { FormControl } from "@mui/material";
+import Loading from "../components/partials/Loading/Loading";
+import { useRouter } from "next/dist/client/router";
 
 const useStyles = makeStyles({
   profileDataFieldKey: {
@@ -37,6 +48,7 @@ const useStyles = makeStyles({
     marginBottom: 10,
   },
   innerContainer: {
+    maxWidth: 1200,
     borderRadius: 10,
     width: "60%",
     margin: "auto",
@@ -57,7 +69,7 @@ const useStyles = makeStyles({
   btn: {
     textTransform: "capitalize",
     "&:hover": {
-      boxShadow: "1px 3px 6px rgba(0,0,0,.13)",
+      boxShadow: "1px 3px 5px rgba(0,0,0,.1)",
     },
     "&:active": {
       boxShadow: "none",
@@ -84,6 +96,21 @@ const useStyles = makeStyles({
   noPointerEvent: {
     pointerEvents: "none",
   },
+  formControl: {
+    width: "62%",
+    "&>*": {
+      fontSize: 15,
+      fontWeight: 200,
+      padding: "0px 5px",
+    },
+  },
+  passwordMessage: {
+    textTransform: "capitalize",
+  },
+  signoutBtn: {
+    padding: "6px 30px",
+    textTransform: "capitalize",
+  },
 });
 
 const userInfoReducerFn = (state, action) => {
@@ -91,45 +118,45 @@ const userInfoReducerFn = (state, action) => {
     return {
       name: action.data.name,
       email: action.data.email,
-      location: action.data.location,
-      address: action.data.address,
-      phone: action.data.phone,
+      pincode: action.data.pincode !== undefined ? action.data.pincode : "",
+      address: action.data.address !== undefined ? action.data.address : "",
+      phone: action.data.phone !== undefined ? action.data.phone : "",
       currency: action.data.currency,
     };
   }
   if (action.type === "name") {
-    return { name: action.value };
+    return { ...state, name: action.value };
   }
   if (action.type === "email") {
-    return { email: action.value };
+    return { ...state, email: action.value };
   }
-  if (action.type === "location") {
-    return { location: action.value };
+  if (action.type === "pincode") {
+    return { ...state, pincode: action.value };
   }
   if (action.type === "address") {
-    return { address: action.value };
+    return { ...state, address: action.value };
   }
   if (action.type === "phone") {
-    return { phone: action.value };
+    return { ...state, phone: action.value };
   }
   if (action.type === "currency") {
-    return { currency: action.value };
+    return { ...state, currency: action.value };
   }
 };
 
 const userInitialState = {
   name: "",
   email: "",
-  location: "",
+  pincode: "",
   address: "",
   phone: "",
-  currency: "$Doller",
+  currency: "USD",
 };
 
 const arrayOfFields = [
   "name",
   "email",
-  "location",
+  "pincode",
   "address",
   "phone",
   "currency",
@@ -137,7 +164,10 @@ const arrayOfFields = [
 
 export default function account() {
   const classes = useStyles();
-  const { userInfo } = useAppContext();
+  const router = useRouter();
+  const { userInfo, setCurrencyType, currencyType } = useAppContext();
+  const passwordInputRef = useRef<HTMLInputElement>(null);
+  const rePasswordInputRef = useRef<HTMLInputElement>(null);
 
   const [changeProfileInfo, setChangeProfileInfo] = useState(false);
   const [doesDataChanged, setdoesDataChanged] = useState(false);
@@ -147,22 +177,14 @@ export default function account() {
     userInitialState
   );
   const [prevUserState, setPrevUserState] = useState(userInfoState);
+  const [updatePasswordMessage, setUpdatePasswordMessage] = useState({
+    state: "false",
+    message: "",
+  });
 
-  // const [userData, setUserData] = useState({
-  //   name: "farhan",
-  //   email: "farhanmian099@gmail.com",
-  //   location: "",
-  //   address: "kari kuan",
-  //   phone: "7983265440",
-  //   currency: "$Dollar",
-  // });
-  /* also 
-  logout
-  wishlist
-  order
-  change password
-  log out account
-  */
+  useEffect(() => {
+    dispatchUserInfoStateFn({ type: "currency", value: currencyType });
+  }, [currencyType]);
 
   const userProfileInfoChangeHandler = (e) => {
     if (!changeProfileInfo) {
@@ -171,7 +193,6 @@ export default function account() {
 
     const key: string = e.target.id;
     const value: string = e.target.value;
-    console.log(key);
     setdoesDataChanged(true);
 
     dispatchUserInfoStateFn({ type: key, value: value });
@@ -179,7 +200,21 @@ export default function account() {
 
   const userProfileInfoSaveHandler = () => {
     setChangeProfileInfo(false);
-    
+
+    const updateUserData = async () => {
+      const userRef = doc(db, "users", userInfo.docId);
+      await updateDoc(userRef, userInfoState);
+    };
+    updateUserData();
+
+    console.log(userInfoState.currency);
+    setCurrencyType(userInfoState.currency);
+
+    // sendEmailVerification(auth.currentUser).then((e) => {
+    //   // Email verification sent!
+    //   console.log(e);
+    //   // ...
+    // });
   };
 
   const cancelChangeHandler = () => {
@@ -187,13 +222,59 @@ export default function account() {
     dispatchUserInfoStateFn({ type: "replaceData", data: prevUserState });
   };
 
+  const passwordFormSubmitHandler = (e: React.FormEvent) => {
+    e.preventDefault();
+    const passwordValue = passwordInputRef.current?.value;
+    const rePasswordValue = rePasswordInputRef.current?.value;
+    if (passwordValue !== rePasswordValue) {
+      setUpdatePasswordMessage({
+        state: "error",
+        message: "password did not match!",
+      });
+      return;
+    }
+    const changePassword = () => {
+      const user = auth.currentUser;
+
+      updatePassword(user, passwordValue)
+        .then(() => {
+          console.log("update successful");
+          passwordInputRef.current.value = "";
+          rePasswordInputRef.current.value = "";
+          setUpdatePasswordMessage({
+            state: "success",
+            message: "password successfully changed",
+          });
+          // Update successful .
+        })
+        .catch((error) => {
+          setUpdatePasswordMessage({
+            state: "error",
+            message:
+              "something wrong please try again later, or login again and try.",
+          });
+          console.log(error);
+          // An error ocurred
+          // ...
+        });
+    };
+
+    changePassword();
+  };
+
+  const signoutHandler = () => {
+    auth.signOut();
+    router.push("/");
+  };
+
   useEffect(() => {
     const data = {
       name: userInfo && userInfo.userData.name,
       email: userInfo && userInfo.userData.email,
-      location: (userInfo && userInfo.userData.location) || null,
-      phone: (userInfo && userInfo.userData.location) || null,
-      currency: (userInfo && userInfo.userData.currency) || null,
+      pincode: userInfo && userInfo.userData.pincode,
+      address: userInfo && userInfo.userData.address,
+      phone: userInfo && userInfo.userData.phone,
+      currency: userInfo && userInfo.userData.currency,
     };
     dispatchUserInfoStateFn({ type: "replaceData", data });
   }, [userInfo]);
@@ -203,40 +284,80 @@ export default function account() {
       <Header heading="My Account" path="My Account" />
       <section className={styles.profile}>
         <Card className={classes.innerContainer}>
-          {userInfo && (
-            <React.Fragment>
-              <div className={styles.userProfileInfo}>
-                <Typography
-                  variant="h6"
-                  className={`${classes.heading} ${classes.color151875}`}
-                >
-                  Profile
-                </Typography>
-                <div className={`${styles.box} ${styles.userInfoContainer}`}>
-                  {!changeProfileInfo && (
-                    <span
-                      className={`${styles.editIcon} ${
-                        changeProfileInfo ? classes.avtiveIcon : ""
-                      }`}
-                      onClick={() => {
-                        setChangeProfileInfo(true);
-                        setPrevUserState(userInfoState);
-                      }}
-                    >
-                      <Edit className={classes.editIcon} />
-                    </span>
-                  )}
+          <React.Fragment>
+            <div className={styles.userProfileInfo}>
+              <Typography
+                variant="h6"
+                className={`${classes.heading} ${classes.color151875}`}
+              >
+                Profile
+              </Typography>
+              <div className={`${styles.box} ${styles.userInfoContainer}`}>
+                {!changeProfileInfo && (
+                  <span
+                    className={`${styles.editIcon} ${
+                      changeProfileInfo ? classes.avtiveIcon : ""
+                    }`}
+                    onClick={() => {
+                      setChangeProfileInfo(true);
+                      setPrevUserState(userInfoState);
+                    }}
+                  >
+                    <Edit className={classes.editIcon} />
+                  </span>
+                )}
 
-                  {/* text fields */}
-                  {arrayOfFields.map((field) => {
-                    return (
-                      <div key={field} className={styles.profileDataField}>
-                        <Typography
-                          className={classes.profileDataFieldKey}
-                          variant="body1"
-                        >
-                          {field} :
-                        </Typography>
+                {/* text fields */}
+                {arrayOfFields.map((field) => {
+                  return field === "currency" ? (
+                    <div key={field} className={styles.profileDataField}>
+                      <Typography
+                        className={classes.profileDataFieldKey}
+                        variant="body1"
+                      >
+                        {field} :
+                      </Typography>
+                      {userInfo ? (
+                        <FormControl className={classes.formControl}>
+                          <Select
+                            disabled={!changeProfileInfo}
+                            value={userInfoState && userInfoState.currency}
+                            onChange={(e) => {
+                              dispatchUserInfoStateFn({
+                                type: "currency",
+                                value: e.target.value,
+                              });
+                              setdoesDataChanged(true);
+                            }}
+                            displayEmpty
+                            inputProps={{ "aria-label": "Without label" }}
+                          >
+                            {userInfoState.currency === "usd" ? (
+                              <MenuItem
+                                value={userInfoState && userInfoState.currency}
+                              >
+                                USD
+                              </MenuItem>
+                            ) : (
+                              <MenuItem value="usd">USD</MenuItem>
+                            )}
+                            <MenuItem value="inr">INR</MenuItem>
+                          </Select>
+                        </FormControl>
+                      ) : (
+                        <Loading width={20} color="#d6d6d6" />
+                      )}
+                    </div>
+                  ) : (
+                    <div key={field} className={styles.profileDataField}>
+                      <Typography
+                        className={classes.profileDataFieldKey}
+                        variant="body1"
+                      >
+                        {field} :
+                      </Typography>
+
+                      {userInfo ? (
                         <TextField
                           id={field}
                           type="text"
@@ -251,37 +372,41 @@ export default function account() {
                             field === "email" ? true : !changeProfileInfo
                           }
                         />
-                      </div>
-                    );
-                  })}
-
-                  {changeProfileInfo && (
-                    <div className={styles.userProfileInfoBtn}>
-                      <Button
-                        variant="contained"
-                        disableElevation
-                        className={classes.btn}
-                        color="secondary"
-                        disabled={!doesDataChanged}
-                        onClick={userProfileInfoSaveHandler}
-                      >
-                        Save Changes
-                      </Button>
-                      <Button
-                        variant="contained"
-                        disableElevation
-                        className={classes.btn}
-                        color="secondary"
-                        onClick={cancelChangeHandler}
-                      >
-                        Cancel
-                      </Button>
+                      ) : (
+                        <Loading width={20} color="#d6d6d6" />
+                      )}
                     </div>
-                  )}
-                </div>
-              </div>
+                  );
+                })}
 
-              <div className={styles.userChangePasswordContainer}>
+                {changeProfileInfo && (
+                  <div className={styles.userProfileInfoBtn}>
+                    <Button
+                      variant="contained"
+                      disableElevation
+                      className={classes.btn}
+                      color="secondary"
+                      disabled={!doesDataChanged}
+                      onClick={userProfileInfoSaveHandler}
+                    >
+                      Save Changes
+                    </Button>
+                    <Button
+                      variant="contained"
+                      disableElevation
+                      className={classes.btn}
+                      color="secondary"
+                      onClick={cancelChangeHandler}
+                    >
+                      Cancel
+                    </Button>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <div className={styles.userOptionsContainer}>
+              <div className={styles.changePasswordContainer}>
                 <Typography
                   variant="h6"
                   className={`${classes.heading} ${classes.color151875}`}
@@ -289,10 +414,14 @@ export default function account() {
                   Change Password
                 </Typography>
                 <div className={styles.box}>
-                  <form className={styles.changePasswordForm}>
+                  <form
+                    className={styles.changePasswordForm}
+                    onSubmit={passwordFormSubmitHandler}
+                  >
                     <TextField
                       type="password"
                       variant="outlined"
+                      inputRef={passwordInputRef}
                       className={classes.changePasstextField}
                       label="New Password"
                       required
@@ -301,11 +430,26 @@ export default function account() {
                     <TextField
                       type="password"
                       variant="outlined"
+                      inputRef={rePasswordInputRef}
                       className={classes.changePasstextField}
                       label="Confirm Password"
                       required
                       size="small"
                     />
+                    {updatePasswordMessage.state !== "false" && (
+                      <Typography
+                        variant="caption"
+                        className={classes.passwordMessage}
+                        style={{
+                          color:
+                            updatePasswordMessage.state === "error"
+                              ? "#ff0a0a"
+                              : "#08be08",
+                        }}
+                      >
+                        {updatePasswordMessage.message}
+                      </Typography>
+                    )}
                     <Button
                       type="submit"
                       variant="contained"
@@ -318,10 +462,64 @@ export default function account() {
                   </form>
                 </div>
               </div>
-            </React.Fragment>
-          )}
+
+              <div className={styles.userOptionsBtnContainer}>
+                <NextLink href="/wishlist">
+                  <Button
+                    variant="contained"
+                    className={classes.btn}
+                    disableElevation
+                  >
+                    My Wishlist
+                  </Button>
+                </NextLink>
+
+                <NextLink href="/cart">
+                  <Button
+                    variant="contained"
+                    className={classes.btn}
+                    disableElevation
+                  >
+                    My Cart
+                  </Button>
+                </NextLink>
+
+                <Button
+                  className={`${classes.btn} ${classes.signoutBtn}`}
+                  variant="contained"
+                  color="secondary"
+                  onClick={signoutHandler}
+                  disableElevation
+                >
+                  SignOut
+                </Button>
+              </div>
+            </div>
+          </React.Fragment>
         </Card>
       </section>
     </React.Fragment>
   );
 }
+
+/* 
+
+<FormControl sx={{ m: 1, minWidth: 120 }}>
+  <InputLabel id="demo-simple-select-helper-label">Age</InputLabel>
+  <Select
+    labelId="demo-simple-select-helper-label"
+    id="demo-simple-select-helper"
+    value={age}
+    label="Age"
+    onChange={handleChange}
+  >
+    <MenuItem value="">
+      <em>None</em>
+    </MenuItem>
+    <MenuItem value={10}>Ten</MenuItem>
+    <MenuItem value={20}>Twenty</MenuItem>
+    <MenuItem value={30}>Thirty</MenuItem>
+  </Select>
+  <FormControl />
+
+*/

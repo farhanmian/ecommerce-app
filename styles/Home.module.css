@@ -98,7 +98,6 @@
   box-shadow: 0px 0px 25px rgba(0, 0, 0, 0.1);
   transition: all 0.2s;
   position: relative;
-  cursor: pointer;
 }
 .featuredProduct > :not(:last-child :first-child) {
   margin-bottom: 12px;
@@ -128,30 +127,28 @@
 .featuredProductIconContainer > :not(:last-child) {
   margin-right: 5px;
 }
+
 .featuredProductIcon {
   width: 30px;
   height: 30px;
+  border-radius: 100px;
   display: flex;
   justify-content: center;
   align-items: center;
-  border-radius: 100%;
-  backface-visibility: hidden;
+  z-index: 999;
 }
-
-.featuredProductIcon svg > * {
+.featuredProductIcon:hover {
+  background-color: #d8dbf3;
+}
+.featuredProductIcon > svg {
+  width: 16px;
+  height: 16px;
+}
+.featuredProductIcon > svg * {
   fill: #1389ff;
 }
-
-.featuredProductIcon:hover {
-  background-color: #eeeffb;
-}
-.featuredProductIcon:hover svg > * {
+.featuredProductIcon:hover > svg * {
   fill: #2f1ac4;
-}
-
-.addToCart > svg {
-  transform: scale(0.9);
-  pointer-events: none;
 }
 
 .featuredProductImgContainer {
@@ -159,6 +156,7 @@
   padding: 20px;
   margin-bottom: 15px;
   background-color: #f6f7fb;
+  position: relative;
 }
 .featuredProductImgContainer > * {
   max-height: 200px;
@@ -168,6 +166,17 @@
 }
 .featuredProduct:hover .featuredProductImgContainer img {
   transform: scale(0.85);
+}
+.featuredProductViewBtn {
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 5px;
+  visibility: hidden;
+  opacity: 0;
+}
+.featuredProduct:hover .featuredProductViewBtn {
+  visibility: visible;
+  opacity: 1;
 }
 
 .productImageBtnContainer {
@@ -270,9 +279,9 @@
 }
 .latestProduct:hover .latestProductImgContainer {
   background-color: #fff;
+  padding: 15px 80px;
 }
 .latestProduct:hover .latestProductCard {
-  transform: scale(1.03);
   box-shadow: 0px 5px 8px rgba(0, 0, 0, 0.12);
 }
 
@@ -283,8 +292,10 @@
   align-items: center;
   margin-top: 15px;
 }
-.productText > :last-child :first-child {
-  margin-right: 8.5px;
+
+.latestProductsPriceContainer {
+  display: flex;
+  align-items: center;
 }
 
 /*////////////////////////////////// shopex Features */

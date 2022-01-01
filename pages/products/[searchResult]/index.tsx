@@ -250,6 +250,7 @@ export default function ProductsList() {
         {/* sidebar */}
         <Grid
           columnGap="53px"
+          rowGap={viewType === "row" ? "28px" : "80px"}
           container
           justifyContent="center"
           className={styles.searchResultsInnerContainer}

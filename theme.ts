@@ -72,7 +72,8 @@ const theme = createTheme({
     },
     secondary: {
       main: "#FB2E86", // pink
-      dark: "#FF1B7D",
+      dark: "#F21E79",
+      // dark: "#FF1B7D",
     },
     text: {
       primary: "#000",

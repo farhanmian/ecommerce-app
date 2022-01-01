@@ -53,16 +53,9 @@
 }
 .searchResultSideFilterBar {
   width: 205px;
-  /* background: rgb(226, 226, 226); */
-  /* height: 100%; */
 }
 .searchResultsInnerContainer {
   max-width: 921px;
-  /* display: flex;
-  flex-direction: column; */
-}
-.searchResultsInnerContainer > :not(:last-child) {
-  margin-bottom: 28px;
 }
 
 .ratingContainer {

@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import styles from "../../../styles/Nav.module.css";
 import {
   Typography,
@@ -14,9 +14,21 @@ import NextLink from "next/link";
 import { useAppContext } from "../../../store/context/appContext";
 import Loading from "../Loading/Loading";
 
+import { doc, setDoc, getFirestore } from "firebase/firestore";
+const db = getFirestore();
+
 const pagesLink = ["pages", "products", "contact"];
 
 const useStyles = makeStyles({
+  navHeading: {
+    marginRight: 88,
+    cursor: "pointer",
+    color: "#101750",
+    transition: "all .3s",
+    "&:hover": {
+      color: "#18296a",
+    },
+  },
   topNavLinkText: {
     lineHeight: "16px",
     fontWeight: 600,
@@ -66,14 +78,48 @@ export default function Nav() {
   const searchInputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
   const loggedInUser = useAppContext();
+  const { setCurrencyType, currencyType, cartLength } = useAppContext();
 
   const classes = useStyles();
 
   const [currency, setCurrency] = React.useState("usd");
   const [page, setPage] = React.useState("home");
 
+  useEffect(() => {
+    setCurrency(
+      loggedInUser.userInfo && loggedInUser.userInfo.userData.currency
+        ? loggedInUser.userInfo.userData.currency
+        : "usd"
+    );
+    console.log("currency changed");
+  }, [loggedInUser.accountLoading]);
+
+  useEffect(() => {
+    setCurrency(currencyType);
+  }, [currencyType]);
+
   const currencyChangeHandler = (event) => {
     setCurrency(event.target.value);
+    setCurrencyType(event.target.value);
+    console.log(event.target.value);
+
+    if (!loggedInUser.userInfo) {
+      return;
+    }
+    const userInfo = loggedInUser.userInfo;
+    const data = {
+      name: userInfo.userData.name,
+      email: userInfo.userData.email,
+      location: userInfo.userData.location ? userInfo.userData.location : "",
+      address: userInfo.userData.address ? userInfo.userData.address : "",
+      phone: userInfo.userData.phone ? userInfo.userData.phone : "",
+      currency: event.target.value,
+    };
+    const updateUserData = async () => {
+      await setDoc(doc(db, "users", loggedInUser.userInfo.docId), data);
+    };
+
+    updateUserData();
   };
   const pageChangeHandler = (event) => {
     setPage(event.target.value);
@@ -96,27 +142,31 @@ export default function Nav() {
       <div className={styles.navTopContainer}>
         <div className={styles.navTopLinksContainer}>
           <FormControl style={{ marginRight: 17.67 }} variant="standard">
-            <Select
-              className={classes.select}
-              labelId="demo-customized-select-label"
-              id="demo-customized-select"
-              value={currency}
-              onChange={currencyChangeHandler}
-              disableUnderline
-            >
-              {currency === "usd" ? (
-                <MenuItem className={classes.menuItem} value={currency}>
-                  USD
+            {!loggedInUser.accountLoading ? (
+              <Select
+                className={classes.select}
+                labelId="demo-customized-select-label"
+                id="demo-customized-select"
+                value={currency}
+                onChange={currencyChangeHandler}
+                disableUnderline
+              >
+                {currency === "usd" ? (
+                  <MenuItem className={classes.menuItem} value={currency}>
+                    USD
+                  </MenuItem>
+                ) : (
+                  <MenuItem className={classes.menuItem} value="usd">
+                    USD
+                  </MenuItem>
+                )}
+                <MenuItem className={classes.menuItem} value="inr">
+                  INR
                 </MenuItem>
-              ) : (
-                <MenuItem className={classes.menuItem} value="usd">
-                  USD
-                </MenuItem>
-              )}
-              <MenuItem className={classes.menuItem} value="inr">
-                INR
-              </MenuItem>
-            </Select>
+              </Select>
+            ) : (
+              <Loading width={15} color="#f1f1f1" />
+            )}
           </FormControl>
           <NextLink href={!loggedInUser.userInfo ? "/login" : "/profile"}>
             <span
@@ -139,7 +189,7 @@ export default function Nav() {
               )}
             </span>
           </NextLink>
-          <NextLink href="#">
+          <NextLink href="/wishlist">
             <span
               color="textSecondary"
               className={styles.topNavLink}
@@ -155,8 +205,16 @@ export default function Nav() {
             </span>
           </NextLink>
 
-          <NextLink href="#">
-            <span color="textSecondary" className={styles.topNavLink}>
+          <NextLink href="/cart">
+            <span
+              color="textSecondary"
+              className={`${styles.cartContainer} ${styles.topNavLink}`}
+            >
+              {cartLength > 0 && (
+                <span className={styles.cartItemLength}>
+                  <Typography variant="caption">{cartLength}</Typography>
+                </span>
+              )}
               <AddToCart />
             </span>
           </NextLink>
@@ -166,10 +224,7 @@ export default function Nav() {
       <div className={styles.navBottomContainer}>
         <div className={styles.navBottomInnerContainer}>
           <NextLink href="/">
-            <Typography
-              style={{ marginRight: 88, cursor: "pointer", color: "#101750" }}
-              variant="h5"
-            >
+            <Typography className={classes.navHeading} variant="h5">
               Hekto
             </Typography>
           </NextLink>

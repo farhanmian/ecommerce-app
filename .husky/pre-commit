@@ -1,5 +1,3 @@
-
-
 #!/bin/sh
 . "$(dirname "$0")/_/husky.sh"
 
@@ -42,4 +40,4 @@ npm run completed ||
 )
 
 # If everything passes... Now we can commit
-echo '✅✅✅✅ You win this time... I am committing this now. ✅✅✅✅'
+echo '✅✅✅✅ You win this time... I am committing this now. ✅✅✅✅'s time... I am committing this now. ✅✅✅✅'s time... I am committing this now. ✅✅✅✅'s time... I am committing this now. ✅✅✅✅'s time... I am committing this now. ✅✅✅✅'

@@ -5,9 +5,9 @@
 }
 
 .innerContainer {
-  max-width: 314px;
-  height: 64px;
-  margin-left: 374px;
+  max-width: 1060px;
+  margin: auto;
+  text-align: start;
 }
 
 .path {

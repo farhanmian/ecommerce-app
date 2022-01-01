@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styles from "../../../styles/SpecificProduct.module.css";
 import Header from "../../../components/partials/Header/Header";
 import { useRouter } from "next/dist/client/router";
@@ -13,7 +13,13 @@ import {
   Star,
   Twitter,
 } from "../../../components/icons/icons";
+import { Favorite } from "@mui/icons-material";
 import Divider from "../../../components/partials/Divider/Divider";
+import { useAppContext } from "../../../store/context/appContext";
+import { doc, getDoc, updateDoc, getFirestore } from "firebase/firestore";
+import Loading from "../../../components/partials/Loading/Loading";
+
+const db = getFirestore();
 
 const specificProductDetailsData = [
   {
@@ -66,16 +72,63 @@ const useStyles = makeStyles({
   colorA9ACC6: {
     color: "#A9ACC6",
   },
+  filledHeartIcon: {
+    transform: "scale(1.15)",
+  },
 });
 
 const SpecificProduct = () => {
+  const { userInfo, accountLoading, setCartLength } = useAppContext();
   const classes = useStyles();
   const router = useRouter();
   const productId = +router.query.specificProduct;
+  const [userCartItem, setUserCartItem] = useState([]);
+  const [userWishlistItem, setUserWishlistItem] = useState([]);
+  const [isInitial, setIsInitial] = useState(true);
+
+  /// fetching user cart info
+  useEffect(() => {
+    if (!userInfo) {
+      return;
+    }
+
+    const getUserData = async () => {
+      const docRef = doc(db, "users", userInfo && userInfo.docId);
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+        setUserCartItem(data.cart ? data.cart : []);
+        setUserWishlistItem(data.wishlist ? data.wishlist : []);
+      } else {
+        setUserCartItem([]);
+      }
+    };
+    getUserData();
+  }, [userInfo && userInfo.userData]);
+
+  //// sending data whenever userWishlistItem or userCartItem state changes
+  useEffect(() => {
+    if (isInitial) {
+      setIsInitial(false);
+      return;
+    }
+    if (!userInfo) {
+      console.log("login to add to wishlist");
+      return;
+    }
+
+    const sendData = async () => {
+      const userRef = doc(db, "users", userInfo.docId);
+      await updateDoc(userRef, {
+        cart: userCartItem,
+        wishlist: userWishlistItem,
+      });
+    };
+    sendData();
+    setCartLength(userCartItem.length);
+  }, [userCartItem, userWishlistItem]);
 
   const product = specificItem(productId);
-  console.log(product);
-
   const [productDetailsActiveLink, setProductDetailsActiveLink] =
     useState("Description");
 
@@ -86,7 +139,27 @@ const SpecificProduct = () => {
     "Reviews",
     "Video",
   ];
-  console.log(productId);
+
+  const addToCartHandler = (id) => {
+    if (!userInfo) {
+      console.log("login to buy");
+      return;
+    }
+    setUserCartItem((prevId) => (prevId ? [...prevId, id] : [id]));
+  };
+
+  const toggleWishlistHandler = (id) => {
+    if (!userInfo) {
+      console.log("login to add to wishlist");
+      return;
+    }
+    if (userWishlistItem.includes(id)) {
+      const updatedWishlist = userWishlistItem.filter((ids) => ids !== id);
+      setUserWishlistItem(updatedWishlist);
+    } else {
+      setUserWishlistItem((prevId) => (prevId ? [...prevId, id] : [id]));
+    }
+  };
 
   return (
     <React.Fragment>
@@ -172,11 +245,36 @@ const SpecificProduct = () => {
                         style={{ textTransform: "capitalize" }}
                         color="secondary"
                         disableElevation
+                        onClick={() => {
+                          if (userCartItem.includes(product.id)) {
+                            router.push("/cart");
+                            return;
+                          }
+                          addToCartHandler(product.id);
+                        }}
                       >
-                        Add To Cart
+                        {accountLoading ? (
+                          <Loading width={18} color="#f1f1f1" />
+                        ) : userCartItem.includes(product.id) ? (
+                          "Go To Cart"
+                        ) : (
+                          "Add To Cart"
+                        )}
                       </Button>
-                      <span className={styles.heartSvg}>
-                        <Heart />
+                      <span
+                        className={styles.heartSvg}
+                        onClick={() => {
+                          toggleWishlistHandler(product.id);
+                        }}
+                      >
+                        {userWishlistItem.includes(product.id) ? (
+                          <Favorite
+                            color="secondary"
+                            className={classes.filledHeartIcon}
+                          />
+                        ) : (
+                          <Heart />
+                        )}
                       </span>
                     </div>
 

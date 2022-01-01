@@ -61,6 +61,9 @@
 .heartSvg svg * {
   fill: #fb2e86;
 }
+.heartSvg svg:hover {
+  animation: popup 0.7s ease-in infinite;
+}
 
 .specificProductShareContainer {
   display: flex;
@@ -120,4 +123,10 @@
 }
 .productDetailsIcon {
   margin-right: 8px;
+}
+
+@keyframes popup {
+  50% {
+    transform: scale(1.08);
+  }
 }

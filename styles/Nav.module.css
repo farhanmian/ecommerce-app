@@ -10,15 +10,15 @@
   min-height: 44px;
   display: flex;
   align-items: center;
-  justify-content: flex-end;
-  padding: 0 376px;
+  justify-content: center;
 }
 
 .navTopLinksContainer {
-  max-width: max-content;
+  width: 100%;
+  max-width: 1060px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
 }
 
 .topNavLink {
@@ -38,6 +38,24 @@
   margin-right: 3px;
 }
 
+.cartContainer {
+  position: relative;
+}
+.cartItemLength {
+  width: 18px;
+  height: 18px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  top: -50%;
+  right: -70%;
+  border: 1px solid #f1f1f1;
+  border-radius: 8px;
+  color: #f1f1f1;
+  background-color: #fb2e86;
+}
+
 /* nav bottom container */
 
 .navBottomContainer {
@@ -46,12 +64,13 @@
 }
 
 .navBottomInnerContainer {
-  max-width: 1177px;
+  /* max-width: 1060px because i have remove some links link :- blog */
+  max-width: 1060px;
   max-height: 40px;
   min-height: 40px;
   margin: auto;
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
 }
 
