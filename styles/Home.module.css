@@ -110,7 +110,6 @@
   background-color: #fff;
 }
 .featuredProduct:hover .featuredProductIconContainer {
-  transition: all 0.2s;
   opacity: 1;
 }
 
@@ -136,6 +135,7 @@
   justify-content: center;
   align-items: center;
   z-index: 999;
+  transition: all 0.2s;
 }
 .featuredProductIcon:hover {
   background-color: #d8dbf3;
@@ -307,7 +307,7 @@
   margin-top: 58px; /* using 2 times of deafult margin = 58*2= 116, 116/2 = 58px */
   margin-bottom: 101px; /* using 1.5 times of deafult margin = 135*1.5= 202.5 + 1.5 = 204 / 204/2 = 102px / 102px-divider = 101px */
 }
-
+/* 
 .feature {
   width: 270px;
   height: 320px;
@@ -332,7 +332,7 @@
   width: 65px;
   height: 65px;
   transition: all 0.3s;
-}
+} */
 
 /*///////////////////////////// feature Of Latest Trending Products */
 

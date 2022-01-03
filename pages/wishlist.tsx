@@ -9,7 +9,7 @@ import { Delete } from "@mui/icons-material";
 
 import { useAppContext } from "../store/context/appContext";
 import { Star } from "../components/icons/icons";
-import { doc, getDoc, getFirestore, updateDoc } from "firebase/firestore";
+import { doc, getFirestore, updateDoc, getDoc } from "firebase/firestore";
 import { storedData } from "../data/allData";
 import Divider from "../components/partials/Divider/Divider";
 
@@ -68,6 +68,7 @@ export default function wishlist() {
   const [showModal, setShowModal] = useState(false);
   const [loading, setLoading] = useState(true);
 
+  ////// setting user wishlist
   useEffect(() => {
     if (!userInfo) {
       return;
@@ -226,7 +227,12 @@ export default function wishlist() {
             </Button>
           </Card>
         ) : (
-          <NoItemFound text="no favorite item found!" />
+          <NoItemFound
+            text="no favorite item found!"
+            message="Add item now"
+            btnText="add items"
+            btnLink="/products"
+          />
         )}
       </section>
 

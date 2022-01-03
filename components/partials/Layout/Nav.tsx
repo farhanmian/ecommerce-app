@@ -17,7 +17,7 @@ import Loading from "../Loading/Loading";
 import { doc, setDoc, getFirestore } from "firebase/firestore";
 const db = getFirestore();
 
-const pagesLink = ["pages", "products", "contact"];
+const pagesLink = ["products", "contact", "about"];
 
 const useStyles = makeStyles({
   navHeading: {

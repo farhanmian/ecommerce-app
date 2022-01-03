@@ -94,6 +94,7 @@ export default function ProductsList() {
   const searchQuery = query && query.toString().replace(/-/g, " ");
   console.log(searchQuery);
 
+  /////// product filter
   // const stars = [1, 2, 3, 4, 5];
   // const priceCheckboxes = [
   //   "$0.00 - $10.00",
@@ -102,6 +103,7 @@ export default function ProductsList() {
   //   "$50.00+",
   // ];
 
+  /// handling smooth scrolling
   useEffect(() => {
     if (isInitial) {
       isInitial = false;
@@ -116,12 +118,15 @@ export default function ProductsList() {
   const filteredData = storedData.filter((data) =>
     data.type.includes(`${searchQuery}`)
   );
+
+  /// handling page when viewtype changes
   const pageCount = Math.ceil(
     filteredData.length / (viewType === "row" ? 10 : 12)
   );
+
+  /// setting page whenever pagecount changes
   useEffect(() => {
     if (pageCount && pageCount < page) {
-      console.log("user should be on " + pageCount + "rd page");
       setPage(pageCount);
     }
   }, [pageCount]);

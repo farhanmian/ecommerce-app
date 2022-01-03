@@ -4,6 +4,9 @@ import Image from "next/image";
 import NextLink from "next/link";
 import { Button, Typography, makeStyles, Card } from "@material-ui/core";
 import { Grid } from "@mui/material";
+import { ShoppingCart, Favorite } from "@mui/icons-material";
+import { doc, updateDoc, getFirestore } from "firebase/firestore";
+const db = getFirestore();
 
 import lamp from "../assets/img/headerlamp.png";
 import couch from "../assets/img/headerCouch.png";
@@ -18,21 +21,16 @@ import {
 } from "../components/icons/icons";
 
 import {
-  // featuredProductData,
   latestProductsLink,
-  shopexFeaturesData,
-  // latestProductsData,
-  // trendingProductsData,
   trendingProductsOtherTrendingData,
-  otherTrendingChairData,
   discountItemLink,
   discountItemData,
-  // topCategoriesItemData,
   topCategoryBtnData,
 } from "../data/indexData";
 import { storedData } from "../data/allData";
 import Divider from "../components/partials/Divider/Divider";
 import { useAppContext } from "../store/context/appContext";
+import Features from "../components/partials/Features/Features";
 
 const useStyles = makeStyles({
   headerBtn: {
@@ -123,22 +121,67 @@ const useStyles = makeStyles({
 });
 
 const Home = () => {
-  const { currencyType } = useAppContext();
+  const classes = useStyles();
+  const { currencyType, userInfo, setCartItemCtx } = useAppContext();
   const [currency, setCurrency] = useState(0);
 
-  useEffect(() => {
-    setCurrency(currencyType === "usd" ? 1 : 75);
-  }, [currencyType]);
-
-  const classes = useStyles();
+  //// states
   const [latestProductLink, setLatestProductLink] = useState(
     "LatestProductsNew Arrival"
   );
   const [discountItemActiveLink, setDiscountItemActiveLink] =
     useState("Wood Chair");
   const [topCategoryActiveLink, setTopCategoryActiveLink] = useState("1");
+  const [userCart, setUserCart] = useState([]);
+  const [userWishlist, setUserWishlist] = useState([]);
+  const [isInitial, setIsInitial] = useState(true);
 
-  /// filtering data
+  /////////////////// useEffect
+  ///// managing price whenevery currency type changes
+  useEffect(() => {
+    setCurrency(currencyType === "usd" ? 1 : 75);
+  }, [currencyType]);
+
+  ///////// setting user cart info
+  useEffect(() => {
+    if (!userInfo) {
+      return;
+    }
+    const getUserData = async () => {
+      userInfo.userData.cart
+        ? setUserCart(userInfo.userData.cart)
+        : setUserCart([]);
+
+      userInfo.userData.wishlist
+        ? setUserWishlist(userInfo.userData.wishlist)
+        : setUserWishlist([]);
+    };
+    getUserData();
+  }, [userInfo && userInfo.userData]);
+
+  ///////// sending data whenever userWishlistItem or userCartItem state changes
+  useEffect(() => {
+    if (isInitial) {
+      setIsInitial(false);
+      return;
+    }
+    if (!userInfo) {
+      console.log("login to add to wishlist");
+      return;
+    }
+
+    const sendData = async () => {
+      const userRef = doc(db, "users", userInfo.docId);
+      await updateDoc(userRef, {
+        cart: userCart,
+        wishlist: userWishlist,
+      });
+    };
+    sendData();
+    setCartItemCtx(userCart);
+  }, [userCart, userWishlist]);
+
+  //// filtering data
   const featuredProductData = storedData.filter((product) => {
     return product.category.includes("FeaturedProducts");
   });
@@ -151,6 +194,36 @@ const Home = () => {
   const topCategoriesItemData = storedData.filter((product) => {
     return product.category.includes("TopCategories");
   });
+  const otherTrendingChairData = storedData.filter((product) => {
+    return product.category.includes("OtherTrendingChairData");
+  });
+
+  /////// function handlers
+  const toggleCartHandler = (id: number) => {
+    if (!userInfo) {
+      console.log("login to buy");
+      return;
+    }
+    if (userCart.includes(id)) {
+      const updatedCart = userCart.filter((ids) => ids !== id);
+      setUserCart(updatedCart);
+    } else {
+      setUserCart((prevId) => (prevId ? [...prevId, id] : [id]));
+    }
+  };
+
+  const toggleWishlistHandler = (id: number) => {
+    if (!userInfo) {
+      console.log("login to add to wishlist");
+      return;
+    }
+    if (userWishlist.includes(id)) {
+      const updatedWishlist = userWishlist.filter((ids) => ids !== id);
+      setUserWishlist(updatedWishlist);
+    } else {
+      setUserWishlist((prevId) => (prevId ? [...prevId, id] : [id]));
+    }
+  };
 
   return (
     <React.Fragment>
@@ -180,19 +253,21 @@ const Home = () => {
               est adipiscing <br /> in phasellus non in justo.
             </Typography>
 
-            <Button
-              className={`${classes.headerBtn} ${classes.btnEffect}`}
-              variant="contained"
-              color="secondary"
-              disableElevation
-            >
-              <Typography
-                variant="subtitle2"
-                className={classes.fontJosefinSans}
+            <NextLink href="/products">
+              <Button
+                className={`${classes.headerBtn} ${classes.btnEffect}`}
+                variant="contained"
+                color="secondary"
+                disableElevation
               >
-                Shop Now
-              </Typography>
-            </Button>
+                <Typography
+                  variant="subtitle2"
+                  className={classes.fontJosefinSans}
+                >
+                  Shop Now
+                </Typography>
+              </Button>
+            </NextLink>
           </div>
         </div>
 
@@ -253,11 +328,29 @@ const Home = () => {
                   className={`${styles.featuredProduct} ${classes.featuredProduct}`}
                 >
                   <div className={styles.featuredProductIconContainer}>
-                    <span className={styles.featuredProductIcon}>
-                      <AddToCart />
+                    <span
+                      className={styles.featuredProductIcon}
+                      onClick={() => {
+                        toggleCartHandler(product.id);
+                      }}
+                    >
+                      {userCart.includes(product.id) ? (
+                        <ShoppingCart />
+                      ) : (
+                        <AddToCart />
+                      )}
                     </span>
-                    <span className={styles.featuredProductIcon}>
-                      <Heart />
+                    <span
+                      className={styles.featuredProductIcon}
+                      onClick={() => {
+                        toggleWishlistHandler(product.id);
+                      }}
+                    >
+                      {userWishlist.includes(product.id) ? (
+                        <Favorite />
+                      ) : (
+                        <Heart />
+                      )}
                     </span>
                     <span className={styles.featuredProductIcon}>
                       <ZoomGlass />
@@ -449,35 +542,7 @@ const Home = () => {
         >
           What Shopex Offer!
         </Typography>
-        <Grid container columnGap="28px">
-          {shopexFeaturesData.map((feature, i) => {
-            return (
-              <Grid key={i} item className={styles.feature}>
-                <span className={styles.featureImage}>
-                  <Image src={feature.img} alt="img" />
-                </span>
-                <Typography
-                  variant="h6"
-                  className={classes.color151875}
-                  style={{ marginBottom: 20 }}
-                >
-                  24/7 Support
-                </Typography>
-                <Typography
-                  variant="body2"
-                  style={{
-                    lineHeight: "25.6px",
-                    color: "#bab6ce",
-                    marginBottom: 45,
-                  }}
-                >
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                  <br /> Massa purus gravida.
-                </Typography>
-              </Grid>
-            );
-          })}
-        </Grid>
+        <Features />
       </section>
       <Divider />
 

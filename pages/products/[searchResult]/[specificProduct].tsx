@@ -16,7 +16,7 @@ import {
 import { Favorite } from "@mui/icons-material";
 import Divider from "../../../components/partials/Divider/Divider";
 import { useAppContext } from "../../../store/context/appContext";
-import { doc, getDoc, updateDoc, getFirestore } from "firebase/firestore";
+import { doc, updateDoc, getFirestore } from "firebase/firestore";
 import Loading from "../../../components/partials/Loading/Loading";
 
 const db = getFirestore();
@@ -78,7 +78,7 @@ const useStyles = makeStyles({
 });
 
 const SpecificProduct = () => {
-  const { userInfo, accountLoading, setCartLength } = useAppContext();
+  const { userInfo, accountLoading, setCartItemCtx } = useAppContext();
   const classes = useStyles();
   const router = useRouter();
   const productId = +router.query.specificProduct;
@@ -86,22 +86,19 @@ const SpecificProduct = () => {
   const [userWishlistItem, setUserWishlistItem] = useState([]);
   const [isInitial, setIsInitial] = useState(true);
 
-  /// fetching user cart info
+  /// setting user cart info
   useEffect(() => {
     if (!userInfo) {
       return;
     }
-
     const getUserData = async () => {
-      const docRef = doc(db, "users", userInfo && userInfo.docId);
-      const docSnap = await getDoc(docRef);
-      if (docSnap.exists()) {
-        const data = docSnap.data();
-        setUserCartItem(data.cart ? data.cart : []);
-        setUserWishlistItem(data.wishlist ? data.wishlist : []);
-      } else {
-        setUserCartItem([]);
-      }
+      userInfo.userData.cart
+        ? setUserCartItem(userInfo.userData.cart)
+        : setUserCartItem([]);
+
+      userInfo.userData.wishlist
+        ? setUserWishlistItem(userInfo.userData.cart)
+        : setUserWishlistItem([]);
     };
     getUserData();
   }, [userInfo && userInfo.userData]);
@@ -125,7 +122,7 @@ const SpecificProduct = () => {
       });
     };
     sendData();
-    setCartLength(userCartItem.length);
+    setCartItemCtx(userCartItem);
   }, [userCartItem, userWishlistItem]);
 
   const product = specificItem(productId);

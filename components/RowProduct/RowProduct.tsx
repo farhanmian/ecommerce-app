@@ -1,10 +1,14 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "../../styles/RowProduct.module.css";
 import { Card, Typography, makeStyles, Grid, Button } from "@material-ui/core";
 import Image from "next/image";
 import { StoredDataType } from "../../store/types/types";
 import { AddToCart, Heart, ZoomGlass, Star } from "../icons/icons";
+import { ShoppingCart, Favorite } from "@mui/icons-material";
 import { useRouter } from "next/dist/client/router";
+import { doc, getDoc, updateDoc, getFirestore } from "firebase/firestore";
+import { useAppContext } from "../../store/context/appContext";
+const db = getFirestore();
 
 const useStyles = makeStyles({
   searchResultCard: {
@@ -38,12 +42,87 @@ const RowProduct: React.FC<{ product: StoredDataType; href: string }> = ({
   product,
   href,
 }) => {
+  const { userInfo, setCartItemCtx } = useAppContext();
   const router = useRouter();
   const classes = useStyles();
+
+  //////// states
+  const [hover, setHover] = useState(false);
+  const [userCart, setUserCart] = useState([]);
+  const [userWishlist, setUserWishlist] = useState([]);
+  const [isInitial, setIsInitial] = useState(true);
+
+  /////////// useEffect
+  ///// fetching user cart info
+  useEffect(() => {
+    if (!userInfo) {
+      return;
+    }
+    const getUserData = async () => {
+      const docRef = doc(db, "users", userInfo && userInfo.docId);
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+        setUserCart(data.cart ? data.cart : []);
+        setUserWishlist(data.wishlist ? data.wishlist : []);
+      } else {
+        setUserCart([]);
+        setUserWishlist([]);
+      }
+    };
+    getUserData();
+  }, [userInfo && userInfo.userData]);
+
+  ///// sending data whenever userWishlistItem or userCartItem state changes
+  useEffect(() => {
+    if (isInitial) {
+      setIsInitial(false);
+      return;
+    }
+    if (!userInfo) {
+      console.log("login to add to wishlist");
+      return;
+    }
+
+    const sendData = async () => {
+      const userRef = doc(db, "users", userInfo.docId);
+      await updateDoc(userRef, {
+        cart: userCart,
+        wishlist: userWishlist,
+      });
+    };
+    sendData();
+    setCartItemCtx(userCart);
+  }, [userCart, userWishlist]);
+
   const stars = [1, 2, 3, 4, 5];
 
-  const [hover, setHover] = useState(false);
-  console.log(hover);
+  /////// function handlers
+  const toggleCartHandler = (id: number) => {
+    if (!userInfo) {
+      console.log("login to buy");
+      return;
+    }
+    if (userCart.includes(id)) {
+      const updatedCart = userCart.filter((ids) => ids !== id);
+      setUserCart(updatedCart);
+    } else {
+      setUserCart((prevId) => (prevId ? [...prevId, id] : [id]));
+    }
+  };
+
+  const toggleWishlistHandler = (id: number) => {
+    if (!userInfo) {
+      console.log("login to add to wishlist");
+      return;
+    }
+    if (userWishlist.includes(id)) {
+      const updatedWishlist = userWishlist.filter((ids) => ids !== id);
+      setUserWishlist(updatedWishlist);
+    } else {
+      setUserWishlist((prevId) => (prevId ? [...prevId, id] : [id]));
+    }
+  };
 
   const onMouseEnterHandler = () => {
     setHover(true);
@@ -124,11 +203,21 @@ const RowProduct: React.FC<{ product: StoredDataType; href: string }> = ({
             onMouseOver={onMouseEnterHandler}
             onMouseLeave={onMouseExitHandler}
           >
-            <Button className={classes.btn}>
-              <AddToCart />
+            <Button
+              className={classes.btn}
+              onClick={() => {
+                toggleCartHandler(product.id);
+              }}
+            >
+              {userCart.includes(product.id) ? <ShoppingCart /> : <AddToCart />}
             </Button>
-            <Button className={classes.btn}>
-              <Heart />
+            <Button
+              className={classes.btn}
+              onClick={() => {
+                toggleWishlistHandler(product.id);
+              }}
+            >
+              {userWishlist.includes(product.id) ? <Favorite /> : <Heart />}
             </Button>
             <Button className={classes.btn}>
               <ZoomGlass />

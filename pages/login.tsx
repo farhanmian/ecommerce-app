@@ -100,6 +100,7 @@ export default function login() {
     passwordInputRef.current.value = "";
   };
 
+  /// clearing inputs and errors whenever haveAccount state changes ( when user change to haveAccount or new member)
   useEffect(() => {
     clearInputs();
     setError(null);

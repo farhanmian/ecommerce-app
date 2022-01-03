@@ -11,8 +11,13 @@ const firebaseApp = initializeApp({
   appId: "1:222051021700:web:3697467bca1f5de58863d1",
 });
 
-import { getFirestore } from "firebase/firestore";
-import { collection, query, where, getDocs } from "firebase/firestore";
+import {
+  getFirestore,
+  collection,
+  query,
+  where,
+  getDocs,
+} from "firebase/firestore";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 const db = getFirestore();
@@ -24,7 +29,7 @@ const AppContext = createContext({
   currencyType: "usd",
   setCurrencyType: null,
   cartLength: null,
-  setCartLength: null,
+  setCartItemCtx: null,
 });
 
 export const AppWrapper = ({ children }) => {
@@ -32,6 +37,7 @@ export const AppWrapper = ({ children }) => {
   const [accountLoading, setAccountLoading] = useState(true);
   const [currencyType, setCurrencyType] = useState("usd");
   const [cartLength, setCartLength] = useState(null);
+  const [cartItemCtx, setCartItemCtx] = useState(null);
 
   // checking if the user was logged in and fetching his data
   useEffect(() => {
@@ -53,7 +59,8 @@ export const AppWrapper = ({ children }) => {
               setUserInfo({ docId: doc.id, userData: doc.data() });
               setAccountLoading(false);
               setCurrencyType(doc.data().currency);
-              setCartLength(doc.data().cart && doc.data().cart.length);
+              setCartItemCtx(doc.data().cart);
+              console.log("fetching data");
             });
           };
           getUserData();
@@ -70,6 +77,28 @@ export const AppWrapper = ({ children }) => {
     getLoggedInUser();
   }, []);
 
+  //// updating cartItemLength
+  useEffect(() => {
+    const filterCart = (a) => {
+      const counts = {};
+
+      for (let i = 0; i < a.length; i++) {
+        if (counts[a[i]]) {
+          counts[a[i]] += 1;
+        } else {
+          counts[a[i]] = 1;
+        }
+      }
+      const transformedData = Object.keys(counts).map((key) => {
+        return key;
+      });
+
+      setCartLength(transformedData.length);
+    };
+
+    cartItemCtx && cartItemCtx.length > 0 && filterCart(cartItemCtx);
+  }, [cartItemCtx]);
+
   return (
     <AppContext.Provider
       value={{
@@ -78,7 +107,7 @@ export const AppWrapper = ({ children }) => {
         currencyType,
         setCurrencyType,
         cartLength,
-        setCartLength,
+        setCartItemCtx,
       }}
     >
       {children}

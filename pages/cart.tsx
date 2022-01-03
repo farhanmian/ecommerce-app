@@ -14,7 +14,7 @@ import Divider from "../components/partials/Divider/Divider";
 import { useAppContext } from "../store/context/appContext";
 import Loading from "../components/partials/Loading/Loading";
 import { getFirestore } from "firebase/firestore";
-import { doc, getDoc, updateDoc } from "firebase/firestore";
+import { doc, updateDoc } from "firebase/firestore";
 import NoItemFound from "../components/partials/NoItemFound/NoItemFound";
 
 const db = getFirestore();
@@ -130,7 +130,7 @@ const useStyles = makeStyles({
 
 const Cart = () => {
   const classes = useStyles();
-  const { userInfo, setCartLength } = useAppContext();
+  const { userInfo, setCartItemCtx } = useAppContext();
   const heading = ["Product", "Price", "Quantity", "Total"];
   const [priceState, setPriceState] = useState(0);
   const [showModal, setShowModal] = useState(false);
@@ -139,32 +139,20 @@ const Cart = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isInitial, setIsInitial] = useState(true);
 
-  //// updating cart length
-  useEffect(() => {
-    setCartLength(cartItemContainer.length);
-  }, [cartItemContainer]);
-
   /// managing user cart ids
   useEffect(() => {
     if (!userInfo) {
       return;
     }
-
     const getUserData = async () => {
       setIsLoading(true);
-      const docRef = doc(db, "users", userInfo && userInfo.docId);
-      const docSnap = await getDoc(docRef);
-      if (docSnap.exists()) {
-        const data = docSnap.data();
-        setCartId(data.cart ? data.cart : []);
-        setIsLoading(false);
-      } else {
-        setCartId([]);
-        setIsLoading(false);
-      }
+      userInfo.userData.cart
+        ? setCartId(userInfo.userData.cart)
+        : setCartId([]);
+
+      setIsLoading(false);
     };
     getUserData();
-    console.log("data fetch");
   }, [userInfo]);
 
   // filtering cart item and getting quantity
@@ -190,6 +178,7 @@ const Cart = () => {
     };
 
     filterCart(cartId);
+    setCartItemCtx(cartId);
   }, [cartId]);
 
   ////// calc discount and discount price
