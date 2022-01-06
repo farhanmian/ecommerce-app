@@ -5,7 +5,8 @@ import NextLink from "next/link";
 import { Button, Typography, makeStyles, Card } from "@material-ui/core";
 import { Grid } from "@mui/material";
 import { ShoppingCart, Favorite } from "@mui/icons-material";
-import { doc, updateDoc, getFirestore } from "firebase/firestore";
+import { doc, updateDoc, getFirestore, getDoc } from "firebase/firestore";
+
 const db = getFirestore();
 
 import lamp from "../assets/img/headerlamp.png";
@@ -41,11 +42,6 @@ const useStyles = makeStyles({
   featuredProductViewBtnText: {
     lineHeight: "12px",
     textTransform: "capitalize",
-  },
-  latestProductCard: {
-    transition: "all .3s",
-    borderRadius: 2,
-    padding: 3,
   },
   uniqueFeatureOfLatestTrendingProductsBtn: {
     padding: "14px 24px",
@@ -100,6 +96,7 @@ const useStyles = makeStyles({
     textTransform: "capitalize",
     fontFamily: "lato",
     cursor: "pointer",
+    borderBottom: "2px solid transparent",
   },
   latestProductPrice: {
     fontFamily: "Josefin Sans",
@@ -118,6 +115,11 @@ const useStyles = makeStyles({
     alignItems: "center",
     justifyContent: "center",
   },
+  latestProductTitle: {
+    lineHeight: "18.75px",
+    transform: "rotate(0.36deg)",
+    borderBottom: "2px solid #EEEFFB",
+  },
 });
 
 const Home = () => {
@@ -134,7 +136,29 @@ const Home = () => {
   const [topCategoryActiveLink, setTopCategoryActiveLink] = useState("1");
   const [userCart, setUserCart] = useState([]);
   const [userWishlist, setUserWishlist] = useState([]);
-  const [isInitial, setIsInitial] = useState(true);
+
+  /////////// data send functions
+  const sendCartData = (cartData: number[]) => {
+    setCartItemCtx(cartData);
+    const sendData = async () => {
+      const userRef = doc(db, "users", userInfo.docId);
+      await updateDoc(userRef, {
+        cart: cartData,
+      });
+    };
+    console.log("sending cart data from index.tsx");
+    sendData();
+  };
+  const sendWishlistData = (wishlistData: number[]) => {
+    const sendData = async () => {
+      const userRef = doc(db, "users", userInfo.docId);
+      await updateDoc(userRef, {
+        wishlist: wishlistData,
+      });
+    };
+    console.log("sending wishlist data from index.tsx");
+    sendData();
+  };
 
   /////////////////// useEffect
   ///// managing price whenevery currency type changes
@@ -142,44 +166,29 @@ const Home = () => {
     setCurrency(currencyType === "usd" ? 1 : 75);
   }, [currencyType]);
 
-  ///////// setting user cart info
+  /**
+   * setting user cart info
+   */
   useEffect(() => {
     if (!userInfo) {
       return;
     }
     const getUserData = async () => {
-      userInfo.userData.cart
-        ? setUserCart(userInfo.userData.cart)
-        : setUserCart([]);
-
-      userInfo.userData.wishlist
-        ? setUserWishlist(userInfo.userData.wishlist)
-        : setUserWishlist([]);
+      const docRef = doc(db, "users", userInfo && userInfo.docId);
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+        console.log(data);
+        setUserCart(data.cart ? data.cart : []);
+        setUserWishlist(data.wishlist ? data.wishlist : []);
+      } else {
+        setUserCart([]);
+        setUserWishlist([]);
+      }
     };
     getUserData();
-  }, [userInfo && userInfo.userData]);
-
-  ///////// sending data whenever userWishlistItem or userCartItem state changes
-  useEffect(() => {
-    if (isInitial) {
-      setIsInitial(false);
-      return;
-    }
-    if (!userInfo) {
-      console.log("login to add to wishlist");
-      return;
-    }
-
-    const sendData = async () => {
-      const userRef = doc(db, "users", userInfo.docId);
-      await updateDoc(userRef, {
-        cart: userCart,
-        wishlist: userWishlist,
-      });
-    };
-    sendData();
-    setCartItemCtx(userCart);
-  }, [userCart, userWishlist]);
+    console.log("fetching data from index.tsx");
+  }, [userInfo]);
 
   //// filtering data
   const featuredProductData = storedData.filter((product) => {
@@ -205,9 +214,11 @@ const Home = () => {
       return;
     }
     if (userCart.includes(id)) {
-      const updatedCart = userCart.filter((ids) => ids !== id);
+      const updatedCart: number[] = userCart.filter((ids) => ids !== id);
       setUserCart(updatedCart);
+      sendCartData(updatedCart);
     } else {
+      sendCartData([...userCart, id]);
       setUserCart((prevId) => (prevId ? [...prevId, id] : [id]));
     }
   };
@@ -218,9 +229,13 @@ const Home = () => {
       return;
     }
     if (userWishlist.includes(id)) {
-      const updatedWishlist = userWishlist.filter((ids) => ids !== id);
+      const updatedWishlist: number[] = userWishlist.filter(
+        (ids) => ids !== id
+      );
       setUserWishlist(updatedWishlist);
+      sendWishlistData(updatedWishlist);
     } else {
+      sendWishlistData([...userWishlist, id]);
       setUserWishlist((prevId) => (prevId ? [...prevId, id] : [id]));
     }
   };
@@ -443,6 +458,10 @@ const Home = () => {
                     latestProductLink === `LatestProducts${link}`
                       ? "#FB2E86"
                       : "#151875",
+                  borderColor:
+                    latestProductLink === `LatestProducts${link}`
+                      ? "#FB2E86"
+                      : "transparent",
                 }}
                 onClick={() => {
                   setLatestProductLink(`LatestProducts${link}`);
@@ -471,59 +490,51 @@ const Home = () => {
                   key={i}
                 >
                   <Grid item className={styles.latestProduct}>
-                    <Card
-                      className={`${styles.latestProductCard} ${classes.latestProductCard}`}
-                    >
-                      <div className={styles.latestProductImgContainer}>
-                        {product.sale && (
-                          <span className={styles.latestProductSaleImg}>
-                            <Sale />
-                          </span>
-                        )}
-                        <Image src={product.img} alt={product.title} />
-                      </div>
-                      <div className={styles.productText}>
-                        <Typography
-                          variant="body2"
-                          className={classes.color151875}
-                          style={{
-                            lineHeight: "18.75px",
-                            transform: "rotate(0.36deg)",
-                          }}
-                        >
-                          {product.title}
-                        </Typography>
-                        <span className={styles.latestProductsPriceContainer}>
-                          <Typography
-                            variant="caption"
-                            className={`${classes.latestProductPrice} ${classes.displayFlex} ${classes.color151875}`}
-                          >
-                            {currency === 1 ? (
-                              <React.Fragment>&#36;</React.Fragment> // dollar
-                            ) : (
-                              <React.Fragment>&#8377;</React.Fragment> // rupee
-                            )}
-                            {product.price * currency}
-                          </Typography>
-                          <Typography
-                            variant="overline"
-                            style={{
-                              fontFamily: "Josefin Sans",
-                              textDecoration: "line-through",
-                            }}
-                            className={classes.displayFlex}
-                            color="secondary"
-                          >
-                            {currency === 1 ? (
-                              <React.Fragment>&#36;</React.Fragment> // dollar
-                            ) : (
-                              <React.Fragment>&#8377;</React.Fragment> // rupee
-                            )}
-                            {product.orignalPrice}
-                          </Typography>
+                    <div className={styles.latestProductImgContainer}>
+                      {product.sale && (
+                        <span className={styles.latestProductSaleImg}>
+                          <Sale />
                         </span>
-                      </div>
-                    </Card>
+                      )}
+                      <Image src={product.img} alt={product.title} />
+                    </div>
+                    <div className={styles.productText}>
+                      <Typography
+                        variant="body2"
+                        className={`${classes.latestProductTitle} ${classes.color151875}`}
+                      >
+                        {product.title}
+                      </Typography>
+                      <span className={styles.latestProductsPriceContainer}>
+                        <Typography
+                          variant="caption"
+                          className={`${classes.latestProductPrice} ${classes.displayFlex} ${classes.color151875}`}
+                        >
+                          {currency === 1 ? (
+                            <React.Fragment>&#36;</React.Fragment> // dollar
+                          ) : (
+                            <React.Fragment>&#8377;</React.Fragment> // rupee
+                          )}
+                          {product.price * currency}
+                        </Typography>
+                        <Typography
+                          variant="overline"
+                          style={{
+                            fontFamily: "Josefin Sans",
+                            textDecoration: "line-through",
+                          }}
+                          className={classes.displayFlex}
+                          color="secondary"
+                        >
+                          {currency === 1 ? (
+                            <React.Fragment>&#36;</React.Fragment> // dollar
+                          ) : (
+                            <React.Fragment>&#8377;</React.Fragment> // rupee
+                          )}
+                          {product.orignalPrice}
+                        </Typography>
+                      </span>
+                    </div>
                   </Grid>
                 </NextLink>
               )

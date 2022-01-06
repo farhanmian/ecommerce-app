@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from "react";
+import { doc, getDoc, updateDoc, getFirestore } from "firebase/firestore";
 import { useRouter } from "next/dist/client/router";
+import { useAppContext } from "../../../store/context/appContext";
+const db = getFirestore();
 import {
   Typography,
   makeStyles,
@@ -86,24 +89,32 @@ let isInitial = true;
 export default function ProductsList() {
   const classes = useStyles();
   const router = useRouter();
+  const { userInfo, setCartItemCtx } = useAppContext();
   const [sortBy, setSortBy] = useState("best match");
   const [page, setPage] = useState(1);
   const [viewType, setViewType] = useState("row");
+  const [userCartState, setUserCartState] = useState([]);
+  const [userWishlistState, setUserWishlistState] = useState([]);
 
   const query = router.query.searchResult;
   const searchQuery = query && query.toString().replace(/-/g, " ");
-  console.log(searchQuery);
 
-  /////// product filter
-  // const stars = [1, 2, 3, 4, 5];
-  // const priceCheckboxes = [
-  //   "$0.00 - $10.00",
-  //   "$10.00 - $30.00",
-  //   "$30.00 - $50.00",
-  //   "$50.00+",
-  // ];
+  const filteredData = storedData.filter((data) =>
+    data.type.includes(`${searchQuery}`)
+  );
 
-  /// handling smooth scrolling
+  /**
+   * handling page when viewtype changes
+   */
+  const pageCount = Math.ceil(
+    filteredData.length / (viewType === "row" ? 10 : 12)
+  );
+
+  //////////// useEffects
+
+  /**
+   * handling smooth scrolling
+   */
   useEffect(() => {
     if (isInitial) {
       isInitial = false;
@@ -115,21 +126,43 @@ export default function ProductsList() {
         .scrollIntoView({ behavior: "smooth" });
   }, [page]);
 
-  const filteredData = storedData.filter((data) =>
-    data.type.includes(`${searchQuery}`)
-  );
-
-  /// handling page when viewtype changes
-  const pageCount = Math.ceil(
-    filteredData.length / (viewType === "row" ? 10 : 12)
-  );
-
-  /// setting page whenever pagecount changes
+  /**
+   * setting page whenever pagecount changes
+   */
   useEffect(() => {
     if (pageCount && pageCount < page) {
       setPage(pageCount);
     }
   }, [pageCount]);
+
+  /**
+   * fetching user cart info
+   */
+
+  useEffect(() => {
+    if (!userInfo) {
+      return;
+    }
+    const getUserData = async () => {
+      const docRef = doc(db, "users", userInfo && userInfo.docId);
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+        setUserCartState(data.cart ? data.cart : []);
+        setUserWishlistState(data.wishlist ? data.wishlist : []);
+      } else {
+        setUserCartState([]);
+        setUserWishlistState([]);
+      }
+    };
+    getUserData();
+  }, [userInfo]);
+
+  useEffect(() => {
+    console.log(userCartState);
+  }, [userCartState]);
+
+  /////////////// function handlers
 
   const sortChangeHandler = (event) => {
     setSortBy(event.target.value);
@@ -141,11 +174,69 @@ export default function ProductsList() {
     setPage(value);
   };
 
+  /**
+   * function for sending cart data
+   */
+  const sendCartData = (cartData: number[]) => {
+    setCartItemCtx(cartData);
+    const sendData = async () => {
+      const userRef = doc(db, "users", userInfo.docId);
+      await updateDoc(userRef, {
+        cart: cartData,
+      });
+    };
+    sendData();
+  };
+
+  /**
+   * function for sending wishlist data
+   */
+  const sendWishlistData = (wishlistData: number[]) => {
+    const sendData = async () => {
+      const userRef = doc(db, "users", userInfo.docId);
+      await updateDoc(userRef, {
+        wishlist: wishlistData,
+      });
+    };
+    sendData();
+  };
+
+  const toggleCartHandler = (id: number) => {
+    if (!userInfo) {
+      console.log("login to buy");
+      return;
+    }
+    if (userCartState.includes(id)) {
+      const updatedCart = userCartState.filter((ids) => ids !== id);
+      setUserCartState(updatedCart);
+      sendCartData(updatedCart);
+    } else {
+      const data = [...userCartState, id];
+      sendCartData(data);
+      setUserCartState((prevId) => (prevId ? [...prevId, id] : [id]));
+    }
+  };
+
+  const toggleWishlistHandler = (id: number) => {
+    if (!userInfo) {
+      console.log("login to add to wishlist");
+      return;
+    }
+    if (userWishlistState.includes(id)) {
+      const updatedWishlist = userWishlistState.filter((ids) => ids !== id);
+      setUserWishlistState(updatedWishlist);
+      sendWishlistData(updatedWishlist);
+    } else {
+      sendWishlistData([...userWishlistState, id]);
+      setUserWishlistState((prevId) => (prevId ? [...prevId, id] : [id]));
+    }
+  };
+
   return filteredData && filteredData.length > 0 ? (
     <React.Fragment>
       <Header heading="Shop List" path="Shop List" />
 
-      {/* search control and information container  */}
+      {/** search control and information container  **/}
       <section
         id="searchControlInfoContainer"
         className={styles.searchControlInfoContainer}
@@ -267,6 +358,10 @@ export default function ProductsList() {
                   key={product.id}
                   product={product}
                   href={`${searchQuery}/${product.id}`}
+                  toggleCartHandler={toggleCartHandler}
+                  toggleWishlistHandler={toggleWishlistHandler}
+                  userCartState={userCartState}
+                  userWishlistState={userWishlistState}
                 />
               );
             })}

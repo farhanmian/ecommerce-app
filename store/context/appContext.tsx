@@ -30,6 +30,7 @@ const AppContext = createContext({
   setCurrencyType: null,
   cartLength: null,
   setCartItemCtx: null,
+  cartItemCtx: null,
 });
 
 export const AppWrapper = ({ children }) => {
@@ -92,11 +93,12 @@ export const AppWrapper = ({ children }) => {
       const transformedData = Object.keys(counts).map((key) => {
         return key;
       });
-
       setCartLength(transformedData.length);
     };
 
-    cartItemCtx && cartItemCtx.length > 0 && filterCart(cartItemCtx);
+    cartItemCtx && cartItemCtx.length > 0
+      ? filterCart(cartItemCtx)
+      : setCartLength(0);
   }, [cartItemCtx]);
 
   return (
@@ -108,6 +110,7 @@ export const AppWrapper = ({ children }) => {
         setCurrencyType,
         cartLength,
         setCartItemCtx,
+        cartItemCtx,
       }}
     >
       {children}

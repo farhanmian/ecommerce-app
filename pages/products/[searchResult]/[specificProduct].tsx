@@ -16,7 +16,7 @@ import {
 import { Favorite } from "@mui/icons-material";
 import Divider from "../../../components/partials/Divider/Divider";
 import { useAppContext } from "../../../store/context/appContext";
-import { doc, updateDoc, getFirestore } from "firebase/firestore";
+import { doc, updateDoc, getFirestore, getDoc } from "firebase/firestore";
 import Loading from "../../../components/partials/Loading/Loading";
 
 const db = getFirestore();
@@ -84,7 +84,6 @@ const SpecificProduct = () => {
   const productId = +router.query.specificProduct;
   const [userCartItem, setUserCartItem] = useState([]);
   const [userWishlistItem, setUserWishlistItem] = useState([]);
-  const [isInitial, setIsInitial] = useState(true);
 
   /// setting user cart info
   useEffect(() => {
@@ -92,38 +91,41 @@ const SpecificProduct = () => {
       return;
     }
     const getUserData = async () => {
-      userInfo.userData.cart
-        ? setUserCartItem(userInfo.userData.cart)
-        : setUserCartItem([]);
-
-      userInfo.userData.wishlist
-        ? setUserWishlistItem(userInfo.userData.cart)
-        : setUserWishlistItem([]);
+      const docRef = doc(db, "users", userInfo && userInfo.docId);
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+        setUserCartItem(data.cart ? data.cart : []);
+        setUserWishlistItem(data.wishlist ? data.wishlist : []);
+      } else {
+        setUserCartItem([]);
+        setUserWishlistItem([]);
+      }
     };
     getUserData();
-  }, [userInfo && userInfo.userData]);
+  }, [userInfo]);
 
   //// sending data whenever userWishlistItem or userCartItem state changes
-  useEffect(() => {
-    if (isInitial) {
-      setIsInitial(false);
-      return;
-    }
-    if (!userInfo) {
-      console.log("login to add to wishlist");
-      return;
-    }
+  // useEffect(() => {
+  //   if (isInitial) {
+  //     setIsInitial(false);
+  //     return;
+  //   }
+  //   if (!userInfo) {
+  //     console.log("login to add to wishlist");
+  //     return;
+  //   }
 
-    const sendData = async () => {
-      const userRef = doc(db, "users", userInfo.docId);
-      await updateDoc(userRef, {
-        cart: userCartItem,
-        wishlist: userWishlistItem,
-      });
-    };
-    sendData();
-    setCartItemCtx(userCartItem);
-  }, [userCartItem, userWishlistItem]);
+  //   const sendData = async () => {
+  //     const userRef = doc(db, "users", userInfo.docId);
+  //     await updateDoc(userRef, {
+  //       cart: userCartItem,
+  //       wishlist: userWishlistItem,
+  //     });
+  //   };
+  //   sendData();
+  //   setCartItemCtx(userCartItem);
+  // }, [userCartItem, userWishlistItem]);
 
   const product = specificItem(productId);
   const [productDetailsActiveLink, setProductDetailsActiveLink] =
@@ -137,15 +139,46 @@ const SpecificProduct = () => {
     "Video",
   ];
 
-  const addToCartHandler = (id) => {
+  /**
+   * function for sending cart data
+   */
+  const sendCartData = (cartData: number[]) => {
+    setCartItemCtx(cartData);
+    const sendData = async () => {
+      const userRef = doc(db, "users", userInfo.docId);
+      await updateDoc(userRef, {
+        cart: cartData,
+      });
+    };
+    sendData();
+  };
+
+  /**
+   * function for sending wishlist data
+   */
+  const sendWishlistData = (wishlistData: number[]) => {
+    const sendData = async () => {
+      const userRef = doc(db, "users", userInfo.docId);
+      await updateDoc(userRef, {
+        wishlist: wishlistData,
+      });
+    };
+    sendData();
+  };
+
+  const addToCartHandler = (id: number) => {
     if (!userInfo) {
       console.log("login to buy");
       return;
     }
+    const updateCartItem =
+      userCartItem.length > 0 ? [...userCartItem, id] : [id];
+    console.log(updateCartItem);
+    sendCartData(updateCartItem);
     setUserCartItem((prevId) => (prevId ? [...prevId, id] : [id]));
   };
 
-  const toggleWishlistHandler = (id) => {
+  const toggleWishlistHandler = (id: number) => {
     if (!userInfo) {
       console.log("login to add to wishlist");
       return;
@@ -153,7 +186,11 @@ const SpecificProduct = () => {
     if (userWishlistItem.includes(id)) {
       const updatedWishlist = userWishlistItem.filter((ids) => ids !== id);
       setUserWishlistItem(updatedWishlist);
+      sendWishlistData(updatedWishlist);
     } else {
+      const data =
+        userWishlistItem.length > 0 ? [...userWishlistItem, id] : [id];
+      console.log(data);
       setUserWishlistItem((prevId) => (prevId ? [...prevId, id] : [id]));
     }
   };

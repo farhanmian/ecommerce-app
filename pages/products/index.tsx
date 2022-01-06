@@ -6,7 +6,7 @@ import { productData } from "../../data/productData";
 import Divider from "../../components/partials/Divider/Divider";
 import GridProduct from "../../components/GridProduct/GridProduct";
 
-export default function Products() {
+const Products = () => {
   return (
     <React.Fragment>
       <Header heading="Products" path="Products" />
@@ -33,4 +33,6 @@ export default function Products() {
       <Divider />
     </React.Fragment>
   );
-}
+};
+
+export default Products;

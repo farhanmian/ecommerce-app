@@ -2,6 +2,14 @@ import "../styles/globals.css";
 import Layout from "../components/partials/Layout/Layout";
 import { ThemeProvider } from "@material-ui/core";
 import { initializeApp } from "firebase/app";
+import NProgress from "nprogress";
+import Router from "next/router";
+
+Router.events.on("routeChangeStart", (url) => {
+  NProgress.start();
+});
+Router.events.on("routeChangeComplete", () => NProgress.done());
+Router.events.on("routeChangeError", () => NProgress.done());
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const firebaseApp = initializeApp({

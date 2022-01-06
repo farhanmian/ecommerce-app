@@ -128,32 +128,32 @@ const useStyles = makeStyles({
   },
 });
 
+let isInitial = true;
+
 const Cart = () => {
   const classes = useStyles();
-  const { userInfo, setCartItemCtx } = useAppContext();
+  const { userInfo, setCartItemCtx, cartItemCtx } = useAppContext();
   const heading = ["Product", "Price", "Quantity", "Total"];
   const [priceState, setPriceState] = useState(0);
   const [showModal, setShowModal] = useState(false);
   const [cartItemContainer, setCartItemContainer] = useState([]);
   const [cartId, setCartId] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [isInitial, setIsInitial] = useState(true);
 
-  /// managing user cart ids
+  /*
+   *managing user cart ids
+   */
   useEffect(() => {
     if (!userInfo) {
       return;
     }
-    const getUserData = async () => {
+    const getUserData = () => {
       setIsLoading(true);
-      userInfo.userData.cart
-        ? setCartId(userInfo.userData.cart)
-        : setCartId([]);
-
+      cartItemCtx ? setCartId(cartItemCtx) : setCartId([]);
       setIsLoading(false);
     };
     getUserData();
-  }, [userInfo]);
+  }, [cartItemCtx]);
 
   // filtering cart item and getting quantity
   useEffect(() => {
@@ -178,7 +178,6 @@ const Cart = () => {
     };
 
     filterCart(cartId);
-    setCartItemCtx(cartId);
   }, [cartId]);
 
   ////// calc discount and discount price
@@ -210,16 +209,18 @@ const Cart = () => {
   const deleteCartHandler = (id: number) => {
     const updatedCartItemContainer = cartId.filter((cartId) => cartId !== id);
     setCartId(updatedCartItemContainer);
+    setCartItemCtx(updatedCartItemContainer);
   };
 
   ///// showing modal when click on clear cart
   const clearCartHandler = () => {
     setShowModal(true);
   };
-  /// clear modal handler
+  /// clearing user cart, when user clicked clear cart.
   const modalProceedHandler = () => {
     setShowModal(false);
     setCartId([]);
+    setCartItemCtx([]);
   };
 
   ///// decreasing cart item handler
@@ -229,6 +230,7 @@ const Cart = () => {
     if (index !== -1) {
       array.splice(index, 1);
       setCartId(array);
+      setCartItemCtx(array);
     }
   };
 
@@ -239,13 +241,14 @@ const Cart = () => {
     if (quantity.length >= 8) {
       return;
     }
+    setCartItemCtx([...cartId, id]);
     setCartId((prevState) => [...prevState, id]);
   };
 
   /// updating cartId whenever cartId state changes
   useEffect(() => {
     if (isInitial) {
-      setIsInitial(false);
+      isInitial = false;
       return;
     }
 
@@ -256,8 +259,9 @@ const Cart = () => {
       });
     };
     updateCartData();
+    // setCartItemCtx(cartId);
 
-    console.log("sending Data");
+    console.log("updating cart Data from cart.tsx");
   }, [cartId]);
 
   return (
