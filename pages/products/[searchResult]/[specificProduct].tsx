@@ -75,12 +75,18 @@ const useStyles = makeStyles({
   filledHeartIcon: {
     transform: "scale(1.15)",
   },
+  addToCartBtn: {
+    textTransform: "capitalize",
+    minWidth: 110,
+    minHeight: 36,
+  },
 });
 
 const SpecificProduct = () => {
   const { userInfo, accountLoading, setCartItemCtx } = useAppContext();
   const classes = useStyles();
   const router = useRouter();
+  const productType = `${router.query.searchResult}`;
   const productId = +router.query.specificProduct;
   const [userCartItem, setUserCartItem] = useState([]);
   const [userWishlistItem, setUserWishlistItem] = useState([]);
@@ -105,29 +111,7 @@ const SpecificProduct = () => {
     getUserData();
   }, [userInfo]);
 
-  //// sending data whenever userWishlistItem or userCartItem state changes
-  // useEffect(() => {
-  //   if (isInitial) {
-  //     setIsInitial(false);
-  //     return;
-  //   }
-  //   if (!userInfo) {
-  //     console.log("login to add to wishlist");
-  //     return;
-  //   }
-
-  //   const sendData = async () => {
-  //     const userRef = doc(db, "users", userInfo.docId);
-  //     await updateDoc(userRef, {
-  //       cart: userCartItem,
-  //       wishlist: userWishlistItem,
-  //     });
-  //   };
-  //   sendData();
-  //   setCartItemCtx(userCartItem);
-  // }, [userCartItem, userWishlistItem]);
-
-  const product = specificItem(productId);
+  const product = specificItem(productId, productType);
   const [productDetailsActiveLink, setProductDetailsActiveLink] =
     useState("Description");
 
@@ -191,6 +175,7 @@ const SpecificProduct = () => {
       const data =
         userWishlistItem.length > 0 ? [...userWishlistItem, id] : [id];
       console.log(data);
+      sendWishlistData(data);
       setUserWishlistItem((prevId) => (prevId ? [...prevId, id] : [id]));
     }
   };
@@ -259,14 +244,6 @@ const SpecificProduct = () => {
                     </div>
 
                     <Typography
-                      variant="subtitle1"
-                      style={{ fontSize: 16, marginBottom: 12 }}
-                      className={classes.color0D134E}
-                    >
-                      Color: {"Brown"}
-                    </Typography>
-
-                    <Typography
                       variant="body2"
                       style={{ color: "#A9ACC6", fontFamily: "Josefin Sans" }}
                     >
@@ -276,7 +253,7 @@ const SpecificProduct = () => {
                     <div className={styles.addToCartContainer}>
                       <Button
                         variant="contained"
-                        style={{ textTransform: "capitalize" }}
+                        className={classes.addToCartBtn}
                         color="secondary"
                         disableElevation
                         onClick={() => {

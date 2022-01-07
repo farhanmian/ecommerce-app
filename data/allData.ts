@@ -15,6 +15,7 @@ import chair14 from "../assets/img/chair14.png";
 import chair15 from "../assets/img/chair15.png";
 import chair16 from "../assets/img/chair16.png";
 import chair17 from "../assets/img/chair17.png";
+import couch1 from "../assets/img/couch.png";
 import couch2 from "../assets/img/couch2.png";
 import couch3 from "../assets/img/couch3.png";
 import couch4 from "../assets/img/couch4.png";
@@ -434,6 +435,19 @@ export const storedData: StoredDataType[] = [
     category: [],
     categoryLink: [],
     id: 28,
+    sale: false,
+  },
+  {
+    img: couch1,
+    title: "1 Seater Sofa",
+    price: 32,
+    orignalPrice: 56,
+    rating: 4,
+    text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Magna in est adipiscing in phasellus non in justo.",
+    type: ["couch", "blue couch", "sofa", "chair", "chairs"],
+    category: ["LatestProducts"],
+    categoryLink: ["LatestProductsBest Seller"],
+    id: 79,
     sale: false,
   },
   {
@@ -1271,8 +1285,14 @@ export const storedData: StoredDataType[] = [
     sale: false,
   },
 ];
-// id 60 and 76, 77 is taken
+// id 60 and 76, 77, 78, 79 is taken
 
-export const specificItem = (id: number) => {
-  return storedData.filter((item) => item.id === id).pop();
+export const specificItem = (id: number, productType: string) => {
+  return storedData
+    .filter((item) => {
+      if (item.id === id && item.type.includes(productType)) {
+        return item;
+      }
+    })
+    .pop();
 };

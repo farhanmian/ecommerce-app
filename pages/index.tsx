@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import styles from "../styles/Home.module.css";
 import Image from "next/image";
 import NextLink from "next/link";
-import { Button, Typography, makeStyles, Card } from "@material-ui/core";
+import { Button, Typography, makeStyles } from "@material-ui/core";
 import { Grid } from "@mui/material";
 import { ShoppingCart, Favorite } from "@mui/icons-material";
 import { doc, updateDoc, getFirestore, getDoc } from "firebase/firestore";
@@ -32,6 +32,7 @@ import { storedData } from "../data/allData";
 import Divider from "../components/partials/Divider/Divider";
 import { useAppContext } from "../store/context/appContext";
 import Features from "../components/partials/Features/Features";
+import { useRouter } from "next/dist/client/router";
 
 const useStyles = makeStyles({
   headerBtn: {
@@ -124,6 +125,7 @@ const useStyles = makeStyles({
 
 const Home = () => {
   const classes = useStyles();
+  const router = useRouter();
   const { currencyType, userInfo, setCartItemCtx } = useAppContext();
   const [currency, setCurrency] = useState(0);
 
@@ -624,8 +626,15 @@ const Home = () => {
                 className={`${classes.btnEffect} ${classes.uniqueFeatureOfLatestTrendingProductsBtn}`}
                 color="secondary"
                 disableElevation
+                onClick={() => {
+                  if (userCart.includes(79)) {
+                    router.push("/cart");
+                    return;
+                  }
+                  toggleCartHandler(79);
+                }}
               >
-                Add To Cart
+                {userCart.includes(79) ? "Go" : "Add"} To Cart
               </Button>
               <span className={styles.featureOfLatestTrendingPrice}>
                 <Typography
