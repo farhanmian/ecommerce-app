@@ -165,7 +165,9 @@ const Home = () => {
   };
 
   /////////////////// useEffect
-  ///// managing price whenevery currency type changes
+  /**
+   * managing price whenevery currency type changes
+   */
   useEffect(() => {
     setCurrency(currencyType === "usd" ? 1 : 75);
   }, [currencyType]);

@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Grid, makeStyles, Card, Typography } from "@material-ui/core";
 import styles from "../../styles/GridProduct.module.css";
 import { ProductPageData as GridProductType } from "../../store/types/types";
 import NextLink from "next/link";
 import Image from "next/image";
+import { useAppContext } from "../../store/context/appContext";
 
 const useStyles = makeStyles({
   color151875: {
@@ -32,6 +33,16 @@ const GridProduct: React.FC<{ product: GridProductType; href: string }> = ({
   href,
 }) => {
   const classes = useStyles();
+  const { currencyType } = useAppContext();
+  const [currency, setCurrency] = useState(0);
+
+  /**
+   * managing price whenevery currency type changes
+   */
+  useEffect(() => {
+    setCurrency(currencyType === "usd" ? 1 : 75);
+  }, [currencyType]);
+
   return (
     <Grid item>
       <NextLink href={href}>
@@ -65,7 +76,12 @@ const GridProduct: React.FC<{ product: GridProductType; href: string }> = ({
                 }}
                 className={classes.color151875}
               >
-                ${product.price.toFixed(2)}
+                {currency === 1 ? (
+                  <React.Fragment>&#36;</React.Fragment> // dollar
+                ) : (
+                  <React.Fragment>&#8377;</React.Fragment> // rupee
+                )}
+                {(product.price * currency).toFixed(2)}
               </Typography>
 
               <Typography
@@ -76,7 +92,12 @@ const GridProduct: React.FC<{ product: GridProductType; href: string }> = ({
                 }}
                 className={classes.colorFB2E86}
               >
-                ${product.orignalPrice.toFixed(2)}
+                {currency === 1 ? (
+                  <React.Fragment>&#36;</React.Fragment> // dollar
+                ) : (
+                  <React.Fragment>&#8377;</React.Fragment> // rupee
+                )}
+                {(product.orignalPrice * currency).toFixed(2)}
               </Typography>
             </div>
           </div>

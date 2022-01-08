@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "../../styles/RowProduct.module.css";
 import { Card, Typography, makeStyles, Grid, Button } from "@material-ui/core";
 import Image from "next/image";
@@ -52,12 +52,20 @@ const RowProduct: React.FC<{
   userCartState,
   userWishlistState,
 }) => {
-  const { accountLoading } = useAppContext();
+  const { accountLoading, currencyType } = useAppContext();
   const router = useRouter();
   const classes = useStyles();
 
   //////// states
   const [hover, setHover] = useState(false);
+  const [currency, setCurrency] = useState(0);
+
+  /**
+   * managing price whenevery currency type changes
+   */
+  useEffect(() => {
+    setCurrency(currencyType === "usd" ? 1 : 75);
+  }, [currencyType]);
 
   const stars = [1, 2, 3, 4, 5];
 
@@ -106,7 +114,12 @@ const RowProduct: React.FC<{
                 marginRight: 9,
               }}
             >
-              ${product.price}
+              {currency === 1 ? (
+                <React.Fragment>&#36;</React.Fragment> // dollar
+              ) : (
+                <React.Fragment>&#8377;</React.Fragment> // rupee
+              )}
+              {product.price * currency}
             </Typography>
             <Typography
               variant="caption"
@@ -117,7 +130,12 @@ const RowProduct: React.FC<{
                 marginRight: 16,
               }}
             >
-              ${product.orignalPrice}
+              {currency === 1 ? (
+                <React.Fragment>&#36;</React.Fragment> // dollar
+              ) : (
+                <React.Fragment>&#8377;</React.Fragment> // rupee
+              )}
+              {product.price * currency}
             </Typography>
             <span>
               {stars.map((star) => {
@@ -168,7 +186,12 @@ const RowProduct: React.FC<{
                 <Heart />
               )}
             </Button>
-            <Button className={classes.btn}>
+            <Button
+              className={classes.btn}
+              onClick={() => {
+                router.push(`/products/${product.type[0]}/${product.id}`);
+              }}
+            >
               {accountLoading ? (
                 <Loading width={15} color="#111C85" />
               ) : (
