@@ -797,40 +797,42 @@ const Home = () => {
           <div className={styles.otherTrendingChairContainer}>
             {otherTrendingChairData.map((product, i) => {
               return (
-                <div key={i} className={styles.otherTrendingChair}>
-                  <div className={styles.otherTrendingChairImage}>
-                    <Image src={product.img} alt={product.title} />
+                <NextLink href={`/products/${product.type[0]}/${product.id}`}>
+                  <div key={i} className={styles.otherTrendingChair}>
+                    <div className={styles.otherTrendingChairImage}>
+                      <Image src={product.img} alt={product.title} />
+                    </div>
+                    <div className={styles.otherTrendingChairText}>
+                      <Typography
+                        variant="subtitle2"
+                        style={{
+                          lineHeight: "18.75px",
+                          marginBottom: 5,
+                          fontWeight: "bold",
+                        }}
+                        className={classes.color151875}
+                      >
+                        {product.title}
+                      </Typography>
+                      <Typography
+                        variant="overline"
+                        style={{
+                          textDecoration: "line-through",
+                          lineHeight: "12px",
+                          fontWeight: 400,
+                        }}
+                        className={`${classes.displayFlex} ${classes.color151875}`}
+                      >
+                        {currency === 1 ? (
+                          <React.Fragment>&#36;</React.Fragment> // dollar
+                        ) : (
+                          <React.Fragment>&#8377;</React.Fragment> // rupee
+                        )}
+                        {(product.price * currency).toFixed(2)}
+                      </Typography>
+                    </div>
                   </div>
-                  <div className={styles.otherTrendingChairText}>
-                    <Typography
-                      variant="subtitle2"
-                      style={{
-                        lineHeight: "18.75px",
-                        marginBottom: 5,
-                        fontWeight: "bold",
-                      }}
-                      className={classes.color151875}
-                    >
-                      {product.title}
-                    </Typography>
-                    <Typography
-                      variant="overline"
-                      style={{
-                        textDecoration: "line-through",
-                        lineHeight: "12px",
-                        fontWeight: 400,
-                      }}
-                      className={`${classes.displayFlex} ${classes.color151875}`}
-                    >
-                      {currency === 1 ? (
-                        <React.Fragment>&#36;</React.Fragment> // dollar
-                      ) : (
-                        <React.Fragment>&#8377;</React.Fragment> // rupee
-                      )}
-                      {(product.price * currency).toFixed(2)}
-                    </Typography>
-                  </div>
-                </div>
+                </NextLink>
               );
             })}
           </div>
