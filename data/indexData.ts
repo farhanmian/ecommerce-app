@@ -49,6 +49,7 @@ export const discountItemData = [
       "Simple neutral colours.",
       "Frame Material: Solid Wood.",
     ],
+    link: "/products/chair",
   },
   {
     offer: "18% Discount Of All Products",
@@ -69,6 +70,7 @@ export const discountItemData = [
       "Simple neutral colours.",
       "Material expose like metals",
     ],
+    link: "/products/chair",
   },
   {
     offer: "25% Discount Of All Products",
@@ -84,6 +86,7 @@ export const discountItemData = [
       "Simple neutral colours.",
       "Material expose like metals",
     ],
+    link: "/products/sofa",
   },
 ];
 export const topCategoryBtnData = ["1", "2", "3"];

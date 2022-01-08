@@ -136,6 +136,8 @@ const Home = () => {
   const [discountItemActiveLink, setDiscountItemActiveLink] =
     useState("Wood Chair");
   const [topCategoryActiveLink, setTopCategoryActiveLink] = useState("1");
+  const [featuredProductsActiveLink, setfeaturedProductsActiveLink] =
+    useState("featuredProducts1");
   const [userCart, setUserCart] = useState([]);
   const [userWishlist, setUserWishlist] = useState([]);
 
@@ -208,6 +210,8 @@ const Home = () => {
   const otherTrendingChairData = storedData.filter((product) => {
     return product.category.includes("OtherTrendingChairData");
   });
+
+  const featuredProductsBtns = [1, 2, 3, 4];
 
   /////// function handlers
   const toggleCartHandler = (id: number) => {
@@ -340,102 +344,120 @@ const Home = () => {
           <div className={styles.featuredProductsInnerContainer}>
             {featuredProductData.map((product, i) => {
               return (
-                <div
-                  key={i}
-                  className={`${styles.featuredProduct} ${classes.featuredProduct}`}
-                >
-                  <div className={styles.featuredProductIconContainer}>
-                    <span
-                      className={styles.featuredProductIcon}
-                      onClick={() => {
-                        toggleCartHandler(product.id);
-                      }}
-                    >
-                      {userCart.includes(product.id) ? (
-                        <ShoppingCart />
-                      ) : (
-                        <AddToCart />
-                      )}
-                    </span>
-                    <span
-                      className={styles.featuredProductIcon}
-                      onClick={() => {
-                        toggleWishlistHandler(product.id);
-                      }}
-                    >
-                      {userWishlist.includes(product.id) ? (
-                        <Favorite />
-                      ) : (
-                        <Heart />
-                      )}
-                    </span>
-                    <span className={styles.featuredProductIcon}>
-                      <ZoomGlass />
-                    </span>
-                  </div>
-                  <div className={styles.featuredProductImgContainer}>
-                    <Image src={product.img} alt={product.title} />
-                    <NextLink
-                      href={`/products/${product.type[0]}/${product.id}`}
-                    >
-                      <Button
-                        variant="contained"
-                        className={`${styles.featuredProductViewBtn} ${classes.greenBtn}`}
-                        disableElevation
+                product.categoryLink.includes(featuredProductsActiveLink) && (
+                  <div
+                    key={i}
+                    className={`${styles.featuredProduct} ${classes.featuredProduct}`}
+                  >
+                    <div className={styles.featuredProductIconContainer}>
+                      <span
+                        className={styles.featuredProductIcon}
+                        onClick={() => {
+                          toggleCartHandler(product.id);
+                        }}
                       >
-                        <Typography
-                          variant="overline"
-                          className={classes.featuredProductViewBtnText}
+                        {userCart.includes(product.id) ? (
+                          <ShoppingCart />
+                        ) : (
+                          <AddToCart />
+                        )}
+                      </span>
+                      <span
+                        className={styles.featuredProductIcon}
+                        onClick={() => {
+                          toggleWishlistHandler(product.id);
+                        }}
+                      >
+                        {userWishlist.includes(product.id) ? (
+                          <Favorite />
+                        ) : (
+                          <Heart />
+                        )}
+                      </span>
+                      <span
+                        className={styles.featuredProductIcon}
+                        onClick={() => {
+                          router.push(
+                            `/products/${product.type[0]}/${product.id}`
+                          );
+                        }}
+                      >
+                        <ZoomGlass />
+                      </span>
+                    </div>
+                    <div className={styles.featuredProductImgContainer}>
+                      <Image src={product.img} alt={product.title} />
+                      <NextLink
+                        href={`/products/${product.type[0]}/${product.id}`}
+                      >
+                        <Button
+                          variant="contained"
+                          className={`${styles.featuredProductViewBtn} ${classes.greenBtn}`}
+                          disableElevation
                         >
-                          View Details
-                        </Typography>
-                      </Button>
-                    </NextLink>
+                          <Typography
+                            variant="overline"
+                            className={classes.featuredProductViewBtnText}
+                          >
+                            View Details
+                          </Typography>
+                        </Button>
+                      </NextLink>
+                    </div>
+                    <Typography
+                      variant="subtitle1"
+                      color="secondary"
+                      style={{ lineHeight: "21.6px", fontWeight: 700 }}
+                    >
+                      {product.title}
+                    </Typography>
+                    <div className={styles.productImageBtnContainer}>
+                      <span className={styles.productImgBtn1} />
+                      <span className={styles.productImgBtn2} />
+                      <span className={styles.productImgBtn3} />
+                    </div>
+                    <Typography
+                      variant="caption"
+                      style={{ lineHeight: "16.41px" }}
+                    >
+                      Code - Y523201
+                    </Typography>
+                    <Typography
+                      variant="caption"
+                      style={{
+                        lineHeight: "16.41px",
+                      }}
+                      className={classes.displayFlex}
+                    >
+                      {currency === 1 ? (
+                        <React.Fragment>&#36;</React.Fragment> // dollar
+                      ) : (
+                        <React.Fragment>&#8377;</React.Fragment> // rupee
+                      )}
+                      {(product.price * currency).toFixed(2)}
+                    </Typography>
                   </div>
-                  <Typography
-                    variant="subtitle1"
-                    color="secondary"
-                    style={{ lineHeight: "21.6px", fontWeight: 700 }}
-                  >
-                    {product.title}
-                  </Typography>
-                  <div className={styles.productImageBtnContainer}>
-                    <span className={styles.productImgBtn1} />
-                    <span className={styles.productImgBtn2} />
-                    <span className={styles.productImgBtn3} />
-                  </div>
-                  <Typography
-                    variant="caption"
-                    style={{ lineHeight: "16.41px" }}
-                  >
-                    Code - Y523201
-                  </Typography>
-                  <Typography
-                    variant="caption"
-                    style={{
-                      lineHeight: "16.41px",
-                    }}
-                    className={classes.displayFlex}
-                  >
-                    {currency === 1 ? (
-                      <React.Fragment>&#36;</React.Fragment> // dollar
-                    ) : (
-                      <React.Fragment>&#8377;</React.Fragment> // rupee
-                    )}
-                    {(product.price * currency).toFixed(2)}
-                  </Typography>
-                </div>
+                )
               );
             })}
           </div>
 
           <div className={styles.featuredProductsBtnContainer}>
-            <span
-              className={`${styles.featuredProductsBtn} ${styles.featuredProductsActiveBtn}`}
-            />
-            <span className={styles.featuredProductsBtn} />
-            <span className={styles.featuredProductsBtn} />
-            <span className={styles.featuredProductsBtn} />
+            {featuredProductsBtns.map((btn) => {
+              return (
+                <span
+                  key={btn}
+                  className={`${styles.featuredProductsBtn} ${
+                    featuredProductsActiveLink === `featuredProducts${btn}`
+                      ? styles.featuredProductsActiveBtn
+                      : ""
+                  }`}
+                  onClick={() => {
+                    setfeaturedProductsActiveLink(`featuredProducts${btn}`);
+                  }}
+                />
+              );
+            })}
           </div>
         </div>
       </section>
@@ -533,7 +555,7 @@ const Home = () => {
                           ) : (
                             <React.Fragment>&#8377;</React.Fragment> // rupee
                           )}
-                          {product.orignalPrice}
+                          {product.orignalPrice * currency}
                         </Typography>
                       </span>
                     </div>
@@ -914,22 +936,24 @@ const Home = () => {
                       })}
                     </Grid>
 
-                    <Button
-                      variant="contained"
-                      color="secondary"
-                      style={{
-                        width: 200,
-                        height: 57,
-                        textTransform: "capitalize",
-                        borderRadius: 2,
-                        fontSize: 17,
-                        lineHeight: "20px",
-                      }}
-                      className={classes.btnEffect}
-                      disableElevation
-                    >
-                      Shop Now
-                    </Button>
+                    <NextLink href={item.link}>
+                      <Button
+                        variant="contained"
+                        color="secondary"
+                        style={{
+                          width: 200,
+                          height: 57,
+                          textTransform: "capitalize",
+                          borderRadius: 2,
+                          fontSize: 17,
+                          lineHeight: "20px",
+                        }}
+                        className={classes.btnEffect}
+                        disableElevation
+                      >
+                        Shop Now
+                      </Button>
+                    </NextLink>
                   </div>
                   <div
                     className={styles.discountItemImage}

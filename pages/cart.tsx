@@ -457,18 +457,20 @@ const Cart = () => {
                   </Typography>
                 </span>
 
-                <Button
-                  variant="contained"
-                  className={`${classes.btnEffect} ${classes.checkoutBtn}`}
-                  disableElevation
-                >
-                  <Typography
-                    variant="caption"
-                    className={classes.checkoutBtnText}
+                <NextLink href="/details-confirmation">
+                  <Button
+                    variant="contained"
+                    className={`${classes.btnEffect} ${classes.checkoutBtn}`}
+                    disableElevation
                   >
-                    proceed to checkout
-                  </Typography>
-                </Button>
+                    <Typography
+                      variant="caption"
+                      className={classes.checkoutBtnText}
+                    >
+                      proceed to checkout
+                    </Typography>
+                  </Button>
+                </NextLink>
               </div>
 
               <Button

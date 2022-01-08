@@ -3,6 +3,7 @@ import styles from "../styles/OrderConfirmed.module.css";
 import Header from "../components/partials/Header/Header";
 import { Typography, makeStyles, Button } from "@material-ui/core";
 import Image from "next/image";
+import NextLink from "next/link";
 import clock from "../assets/img/clock.png";
 import checkMark from "../assets/img/checkmark.png";
 import taskbook from "../assets/img/taskbook.png";
@@ -39,7 +40,7 @@ const OrderConfirmed = () => {
 
   return (
     <React.Fragment>
-      <Header heading="order completed" path="order completed" />
+      <Header heading="order completed" path="Order-Completed" />
 
       <section className={styles.orderConfirmed}>
         <div className={styles.innerContainer}>
@@ -62,14 +63,16 @@ const OrderConfirmed = () => {
               be completed within 3-6 hours. You will receive an email
               confirmation when your order is completed.
             </Typography>
-            <Button
-              variant="contained"
-              className={classes.btn}
-              color="secondary"
-              disableElevation
-            >
-              continue shopping
-            </Button>
+            <NextLink href="/">
+              <Button
+                variant="contained"
+                className={classes.btn}
+                color="secondary"
+                disableElevation
+              >
+                continue shopping
+              </Button>
+            </NextLink>
           </div>
         </div>
       </section>

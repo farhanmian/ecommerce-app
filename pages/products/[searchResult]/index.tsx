@@ -31,6 +31,12 @@ const useStyles = makeStyles({
   color151875: {
     color: "#151875",
   },
+  searchResultLength: {
+    fontSize: 13,
+    fontFamily: "lato",
+    textTransform: "capitalize",
+    fontWeight: "bold",
+  },
   select: {
     fontSize: 16,
     marginRight: 4,
@@ -232,173 +238,189 @@ export default function ProductsList() {
     }
   };
 
-  return filteredData && filteredData.length > 0 ? (
+  const headerText =
+    filteredData && filteredData.length > 0 ? "Shop List" : "No Result Found";
+  return (
     <React.Fragment>
-      <Header heading="Shop List" path="Shop List" />
+      <Header heading={headerText} path={headerText.replace(/\s/g, "-")} />
 
-      {/** search control and information container  **/}
-      <section
-        id="searchControlInfoContainer"
-        className={styles.searchControlInfoContainer}
-      >
-        <div className={styles.searchInfo}>
-          <Typography
-            variant="h6"
-            className={classes.color151875}
-            style={{ textTransform: "capitalize" }}
+      {filteredData && filteredData.length > 0 ? (
+        <React.Fragment>
+          {/** search control and information container  **/}
+          <section
+            id="searchControlInfoContainer"
+            className={styles.searchControlInfoContainer}
           >
-            {`${searchQuery} Search Result`}
-          </Typography>
-          <Typography
-            variant="overline"
-            style={{ fontFamily: "lato", textTransform: "capitalize" }}
-            color="primary"
-          >
-            About {filteredData.length} results
-          </Typography>
-        </div>
-        {/* result per page */}
-        <span style={{ marginRight: 27 }} className={styles.displayflex}>
-          <Typography
-            variant="subtitle2"
-            style={{ color: "#3F509E", marginRight: 8 }}
-          >
-            Per Page:
-          </Typography>
-          <input
-            className={styles.input}
-            style={{ width: 55, height: 25 }}
-            value={viewType === "row" ? "10" : "12"}
-            readOnly
-          />
-        </span>
-
-        <div className={styles.displayflex}>
-          <Typography
-            variant="subtitle2"
-            style={{ color: "#3F509E", marginRight: 8 }}
-          >
-            Sort By:
-          </Typography>
-          <span className={styles.searchControlSortDropdown}>
-            <Select
-              className={classes.select}
-              labelId="demo-customized-select-label"
-              id="demo-customized-select"
-              value={sortBy}
-              onChange={sortChangeHandler}
-              disableUnderline
-            >
-              {sortBy === "best match" ? (
-                <MenuItem className={classes.menuItem} value={sortBy}>
-                  Best Match
-                </MenuItem>
-              ) : (
-                <MenuItem className={classes.menuItem} value="best match">
-                  Best Match
-                </MenuItem>
-              )}
-              <MenuItem className={classes.menuItem} value="low to high">
-                Low To High
-              </MenuItem>
-
-              <MenuItem className={classes.menuItem} value="high to low">
-                High To Low
-              </MenuItem>
-            </Select>
-            <ArrowDown />
-          </span>
-        </div>
-
-        <span className={styles.displayflex}>
-          <Typography variant="subtitle2" style={{ color: "#3F509E" }}>
-            View:
-          </Typography>
-          <span className={styles.searchControlViewIconContainer}>
-            <span
-              className={styles.displayflex}
-              onClick={() => {
-                setViewType("grid");
-              }}
-            >
-              <GridIcon />
+            <div className={styles.searchInfo}>
+              <Typography
+                variant="h6"
+                className={classes.color151875}
+                style={{ textTransform: "capitalize" }}
+              >
+                {`${searchQuery} Search Result`}
+              </Typography>
+              <Typography
+                variant="overline"
+                className={classes.searchResultLength}
+                color="secondary"
+              >
+                About {filteredData.length} results
+              </Typography>
+            </div>
+            {/* result per page */}
+            <span style={{ marginRight: 27 }} className={styles.displayflex}>
+              <Typography
+                variant="subtitle2"
+                style={{ color: "#3F509E", marginRight: 8 }}
+              >
+                Per Page:
+              </Typography>
+              <input
+                className={styles.input}
+                style={{ width: 55, height: 25 }}
+                value={viewType === "row" ? "10" : "12"}
+                readOnly
+              />
             </span>
-            <span
-              className={styles.displayflex}
-              onClick={() => {
-                setViewType("row");
-              }}
-            >
-              <Menu />
-            </span>
-          </span>
-          <input
-            className={styles.input}
-            value={viewType}
-            readOnly
-            style={{ width: 162, height: 30, textTransform: "capitalize" }}
-          />
-        </span>
-      </section>
 
-      {/* search result container */}
-      <section className={styles.searchResultsContainer}>
-        {/* sidebar */}
-        <Grid
-          columnGap="53px"
-          rowGap={viewType === "row" ? "28px" : "80px"}
-          container
-          justifyContent="center"
-          className={styles.searchResultsInnerContainer}
+            <div className={styles.displayflex}>
+              <Typography
+                variant="subtitle2"
+                style={{ color: "#3F509E", marginRight: 8 }}
+              >
+                Sort By:
+              </Typography>
+              <span className={styles.searchControlSortDropdown}>
+                <Select
+                  className={classes.select}
+                  labelId="demo-customized-select-label"
+                  id="demo-customized-select"
+                  value={sortBy}
+                  onChange={sortChangeHandler}
+                  disableUnderline
+                >
+                  {sortBy === "best match" ? (
+                    <MenuItem className={classes.menuItem} value={sortBy}>
+                      Best Match
+                    </MenuItem>
+                  ) : (
+                    <MenuItem className={classes.menuItem} value="best match">
+                      Best Match
+                    </MenuItem>
+                  )}
+                  <MenuItem className={classes.menuItem} value="low to high">
+                    Low To High
+                  </MenuItem>
+
+                  <MenuItem className={classes.menuItem} value="high to low">
+                    High To Low
+                  </MenuItem>
+                </Select>
+                <ArrowDown />
+              </span>
+            </div>
+
+            <span className={styles.displayflex}>
+              <Typography variant="subtitle2" style={{ color: "#3F509E" }}>
+                View:
+              </Typography>
+              <span className={styles.searchControlViewIconContainer}>
+                <span
+                  className={styles.displayflex}
+                  onClick={() => {
+                    setViewType("grid");
+                  }}
+                >
+                  <GridIcon />
+                </span>
+                <span
+                  className={styles.displayflex}
+                  onClick={() => {
+                    setViewType("row");
+                  }}
+                >
+                  <Menu />
+                </span>
+              </span>
+              <input
+                className={styles.input}
+                value={viewType}
+                readOnly
+                style={{ width: 162, height: 30, textTransform: "capitalize" }}
+              />
+            </span>
+          </section>
+          {/* search result container */}
+          <section className={styles.searchResultsContainer}>
+            {/* sidebar */}
+            <Grid
+              columnGap="53px"
+              rowGap={viewType === "row" ? "28px" : "80px"}
+              container
+              justifyContent="center"
+              className={styles.searchResultsInnerContainer}
+            >
+              {viewType === "row" &&
+                filteredData
+                  .slice((page - 1) * 10, page * 10)
+                  .map((product) => {
+                    return (
+                      <RowProduct
+                        key={product.id}
+                        product={product}
+                        href={`${searchQuery}/${product.id}`}
+                        toggleCartHandler={toggleCartHandler}
+                        toggleWishlistHandler={toggleWishlistHandler}
+                        userCartState={userCartState}
+                        userWishlistState={userWishlistState}
+                      />
+                    );
+                  })}
+              {viewType === "grid" &&
+                filteredData
+                  .slice((page - 1) * 12, page * 12)
+                  .map((product) => {
+                    return (
+                      <GridProduct
+                        key={product.id}
+                        product={product}
+                        href={`${searchQuery}/${product.id}`}
+                      />
+                    );
+                  })}
+            </Grid>
+
+            {pageCount > 1 && (
+              <div className={styles.paginationContainer}>
+                <Pagination
+                  count={pageCount}
+                  variant="outlined"
+                  className={styles.pagination}
+                  page={page}
+                  onChange={pageChangeHandler}
+                />
+              </div>
+            )}
+          </section>{" "}
+        </React.Fragment>
+      ) : (
+        <Typography
+          style={{ textAlign: "center", margin: "10rem" }}
+          variant="h3"
         >
-          {viewType === "row" &&
-            filteredData.slice((page - 1) * 10, page * 10).map((product) => {
-              return (
-                <RowProduct
-                  key={product.id}
-                  product={product}
-                  href={`${searchQuery}/${product.id}`}
-                  toggleCartHandler={toggleCartHandler}
-                  toggleWishlistHandler={toggleWishlistHandler}
-                  userCartState={userCartState}
-                  userWishlistState={userWishlistState}
-                />
-              );
-            })}
-          {viewType === "grid" &&
-            filteredData.slice((page - 1) * 12, page * 12).map((product) => {
-              return (
-                <GridProduct
-                  key={product.id}
-                  product={product}
-                  href={`${searchQuery}/${product.id}`}
-                />
-              );
-            })}
-        </Grid>
-
-        {pageCount > 1 && (
-          <div className={styles.paginationContainer}>
-            <Pagination
-              count={pageCount}
-              variant="outlined"
-              className={styles.pagination}
-              page={page}
-              onChange={pageChangeHandler}
-            />
-          </div>
-        )}
-      </section>
+          No Search Result Found !!
+        </Typography>
+      )}
       <Divider />
     </React.Fragment>
-  ) : (
-    <Typography style={{ textAlign: "center", margin: "10rem" }} variant="h3">
-      No Search Result Found !!
-    </Typography>
   );
 }
 
 /*
+
+<Typography style={{ textAlign: "center", margin: "10rem" }} variant="h3">
+      No Search Result Found !!
+    </Typography>
 
 <div className={styles.searchResultSideFilterBar}>
           <div className={styles.priceFilterContainer}>

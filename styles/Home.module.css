@@ -56,12 +56,6 @@
   transform: rotate(45deg);
 }
 
-@media only screen and (max-width: 1650px) {
-  .lampImg {
-    width: 20vw;
-  }
-}
-
 /*////////////////////////////////// Featured Products */
 
 .featuredProducts {
@@ -144,6 +138,7 @@
   width: 16px;
   height: 16px;
 }
+
 .featuredProductIcon > svg * {
   fill: #1389ff;
 }
@@ -215,8 +210,8 @@
   height: 4px;
   background-color: #febad7;
   border-radius: 10px;
-  transition: all 0.2s;
   cursor: pointer;
+  transition: all 0.2s;
 }
 .featuredProductsActiveBtn {
   transition: all 0.2s;
@@ -657,5 +652,36 @@
 @keyframes fadeIn {
   100% {
     opacity: 1;
+  }
+}
+
+/* //////////////////////////////////// media querys      */
+@media only screen and (max-width: 1650px) {
+  .lampImg {
+    width: 20vw;
+  }
+}
+
+@media only screen and (max-width: 1600px) {
+  .lampImg {
+    width: 18vw;
+    left: -70px;
+  }
+}
+
+@media only screen and (max-width: 1550px) {
+  .imgContainer {
+    max-width: 680px;
+  }
+  .lampImg {
+    left: -40px;
+  }
+}
+@media only screen and (max-width: 1500px) {
+  .lampImg {
+    left: 0;
+  }
+  .imgContainer {
+    max-width: 600px;
   }
 }

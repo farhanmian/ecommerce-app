@@ -48,9 +48,8 @@ const useStyles = makeStyles({
     marginBottom: 10,
   },
   innerContainer: {
-    maxWidth: 1200,
+    maxWidth: 1100,
     borderRadius: 10,
-    width: "60%",
     margin: "auto",
     padding: 40,
     display: "flex",
