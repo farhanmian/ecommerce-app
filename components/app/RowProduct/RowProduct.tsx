@@ -1,13 +1,18 @@
 import React, { useEffect, useState } from "react";
-import styles from "../../styles/RowProduct.module.css";
+import styles from "../../../styles/RowProduct.module.css";
 import { Card, Typography, makeStyles, Grid, Button } from "@material-ui/core";
 import Image from "next/image";
-import { StoredDataType } from "../../store/types/types";
-import { AddToCart, Heart, ZoomGlass, Star } from "../icons/icons";
+import { StoredDataType } from "../../../store/types/types";
+
+import Heart from "../../icons/Heart";
+import AddToCart from "../../icons/AddToCart";
+import ZoomGlass from "../../icons/ZoomGlass";
+import Star from "../../icons/Star";
+
 import { ShoppingCart, Favorite } from "@mui/icons-material";
 import { useRouter } from "next/dist/client/router";
-import { useAppContext } from "../../store/context/appContext";
-import Loading from "../partials/Loading/Loading";
+import { useAppContext } from "../../../store/context/appContext";
+import Loading from "../../partials/Loading/Loading";
 
 const useStyles = makeStyles({
   searchResultCard: {

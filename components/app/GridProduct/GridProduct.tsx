@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { Grid, makeStyles, Card, Typography } from "@material-ui/core";
-import styles from "../../styles/GridProduct.module.css";
-import { ProductPageData as GridProductType } from "../../store/types/types";
+import styles from "../../../styles/GridProduct.module.css";
+import { ProductPageData as GridProductType } from "../../../store/types/types";
 import NextLink from "next/link";
 import Image from "next/image";
-import { useAppContext } from "../../store/context/appContext";
+import { useAppContext } from "../../../store/context/appContext";
 
 const useStyles = makeStyles({
   color151875: {

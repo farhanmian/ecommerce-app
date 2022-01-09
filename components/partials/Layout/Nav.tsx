@@ -8,7 +8,12 @@ import {
   Button,
 } from "@material-ui/core";
 import { FormControl } from "@mui/material";
-import { User, Heart, AddToCart, SearchGlass } from "../../icons/icons";
+
+import User from "../../icons/User";
+import Heart from "../../icons/Heart";
+import AddToCart from "../../icons/AddToCart";
+import SearchGlass from "../../icons/SearchGlass";
+
 import { useRouter } from "next/dist/client/router";
 import NextLink from "next/link";
 import { useAppContext } from "../../../store/context/appContext";
@@ -17,7 +22,7 @@ import Loading from "../Loading/Loading";
 import { doc, setDoc, getFirestore } from "firebase/firestore";
 const db = getFirestore();
 
-const pagesLink = ["products", "contact", "about"];
+const pagesLink = ["home", "products", "contact", "about"];
 
 const useStyles = makeStyles({
   navHeading: {
@@ -83,7 +88,6 @@ export default function Nav() {
   const classes = useStyles();
 
   const [currency, setCurrency] = React.useState("usd");
-  const [page, setPage] = React.useState("home");
 
   useEffect(() => {
     setCurrency(
@@ -120,9 +124,6 @@ export default function Nav() {
     };
 
     updateUserData();
-  };
-  const pageChangeHandler = (event) => {
-    setPage(event.target.value);
   };
 
   const formSubmitHandler = (e: React.FormEvent) => {
@@ -229,75 +230,15 @@ export default function Nav() {
             </Typography>
           </NextLink>
           <div className={styles.navBottomLinksContainer}>
-            <FormControl variant="standard">
-              <Select
-                className={classes.pageSelect}
-                labelId="customized-select-label"
-                id="customized-select"
-                value={page}
-                onChange={pageChangeHandler}
-                disableUnderline
-                ref={React.createRef()}
-              >
-                {page === "home" ? (
-                  <MenuItem className={classes.menuItem} value={page}>
-                    <NextLink href="/">
-                      <Typography
-                        className={
-                          router.pathname === "/" ? classes.activeLink : ""
-                        }
-                        style={{ width: "100%", padding: 3 }}
-                        variant="subtitle2"
-                      >
-                        Home
-                      </Typography>
-                    </NextLink>
-                  </MenuItem>
-                ) : (
-                  <MenuItem className={classes.menuItem} value="home">
-                    <NextLink href="/">
-                      <Typography
-                        className={
-                          router.pathname === "/" ? classes.activeLink : ""
-                        }
-                        style={{ width: "100%", padding: 3 }}
-                        variant="subtitle2"
-                      >
-                        Home
-                      </Typography>
-                    </NextLink>
-                  </MenuItem>
-                )}
-                <MenuItem className={classes.menuItem} value="another-page">
-                  <NextLink href="/anotherpage">
-                    <Typography
-                      className={
-                        router.asPath === "/anotherpage"
-                          ? classes.activeLink
-                          : ""
-                      }
-                      style={{
-                        width: "100%",
-                        padding: 3,
-                      }}
-                      variant="subtitle2"
-                    >
-                      AnotherPage
-                    </Typography>
-                  </NextLink>
-                </MenuItem>
-              </Select>
-            </FormControl>
-
             {pagesLink.map((link, i) => {
               return (
-                <NextLink href={`/${link}`} key={i}>
+                <NextLink href={link === "home" ? "/" : `/${link}`} key={i}>
                   <Typography
                     variant="subtitle2"
                     className={`${classes.BottomNavLinkText} ${
-                      router.pathname.replace("/", "") === link
-                        ? classes.activeLink
-                        : ""
+                      link === "home"
+                        ? router.pathname === "/" && classes.activeLink
+                        : router.pathname.includes(link) && classes.activeLink
                     }
                       `}
                   >

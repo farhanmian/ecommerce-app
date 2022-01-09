@@ -218,12 +218,7 @@ export const storedData: StoredDataType[] = [
     text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Magna in est adipiscing in phasellus non in justo.",
     type: ["chair", "chairs"],
     category: ["LatestProducts", "TopCategories", "FeaturedProducts"],
-    categoryLink: [
-      "LatestProductsFeatured",
-      "LatestProductsBest Seller",
-      "1",
-      "featuredProducts1",
-    ],
+    categoryLink: ["LatestProductsFeatured", "1", "featuredProducts1"],
     sale: false,
     id: 9,
   },

@@ -13,13 +13,11 @@ import lamp from "../assets/img/headerlamp.png";
 import couch from "../assets/img/headerCouch.png";
 import couch2 from "../assets/img/featureOfLatestTrending.png";
 
-import {
-  ZoomGlass,
-  AddToCart,
-  Heart,
-  Sale,
-  Tick,
-} from "../components/icons/icons";
+import ZoomGlass from "../components/icons/ZoomGlass";
+import AddToCart from "../components/icons/AddToCart";
+import Heart from "../components/icons/Heart";
+import Sale from "../components/icons/Sale";
+import Tick from "../components/icons/Tick";
 
 import {
   latestProductsLink,
@@ -177,6 +175,7 @@ const Home = () => {
    */
   useEffect(() => {
     if (!userInfo) {
+      ////// get user cart, wishlist info from localstorage
       return;
     }
     const getUserData = async () => {
@@ -218,7 +217,8 @@ const Home = () => {
   /////// function handlers
   const toggleCartHandler = (id: number) => {
     if (!userInfo) {
-      console.log("login to buy");
+      /// store cart items in localstorage
+      // alert("store cart items in localstorage");
       return;
     }
     if (userCart.includes(id)) {
@@ -233,7 +233,8 @@ const Home = () => {
 
   const toggleWishlistHandler = (id: number) => {
     if (!userInfo) {
-      console.log("login to add to wishlist");
+      /// store wishlist items in localstorage
+      // alert("store wishlist items in localstorage");
       return;
     }
     if (userWishlist.includes(id)) {
@@ -445,10 +446,10 @@ const Home = () => {
           </div>
 
           <div className={styles.featuredProductsBtnContainer}>
-            {featuredProductsBtns.map((btn) => {
+            {featuredProductsBtns.map((btn, i) => {
               return (
                 <span
-                  key={btn}
+                  key={i}
                   className={`${styles.featuredProductsBtn} ${
                     featuredProductsActiveLink === `featuredProducts${btn}`
                       ? styles.featuredProductsActiveBtn
@@ -708,10 +709,10 @@ const Home = () => {
           rowGap="40px"
           className={styles.trendingProductsContainer}
         >
-          {trendingProductsData.map((product) => {
+          {trendingProductsData.map((product, i) => {
             return (
               <NextLink
-                key={product.id}
+                key={i}
                 href={`/products/${product.type[0]}/${product.id}`}
               >
                 <Grid item className={styles.mainTrendingProduct}>
@@ -799,7 +800,10 @@ const Home = () => {
           <div className={styles.otherTrendingChairContainer}>
             {otherTrendingChairData.map((product, i) => {
               return (
-                <NextLink href={`/products/${product.type[0]}/${product.id}`}>
+                <NextLink
+                  key={i}
+                  href={`/products/${product.type[0]}/${product.id}`}
+                >
                   <div key={i} className={styles.otherTrendingChair}>
                     <div className={styles.otherTrendingChairImage}>
                       <Image src={product.img} alt={product.title} />
@@ -1040,10 +1044,10 @@ const Home = () => {
           })}
 
           <div className={styles.topCategoryBtnContainer}>
-            {topCategoryBtnData.map((btn) => {
+            {topCategoryBtnData.map((btn, i) => {
               return (
                 <span
-                  key={btn}
+                  key={i}
                   className={`${styles.topCategoryBtn} ${
                     topCategoryActiveLink === btn
                       ? styles.topCategoryActiveBtn

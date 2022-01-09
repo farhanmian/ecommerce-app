@@ -100,7 +100,9 @@ export default function login() {
     passwordInputRef.current.value = "";
   };
 
-  /// clearing inputs and errors whenever haveAccount state changes ( when user change to haveAccount or new member)
+  /**
+   *  clearing inputs and errors whenever haveAccount state changes ( when user change to haveAccount or new member)
+   */
   useEffect(() => {
     clearInputs();
     setError(null);
@@ -124,23 +126,20 @@ export default function login() {
           // const user = userCredential.user;
           router.push("/");
           setError(null);
-          setIsLoading(false);
-          clearInputs();
-          // ...
+          // setIsLoading(false);
         })
         .catch((error) => {
           // const errorCode = error.code;
           const errorMessage: string = error.message;
           const message = errorMessage
             .replace("Firebase: Error (auth/", "")
+            .replace("Firebase:", "")
             .replace(")", "")
             .replace(/-/g, " ");
           setError(message);
           setIsLoading(false);
 
-          passwordInputRef.current.value = "";
           if (message === "wrong password.") return;
-          emailInputRef.current.value = "";
         });
     };
 
@@ -151,23 +150,17 @@ export default function login() {
           // Signed in
           // const user = userCredential.user; //
           router.push("/");
-          clearInputs();
-          usernameInputRef.current.value = "";
-          setIsLoading(false);
-          // ...
         })
         .catch((error) => {
           const errorMessage: string = error.message;
           const message = errorMessage
             .replace("Firebase: Error (auth/", "")
             .replace(/-/g, " ")
-            .replace(")", "");
+            .replace(")", "")
+            .replace("Firebase:", "");
+
           setError(message);
           setIsLoading(false);
-          clearInputs();
-          usernameInputRef.current.value = "";
-
-          // ..
         });
 
       const sendData = async () => {
@@ -191,14 +184,14 @@ export default function login() {
   return (
     <React.Fragment>
       <Header
-        heading={haveAccount ? "Login" : "SignUp"}
+        heading={haveAccount ? "Log in" : "Sign Up"}
         path={haveAccount ? "Login" : "SignUp"}
       />
 
       <section className={styles.login}>
         <div className={styles.innerContainer}>
           <Typography variant="h5" className={classes.heading}>
-            {haveAccount ? "Login" : "SignUp"}
+            {haveAccount ? "Log in" : "Sign Up"}
           </Typography>
 
           {error && (
@@ -208,7 +201,7 @@ export default function login() {
           )}
           <Typography variant="subtitle2" className={classes.logintext}>
             Please {haveAccount ? "login" : "signup"} using account detail
-            bellow.
+            below.
           </Typography>
           <form onSubmit={formSubmitHandler} className={styles.form}>
             {!haveAccount && (
@@ -219,6 +212,7 @@ export default function login() {
                 className={`${classes.textField} ${classes.usernameField}`}
                 label="Username"
                 variant="outlined"
+                disabled={isLoading}
                 required
                 autoFocus
                 error={error ? true : false}
@@ -231,6 +225,7 @@ export default function login() {
               className={`${classes.textField} ${classes.emailField}`}
               label="Email Address"
               variant="outlined"
+              disabled={isLoading}
               required
               error={error ? true : false}
             />
@@ -241,6 +236,7 @@ export default function login() {
               className={classes.textField}
               label="Password"
               variant="outlined"
+              disabled={isLoading}
               required
               error={error ? true : false}
             />

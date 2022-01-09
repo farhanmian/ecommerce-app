@@ -8,7 +8,9 @@ import {
   makeStyles,
 } from "@material-ui/core";
 
-import { Facebook, Instagram, Twitter } from "../../icons/icons";
+import Facebook from "../../icons/Facebook";
+import Instagram from "../../icons/Instagram";
+import Twitter from "../../icons/Twitter";
 
 const linkData = [
   {

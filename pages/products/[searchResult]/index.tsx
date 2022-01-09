@@ -16,16 +16,14 @@ import { Pagination } from "@mui/material";
 import Header from "../../../components/partials/Header/Header";
 import styles from "../../../styles/SearchResultPage.module.css";
 
-import {
-  ArrowDown,
-  GridIcon,
-  Menu,
-  // Star,
-} from "../../../components/icons/icons";
+import ArrowDown from "../../../components/icons/ArrowDown";
+import GridIcon from "../../../components/icons/GridIcon";
+import Menu from "../../../components/icons/Menu";
+
 import { storedData } from "../../../data/allData";
 import Divider from "../../../components/partials/Divider/Divider";
-import RowProduct from "../../../components/RowProduct/RowProduct";
-import GridProduct from "../../../components/GridProduct/GridProduct";
+import RowProduct from "../../../components/app/RowProduct/RowProduct";
+import GridProduct from "../../../components/app/GridProduct/GridProduct";
 
 const useStyles = makeStyles({
   color151875: {

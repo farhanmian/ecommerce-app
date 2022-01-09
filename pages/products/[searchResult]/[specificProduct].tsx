@@ -5,14 +5,14 @@ import { useRouter } from "next/dist/client/router";
 import Image from "next/image";
 import { Typography, makeStyles, Button } from "@material-ui/core";
 import { specificItem } from "../../../data/allData";
-import {
-  ArrowRight,
-  Facebook,
-  Heart,
-  Instagram,
-  Star,
-  Twitter,
-} from "../../../components/icons/icons";
+
+import ArrowRight from "../../../components/icons/ArrowRight";
+import Facebook from "../../../components/icons/Facebook";
+import Heart from "../../../components/icons/Heart";
+import Instagram from "../../../components/icons/Instagram";
+import Star from "../../../components/icons/Star";
+import Twitter from "../../../components/icons/Twitter";
+
 import { Favorite } from "@mui/icons-material";
 import Divider from "../../../components/partials/Divider/Divider";
 import { useAppContext } from "../../../store/context/appContext";

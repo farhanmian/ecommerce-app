@@ -4,7 +4,7 @@ import Header from "../../components/partials/Header/Header";
 import { Grid } from "@mui/material";
 import { productData } from "../../data/productData";
 import Divider from "../../components/partials/Divider/Divider";
-import GridProduct from "../../components/GridProduct/GridProduct";
+import GridProduct from "../../components/app/GridProduct/GridProduct";
 
 const Products = () => {
   return (

@@ -8,7 +8,8 @@ import { Typography, makeStyles, Card, Button } from "@material-ui/core";
 import { Delete } from "@mui/icons-material";
 
 import { useAppContext } from "../store/context/appContext";
-import { Star } from "../components/icons/icons";
+
+import Star from "../components/icons/Star";
 import { doc, getFirestore, updateDoc, getDoc } from "firebase/firestore";
 import { storedData } from "../data/allData";
 import Divider from "../components/partials/Divider/Divider";
@@ -71,6 +72,8 @@ export default function wishlist() {
   ////// setting user wishlist
   useEffect(() => {
     if (!userInfo) {
+      /// get user wishlist items from localstorage
+      setLoading(false);
       return;
     }
 

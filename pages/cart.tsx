@@ -4,7 +4,7 @@ import styles from "../styles/Cart.module.css";
 import { Card, Grid } from "@mui/material";
 import { Add, Remove } from "@mui/icons-material";
 import { Typography, makeStyles, TextField, Button } from "@material-ui/core";
-import { CloseIcon } from "../components/icons/icons";
+import CloseIcon from "../components/icons/CloseIcon";
 import { storedData } from "../data/allData";
 import Image from "next/image";
 import NextLink from "next/link";
@@ -145,6 +145,8 @@ const Cart = () => {
    */
   useEffect(() => {
     if (!userInfo) {
+      /// get user cart items from localstorage
+      setIsLoading(false);
       return;
     }
     const getUserData = () => {
