@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { initializeApp } from "firebase/app";
+import { getLocalUserData } from "../localUserData";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const firebaseApp = initializeApp({
@@ -31,6 +32,8 @@ const AppContext = createContext({
   cartLength: null,
   setCartItemCtx: null,
   cartItemCtx: null,
+
+  isUserLoggedIn: false,
 });
 
 export const AppWrapper = ({ children }) => {
@@ -39,6 +42,7 @@ export const AppWrapper = ({ children }) => {
   const [currencyType, setCurrencyType] = useState("usd");
   const [cartLength, setCartLength] = useState(null);
   const [cartItemCtx, setCartItemCtx] = useState(null);
+  const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
 
   // checking if the user was logged in and fetching his data
   useEffect(() => {
@@ -57,20 +61,30 @@ export const AppWrapper = ({ children }) => {
             const querySnapshot = await getDocs(q);
             querySnapshot.forEach((doc) => {
               // doc.data() is never undefined for query doc snapshots
+              setIsUserLoggedIn(true);
               setUserInfo({ docId: doc.id, userData: doc.data() });
               setAccountLoading(false);
               setCurrencyType(doc.data().currency);
               setCartItemCtx(doc.data().cart);
-              console.log("fetching data");
             });
           };
           getUserData();
           // ...
         } else {
           // User is signed out
-          setUserInfo(false);
+          setIsUserLoggedIn(false);
           setAccountLoading(false);
           console.log("user is signed out");
+
+          const localUserData = getLocalUserData();
+          setCartItemCtx(localUserData.cart);
+          setUserInfo({
+            userData: {
+              cart: localUserData.cart,
+              wishlist: localUserData.wishlist,
+            },
+          });
+
           // ...
         }
       });
@@ -111,6 +125,7 @@ export const AppWrapper = ({ children }) => {
         cartLength,
         setCartItemCtx,
         cartItemCtx,
+        isUserLoggedIn,
       }}
     >
       {children}

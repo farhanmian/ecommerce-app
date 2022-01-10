@@ -206,7 +206,6 @@ export default function account() {
     };
     updateUserData();
 
-    console.log(userInfoState.currency);
     setCurrencyType(userInfoState.currency);
 
     // sendEmailVerification(auth.currentUser).then((e) => {
@@ -237,7 +236,6 @@ export default function account() {
 
       updatePassword(user, passwordValue)
         .then(() => {
-          console.log("update successful");
           passwordInputRef.current.value = "";
           rePasswordInputRef.current.value = "";
           setUpdatePasswordMessage({

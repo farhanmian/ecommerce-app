@@ -25,6 +25,8 @@ import Divider from "../../../components/partials/Divider/Divider";
 import RowProduct from "../../../components/app/RowProduct/RowProduct";
 import GridProduct from "../../../components/app/GridProduct/GridProduct";
 
+import { getLocalUserData } from "../../../store/localUserData";
+
 const useStyles = makeStyles({
   color151875: {
     color: "#151875",
@@ -93,7 +95,7 @@ let isInitial = true;
 export default function ProductsList() {
   const classes = useStyles();
   const router = useRouter();
-  const { userInfo, setCartItemCtx } = useAppContext();
+  const { userInfo, setCartItemCtx, isUserLoggedIn } = useAppContext();
   const [sortBy, setSortBy] = useState("best match");
   const [page, setPage] = useState(1);
   const [viewType, setViewType] = useState("row");
@@ -144,7 +146,11 @@ export default function ProductsList() {
    */
 
   useEffect(() => {
-    if (!userInfo) {
+    if (!isUserLoggedIn) {
+      const localUserData = getLocalUserData();
+      setUserCartState(localUserData.cart);
+      setUserWishlistState(localUserData.wishlist);
+
       return;
     }
     const getUserData = async () => {
@@ -160,11 +166,7 @@ export default function ProductsList() {
       }
     };
     getUserData();
-  }, [userInfo]);
-
-  useEffect(() => {
-    console.log(userCartState);
-  }, [userCartState]);
+  }, [isUserLoggedIn]);
 
   /////////////// function handlers
 
@@ -183,6 +185,12 @@ export default function ProductsList() {
    */
   const sendCartData = (cartData: number[]) => {
     setCartItemCtx(cartData);
+    if (!isUserLoggedIn) {
+      /// user is not login, so we'll just save his data on localstorage
+      localStorage.setItem("cart", `${cartData}`);
+      return;
+    }
+
     const sendData = async () => {
       const userRef = doc(db, "users", userInfo.docId);
       await updateDoc(userRef, {
@@ -196,6 +204,11 @@ export default function ProductsList() {
    * function for sending wishlist data
    */
   const sendWishlistData = (wishlistData: number[]) => {
+    if (!isUserLoggedIn) {
+      /// user is not login, so we'll just save his data on localstorage
+      localStorage.setItem("wishlist", `${wishlistData}`);
+      return;
+    }
     const sendData = async () => {
       const userRef = doc(db, "users", userInfo.docId);
       await updateDoc(userRef, {
@@ -206,10 +219,6 @@ export default function ProductsList() {
   };
 
   const toggleCartHandler = (id: number) => {
-    if (!userInfo) {
-      console.log("login to buy");
-      return;
-    }
     if (userCartState.includes(id)) {
       const updatedCart = userCartState.filter((ids) => ids !== id);
       setUserCartState(updatedCart);
@@ -222,10 +231,6 @@ export default function ProductsList() {
   };
 
   const toggleWishlistHandler = (id: number) => {
-    if (!userInfo) {
-      console.log("login to add to wishlist");
-      return;
-    }
     if (userWishlistState.includes(id)) {
       const updatedWishlist = userWishlistState.filter((ids) => ids !== id);
       setUserWishlistState(updatedWishlist);

@@ -17,6 +17,8 @@ import Divider from "../components/partials/Divider/Divider";
 import Loading from "../components/partials/Loading/Loading";
 import Modal from "../components/partials/Modal/Modal";
 import NoItemFound from "../components/partials/NoItemFound/NoItemFound";
+import { getLocalUserData } from "../store/localUserData";
+
 const db = getFirestore();
 
 const useStyles = makeStyles({
@@ -64,16 +66,22 @@ const useStyles = makeStyles({
 
 export default function wishlist() {
   const classes = useStyles();
-  const { userInfo } = useAppContext();
+  const { userInfo, isUserLoggedIn, accountLoading } = useAppContext();
   const [wishlist, setWishlist] = useState([]);
   const [showModal, setShowModal] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
 
   ////// setting user wishlist
   useEffect(() => {
-    if (!userInfo) {
+    if (accountLoading) {
+      return;
+    }
+
+    if (!isUserLoggedIn) {
       /// get user wishlist items from localstorage
-      setLoading(false);
+      const localUserData = getLocalUserData();
+      setWishlist(localUserData.wishlist);
+      setIsLoading(false);
       return;
     }
 
@@ -83,14 +91,14 @@ export default function wishlist() {
       if (docSnap.exists()) {
         const data = docSnap.data();
         setWishlist(data.wishlist ? data.wishlist : []);
-        setLoading(false);
+        setIsLoading(false);
       } else {
-        console.log("use not login");
-        setLoading(false);
+        // no data found
+        setIsLoading(false);
       }
     };
     getUserData();
-  }, [userInfo]);
+  }, [isUserLoggedIn, accountLoading]);
 
   const stars = [1, 2, 3, 4, 5];
   const filteredData =
@@ -107,8 +115,13 @@ export default function wishlist() {
     const updatedWishlist = wishlist.filter((ids) => {
       return ids !== id;
     });
-
     setWishlist(updatedWishlist);
+
+    if (!isUserLoggedIn) {
+      localStorage.setItem("wishlist", `${updatedWishlist}`);
+      return;
+    }
+
     const updateUserData = async () => {
       const userRef = doc(db, "users", userInfo.docId);
       await updateDoc(userRef, {
@@ -121,6 +134,11 @@ export default function wishlist() {
   const modalProceedHandler = () => {
     setShowModal(false);
     setWishlist([]);
+
+    if (!isUserLoggedIn) {
+      localStorage.setItem("wishlist", "");
+      return;
+    }
     const updateUserData = async () => {
       const userRef = doc(db, "users", userInfo.docId);
       await updateDoc(userRef, {
@@ -148,7 +166,7 @@ export default function wishlist() {
       )}
 
       <section className={styles.wishlist}>
-        {loading ? (
+        {isLoading ? (
           <Loading width={50} color="#0d0d0d" />
         ) : wishlist.length > 0 ? (
           <Card className={styles.innerContainer}>

@@ -139,8 +139,6 @@ export default function about() {
 
   const btns = [1, 2, 3];
 
-  console.log(activeClient);
-
   return (
     <React.Fragment>
       <Header heading="about us" path="about us" />
@@ -207,10 +205,10 @@ export default function about() {
             <div className={styles.clientImgContainer}>
               {clientData
                 .slice((activeLink - 1) * 3, activeLink * 3)
-                .map((client) => {
+                .map((client, i) => {
                   return (
                     <div
-                      key={client.id}
+                      key={i}
                       className={`${styles.clientImage} ${
                         activeClient === client.id ? styles.activeClient : ""
                       } `}

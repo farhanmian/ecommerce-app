@@ -170,9 +170,8 @@ export default function login() {
             email: email,
             currency: "usd",
           });
-          console.log("Document written with ID: ", docRef.id);
         } catch (e) {
-          console.error("Error adding document: ", e);
+          console.log("Error adding document: ", e);
         }
       };
       sendData();

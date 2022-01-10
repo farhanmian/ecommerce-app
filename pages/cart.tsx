@@ -16,6 +16,8 @@ import Loading from "../components/partials/Loading/Loading";
 import { getFirestore } from "firebase/firestore";
 import { doc, updateDoc } from "firebase/firestore";
 import NoItemFound from "../components/partials/NoItemFound/NoItemFound";
+import { getLocalUserData } from "../store/localUserData";
+import { useRouter } from "next/dist/client/router";
 
 const db = getFirestore();
 
@@ -132,32 +134,41 @@ let isInitial = true;
 
 const Cart = () => {
   const classes = useStyles();
-  const { userInfo, setCartItemCtx, cartItemCtx } = useAppContext();
+  const router = useRouter();
+  const {
+    userInfo,
+    setCartItemCtx,
+    cartItemCtx,
+    isUserLoggedIn,
+    accountLoading,
+  } = useAppContext();
   const heading = ["Product", "Price", "Quantity", "Total"];
   const [priceState, setPriceState] = useState(0);
   const [showModal, setShowModal] = useState(false);
   const [cartItemContainer, setCartItemContainer] = useState([]);
   const [cartId, setCartId] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
 
   /*
    *managing user cart ids
    */
   useEffect(() => {
-    if (!userInfo) {
+    if (!isUserLoggedIn) {
       /// get user cart items from localstorage
-      setIsLoading(false);
+      const localUserData = getLocalUserData();
+      setCartId(localUserData.cart);
+
       return;
     }
+
     const getUserData = () => {
-      setIsLoading(true);
       cartItemCtx ? setCartId(cartItemCtx) : setCartId([]);
-      setIsLoading(false);
     };
     getUserData();
   }, [cartItemCtx]);
 
-  // filtering cart item and getting quantity
+  /**
+   * filtering cart item and getting quantity
+   */
   useEffect(() => {
     const filterCart = (a) => {
       const counts = {};
@@ -182,14 +193,18 @@ const Cart = () => {
     filterCart(cartId);
   }, [cartId]);
 
-  ////// calc discount and discount price
+  /**
+   * calc discount and discount price
+   */
   const discount = Math.ceil(Math.random() * cartItemContainer.length) / 100;
   const discountPrice =
     discount > 0 ? (priceState * discount).toFixed(2) : (priceState * 14) / 100;
 
   const price = [];
 
-  /// filtering data by mapping cartItemContainer
+  /**
+   * filtering data by mapping cartItemContainer
+   */
   const filteredData =
     cartItemContainer &&
     cartItemContainer.map((cart) => {
@@ -201,31 +216,46 @@ const Cart = () => {
         .pop();
     });
 
-  /// updating price whenever cartItemContainer changes
+  /**
+   * updating price whenever cartItemContainer changes
+   */
   useEffect(() => {
     const totalPrice = lodash.sum(price);
     setPriceState(totalPrice);
   }, [cartItemContainer]);
 
-  //// deleting item form the cart
+  /**
+   * deleting item form the cart
+   */
   const deleteCartHandler = (id: number) => {
     const updatedCartItemContainer = cartId.filter((cartId) => cartId !== id);
     setCartId(updatedCartItemContainer);
     setCartItemCtx(updatedCartItemContainer);
+    if (!isUserLoggedIn) {
+      //// setting cart item to localstorage if the user is not login
+      localStorage.setItem("cart", `${updatedCartItemContainer}`);
+    }
   };
 
-  ///// showing modal when click on clear cart
-  const clearCartHandler = () => {
+  /**
+   * showing modal when click on clear cart
+   */
+  const showModalHandler = () => {
     setShowModal(true);
   };
-  /// clearing user cart, when user clicked clear cart.
+  /**
+   * clearing user cart, when user clicked clear cart.
+   */
   const modalProceedHandler = () => {
     setShowModal(false);
     setCartId([]);
     setCartItemCtx([]);
+    localStorage.setItem("cart", "");
   };
 
-  ///// decreasing cart item handler
+  /**
+   * decreasing cart item handler
+   */
   const decreaseCartItemHandler = (id: number) => {
     const array = [...cartId]; // make a separate copy of the array
     const index = array.indexOf(id);
@@ -233,27 +263,41 @@ const Cart = () => {
       array.splice(index, 1);
       setCartId(array);
       setCartItemCtx(array);
+      if (!isUserLoggedIn) {
+        //// setting cart item to localstorage if the user is not login
+        localStorage.setItem("cart", `${array}`);
+      }
     }
   };
 
-  ///// increasing cart item
+  /**
+   *  increasing cart item
+   */
   const increaseCartItemHandler = (id: number) => {
     const quantity = cartId.filter((cartId) => cartId === id);
-    console.log(quantity.length);
+
     if (quantity.length >= 8) {
       return;
+    }
+    if (!isUserLoggedIn) {
+      //// setting cart item to localstorage if the user is not login
+      localStorage.setItem("cart", `${[...cartId, id]}`);
     }
     setCartItemCtx([...cartId, id]);
     setCartId((prevState) => [...prevState, id]);
   };
 
-  /// updating cartId whenever cartId state changes
+  /**
+   *  updating cartId whenever cartId state changes
+   */
   useEffect(() => {
     if (isInitial) {
       isInitial = false;
       return;
     }
-
+    if (!isUserLoggedIn) {
+      return;
+    }
     const updateCartData = async () => {
       const userRef = doc(db, "users", userInfo.docId);
       await updateDoc(userRef, {
@@ -262,9 +306,15 @@ const Cart = () => {
     };
     updateCartData();
     // setCartItemCtx(cartId);
-
-    console.log("updating cart Data from cart.tsx");
   }, [cartId]);
+
+  const proceedToCheckoutHandler = () => {
+    if (!isUserLoggedIn) {
+      router.push("/login");
+      return;
+    }
+    router.push("/details-confirmation");
+  };
 
   return (
     <React.Fragment>
@@ -281,7 +331,7 @@ const Cart = () => {
         />
       )}
       <section className={styles.cart}>
-        {isLoading ? (
+        {accountLoading ? (
           <Loading width={50} color={"#0d0d0d"} />
         ) : cartItemContainer.length > 0 ? (
           <Grid
@@ -459,20 +509,19 @@ const Cart = () => {
                   </Typography>
                 </span>
 
-                <NextLink href="/details-confirmation">
-                  <Button
-                    variant="contained"
-                    className={`${classes.btnEffect} ${classes.checkoutBtn}`}
-                    disableElevation
+                <Button
+                  variant="contained"
+                  className={`${classes.btnEffect} ${classes.checkoutBtn}`}
+                  disableElevation
+                  onClick={proceedToCheckoutHandler}
+                >
+                  <Typography
+                    variant="caption"
+                    className={classes.checkoutBtnText}
                   >
-                    <Typography
-                      variant="caption"
-                      className={classes.checkoutBtnText}
-                    >
-                      proceed to checkout
-                    </Typography>
-                  </Button>
-                </NextLink>
+                    proceed to checkout
+                  </Typography>
+                </Button>
               </div>
 
               <Button
@@ -480,7 +529,7 @@ const Cart = () => {
                 className={`${classes.clearCartBtn} ${classes.btnEffect}`}
                 disableElevation
                 color="secondary"
-                onClick={clearCartHandler}
+                onClick={showModalHandler}
               >
                 <Typography
                   variant="subtitle2"

@@ -18,6 +18,7 @@ import Divider from "../../../components/partials/Divider/Divider";
 import { useAppContext } from "../../../store/context/appContext";
 import { doc, updateDoc, getFirestore, getDoc } from "firebase/firestore";
 import Loading from "../../../components/partials/Loading/Loading";
+import { getLocalUserData } from "../../../store/localUserData";
 
 const db = getFirestore();
 
@@ -83,7 +84,8 @@ const useStyles = makeStyles({
 });
 
 const SpecificProduct = () => {
-  const { userInfo, accountLoading, setCartItemCtx } = useAppContext();
+  const { userInfo, accountLoading, setCartItemCtx, isUserLoggedIn } =
+    useAppContext();
   const classes = useStyles();
   const router = useRouter();
   const productType = `${router.query.searchResult}`;
@@ -93,7 +95,10 @@ const SpecificProduct = () => {
 
   /// setting user cart info
   useEffect(() => {
-    if (!userInfo) {
+    if (!isUserLoggedIn) {
+      const localUserData = getLocalUserData();
+      setUserCartItem(localUserData.cart);
+      setUserWishlistItem(localUserData.wishlist);
       return;
     }
     const getUserData = async () => {
@@ -109,7 +114,7 @@ const SpecificProduct = () => {
       }
     };
     getUserData();
-  }, [userInfo]);
+  }, [isUserLoggedIn]);
 
   const product = specificItem(productId, productType);
   const [productDetailsActiveLink, setProductDetailsActiveLink] =
@@ -128,6 +133,11 @@ const SpecificProduct = () => {
    */
   const sendCartData = (cartData: number[]) => {
     setCartItemCtx(cartData);
+    if (!isUserLoggedIn) {
+      /// user is not login, so we'll just save his data on localstorage
+      localStorage.setItem("cart", `${cartData}`);
+      return;
+    }
     const sendData = async () => {
       const userRef = doc(db, "users", userInfo.docId);
       await updateDoc(userRef, {
@@ -141,6 +151,11 @@ const SpecificProduct = () => {
    * function for sending wishlist data
    */
   const sendWishlistData = (wishlistData: number[]) => {
+    if (!isUserLoggedIn) {
+      /// user is not login, so we'll just save his data on localstorage
+      localStorage.setItem("wishlist", `${wishlistData}`);
+      return;
+    }
     const sendData = async () => {
       const userRef = doc(db, "users", userInfo.docId);
       await updateDoc(userRef, {
@@ -151,22 +166,13 @@ const SpecificProduct = () => {
   };
 
   const addToCartHandler = (id: number) => {
-    if (!userInfo) {
-      console.log("login to buy");
-      return;
-    }
     const updateCartItem =
       userCartItem.length > 0 ? [...userCartItem, id] : [id];
-    console.log(updateCartItem);
     sendCartData(updateCartItem);
     setUserCartItem((prevId) => (prevId ? [...prevId, id] : [id]));
   };
 
   const toggleWishlistHandler = (id: number) => {
-    if (!userInfo) {
-      console.log("login to add to wishlist");
-      return;
-    }
     if (userWishlistItem.includes(id)) {
       const updatedWishlist = userWishlistItem.filter((ids) => ids !== id);
       setUserWishlistItem(updatedWishlist);
@@ -174,7 +180,6 @@ const SpecificProduct = () => {
     } else {
       const data =
         userWishlistItem.length > 0 ? [...userWishlistItem, id] : [id];
-      console.log(data);
       sendWishlistData(data);
       setUserWishlistItem((prevId) => (prevId ? [...prevId, id] : [id]));
     }

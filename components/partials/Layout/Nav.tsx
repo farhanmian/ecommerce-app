@@ -19,7 +19,8 @@ import NextLink from "next/link";
 import { useAppContext } from "../../../store/context/appContext";
 import Loading from "../Loading/Loading";
 
-import { doc, setDoc, getFirestore } from "firebase/firestore";
+import { doc, getFirestore, updateDoc } from "firebase/firestore";
+
 const db = getFirestore();
 
 const pagesLink = ["home", "products", "contact", "about"];
@@ -43,9 +44,11 @@ const useStyles = makeStyles({
     color: "#0D0E43",
     cursor: "pointer",
     textTransform: "capitalize",
+    borderBottom: "1.8px solid transparent",
   },
   activeLink: {
     color: "#FB2E86",
+    borderBottomColor: "#FB2E86",
   },
   select: {
     fontSize: 16,
@@ -82,8 +85,15 @@ const useStyles = makeStyles({
 export default function Nav() {
   const searchInputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
-  const loggedInUser = useAppContext();
-  const { setCurrencyType, currencyType, cartLength } = useAppContext();
+
+  const {
+    setCurrencyType,
+    currencyType,
+    cartLength,
+    isUserLoggedIn,
+    accountLoading,
+    userInfo,
+  } = useAppContext();
 
   const classes = useStyles();
 
@@ -91,12 +101,11 @@ export default function Nav() {
 
   useEffect(() => {
     setCurrency(
-      loggedInUser.userInfo && loggedInUser.userInfo.userData.currency
-        ? loggedInUser.userInfo.userData.currency
+      userInfo && userInfo.userData.currency
+        ? userInfo.userData.currency
         : "usd"
     );
-    console.log("currency changed");
-  }, [loggedInUser.accountLoading]);
+  }, [accountLoading]);
 
   useEffect(() => {
     setCurrency(currencyType);
@@ -105,25 +114,18 @@ export default function Nav() {
   const currencyChangeHandler = (event) => {
     setCurrency(event.target.value);
     setCurrencyType(event.target.value);
-    console.log(event.target.value);
 
-    if (!loggedInUser.userInfo) {
+    if (!isUserLoggedIn) {
       return;
     }
-    const userInfo = loggedInUser.userInfo;
-    const data = {
-      name: userInfo.userData.name,
-      email: userInfo.userData.email,
-      location: userInfo.userData.location ? userInfo.userData.location : "",
-      address: userInfo.userData.address ? userInfo.userData.address : "",
-      phone: userInfo.userData.phone ? userInfo.userData.phone : "",
-      currency: event.target.value,
-    };
-    const updateUserData = async () => {
-      await setDoc(doc(db, "users", loggedInUser.userInfo.docId), data);
-    };
 
-    updateUserData();
+    const updateCurrency = async () => {
+      const userRef = doc(db, "users", userInfo.docId);
+      await updateDoc(userRef, {
+        currency: event.target.value,
+      });
+    };
+    updateCurrency();
   };
 
   const formSubmitHandler = (e: React.FormEvent) => {
@@ -143,7 +145,7 @@ export default function Nav() {
       <div className={styles.navTopContainer}>
         <div className={styles.navTopLinksContainer}>
           <FormControl style={{ marginRight: 17.67 }} variant="standard">
-            {!loggedInUser.accountLoading ? (
+            {!accountLoading ? (
               <Select
                 className={classes.select}
                 labelId="demo-customized-select-label"
@@ -169,19 +171,19 @@ export default function Nav() {
               <Loading width={15} color="#f1f1f1" />
             )}
           </FormControl>
-          <NextLink href={!loggedInUser.userInfo ? "/login" : "/profile"}>
+          <NextLink href={!isUserLoggedIn ? "/login" : "/profile"}>
             <span
               color="textSecondary"
               className={styles.topNavLink}
               style={{ marginRight: 19 }}
             >
-              {!loggedInUser.accountLoading ? (
+              {!accountLoading ? (
                 <React.Fragment>
                   <Typography
                     className={classes.topNavLinkText}
                     variant="subtitle2"
                   >
-                    {!loggedInUser.userInfo ? "Login" : "Account"}
+                    {!isUserLoggedIn ? "Login" : "Account"}
                   </Typography>
                   <User />
                 </React.Fragment>

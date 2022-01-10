@@ -78,7 +78,7 @@ const DetailsConfirmation = () => {
       const docSnap = await getDoc(docRef);
       if (docSnap.exists()) {
         const data = docSnap.data();
-        console.log(data);
+
         setuserName(data.name);
         setuserAddress(data.address && data.address);
         setuserPhone(data.phone && data.phone);
@@ -91,7 +91,6 @@ const DetailsConfirmation = () => {
       }
     };
     getUserData();
-    console.log("fetching data");
   }, [userInfo]);
 
   /**

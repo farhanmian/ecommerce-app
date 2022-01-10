@@ -6,6 +6,7 @@ import { Button, Typography, makeStyles } from "@material-ui/core";
 import { Grid } from "@mui/material";
 import { ShoppingCart, Favorite } from "@mui/icons-material";
 import { doc, updateDoc, getFirestore, getDoc } from "firebase/firestore";
+import { getLocalUserData } from "../store/localUserData";
 
 const db = getFirestore();
 
@@ -124,7 +125,13 @@ const useStyles = makeStyles({
 const Home = () => {
   const classes = useStyles();
   const router = useRouter();
-  const { currencyType, userInfo, setCartItemCtx } = useAppContext();
+  const {
+    currencyType,
+    userInfo,
+    setCartItemCtx,
+    isUserLoggedIn,
+    accountLoading,
+  } = useAppContext();
   const [currency, setCurrency] = useState(0);
 
   //// states
@@ -139,26 +146,39 @@ const Home = () => {
   const [userCart, setUserCart] = useState([]);
   const [userWishlist, setUserWishlist] = useState([]);
 
-  /////////// data send functions
+  /**
+   * data send functions
+   */
   const sendCartData = (cartData: number[]) => {
     setCartItemCtx(cartData);
+
+    if (!isUserLoggedIn) {
+      /// user is not login, so we'll just save his data on localstorage
+      localStorage.setItem("cart", `${cartData}`);
+      return;
+    }
     const sendData = async () => {
       const userRef = doc(db, "users", userInfo.docId);
       await updateDoc(userRef, {
         cart: cartData,
       });
     };
-    console.log("sending cart data from index.tsx");
+
     sendData();
   };
   const sendWishlistData = (wishlistData: number[]) => {
+    if (!isUserLoggedIn) {
+      /// user is not login, so we'll just save his data on localstorage
+      localStorage.setItem("wishlist", `${wishlistData}`);
+      return;
+    }
     const sendData = async () => {
       const userRef = doc(db, "users", userInfo.docId);
       await updateDoc(userRef, {
         wishlist: wishlistData,
       });
     };
-    console.log("sending wishlist data from index.tsx");
+
     sendData();
   };
 
@@ -174,16 +194,24 @@ const Home = () => {
    * setting user cart info
    */
   useEffect(() => {
-    if (!userInfo) {
+    if (!isUserLoggedIn) {
       ////// get user cart, wishlist info from localstorage
+      const localUserData = getLocalUserData();
+      setUserCart(localUserData.cart);
+      setUserWishlist(localUserData.wishlist);
+
+      return;
+    }
+    if (accountLoading) {
       return;
     }
     const getUserData = async () => {
       const docRef = doc(db, "users", userInfo && userInfo.docId);
+
       const docSnap = await getDoc(docRef);
       if (docSnap.exists()) {
         const data = docSnap.data();
-        console.log(data);
+
         setUserCart(data.cart ? data.cart : []);
         setUserWishlist(data.wishlist ? data.wishlist : []);
       } else {
@@ -192,8 +220,7 @@ const Home = () => {
       }
     };
     getUserData();
-    console.log("fetching data from index.tsx");
-  }, [userInfo]);
+  }, [isUserLoggedIn, userInfo, accountLoading]);
 
   //// filtering data
   const featuredProductData = storedData.filter((product) => {
@@ -216,11 +243,6 @@ const Home = () => {
 
   /////// function handlers
   const toggleCartHandler = (id: number) => {
-    if (!userInfo) {
-      /// store cart items in localstorage
-      // alert("store cart items in localstorage");
-      return;
-    }
     if (userCart.includes(id)) {
       const updatedCart: number[] = userCart.filter((ids) => ids !== id);
       setUserCart(updatedCart);
@@ -232,11 +254,6 @@ const Home = () => {
   };
 
   const toggleWishlistHandler = (id: number) => {
-    if (!userInfo) {
-      /// store wishlist items in localstorage
-      // alert("store wishlist items in localstorage");
-      return;
-    }
     if (userWishlist.includes(id)) {
       const updatedWishlist: number[] = userWishlist.filter(
         (ids) => ids !== id
@@ -1068,36 +1085,3 @@ const Home = () => {
 };
 
 export default Home;
-
-/// full lamp img size = 387px
-/// overflow lamp img = 82px
-/// text container size = 644px
-/// full container width including lamp img and text = 949px
-/// product hover icons container width = 126px and container height = 30px
-
-/// latest products container width & shopex-feature width = 1164px
-/// each latest product width = 360px & height = 306px
-/// each latest product width on hover = 370px & height = 314
-
-/// featureshopex feature on hover transform: translateY(5px)
-
-/// unique features of latest & trending products width = 1050px & height = 550px
-
-//// utility classes material-ui
-
-/// material ui theme spacing =  default spacing = 8px
-
-/*
-
-
-#!/bin/sh
-if ! head -1 "$1" | grep -qE "^(feat|fix|ci|chore|docs|test|style|refactor|perf|build|revert)(\(.+?\))?: .{1,}$"; then
-    echo "Aborting commit. Your commit message is invalid." >&2
-    exit 1
-fi
-if ! head -1 "$1" | grep -qE "^.{1,88}$"; then
-    echo "Aborting commit. Your commit message is too long." >&2
-    exit 1
-fi
-
-*/
