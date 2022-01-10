@@ -58,11 +58,12 @@ const useStyles = makeStyles({
 
   changePasstextField: {
     width: "90%",
-    "& > *": {
-      "&> *": {
-        fontWeight: 300,
-        fontSize: 17,
-      },
+    "& > label": {
+      fontWeight: 300,
+      fontSize: 15,
+    },
+    "& > div input": {
+      fontSize: 15,
     },
   },
   btn: {
@@ -109,6 +110,15 @@ const useStyles = makeStyles({
   signoutBtn: {
     padding: "6px 30px",
     textTransform: "capitalize",
+  },
+  changePasswordBtn: {
+    width: 144,
+    height: 36,
+    padding: 0,
+  },
+  changePasswordBtnText: {
+    fontWeight: 600,
+    fontFamily: "Josefin Sans",
   },
 });
 
@@ -164,12 +174,14 @@ const arrayOfFields = [
 export default function account() {
   const classes = useStyles();
   const router = useRouter();
-  const { userInfo, setCurrencyType, currencyType } = useAppContext();
+  const { userInfo, setCurrencyType, currencyType, isUserLoggedIn } =
+    useAppContext();
   const passwordInputRef = useRef<HTMLInputElement>(null);
   const rePasswordInputRef = useRef<HTMLInputElement>(null);
 
   const [changeProfileInfo, setChangeProfileInfo] = useState(false);
   const [doesDataChanged, setdoesDataChanged] = useState(false);
+  const [passwordLoading, setPasswordLoading] = useState(false);
 
   const [userInfoState, dispatchUserInfoStateFn] = useReducer(
     userInfoReducerFn,
@@ -180,6 +192,15 @@ export default function account() {
     state: "false",
     message: "",
   });
+
+  /**
+   * checking if the user is login, if not then sending the user on login page
+   */
+  useEffect(() => {
+    if (!isUserLoggedIn) {
+      router.push("/login");
+    }
+  }, [isUserLoggedIn]);
 
   useEffect(() => {
     dispatchUserInfoStateFn({ type: "currency", value: currencyType });
@@ -207,12 +228,6 @@ export default function account() {
     updateUserData();
 
     setCurrencyType(userInfoState.currency);
-
-    // sendEmailVerification(auth.currentUser).then((e) => {
-    //   // Email verification sent!
-    //   console.log(e);
-    //   // ...
-    // });
   };
 
   const cancelChangeHandler = () => {
@@ -232,6 +247,7 @@ export default function account() {
       return;
     }
     const changePassword = () => {
+      setPasswordLoading(true);
       const user = auth.currentUser;
 
       updatePassword(user, passwordValue)
@@ -242,6 +258,7 @@ export default function account() {
             state: "success",
             message: "password successfully changed",
           });
+          setPasswordLoading(false);
           // Update successful .
         })
         .catch((error) => {
@@ -250,6 +267,7 @@ export default function account() {
             message:
               "something wrong please try again later, or login again and try.",
           });
+          setPasswordLoading(false);
           console.log(error);
           // An error ocurred
           // ...
@@ -276,7 +294,7 @@ export default function account() {
     dispatchUserInfoStateFn({ type: "replaceData", data });
   }, [userInfo]);
 
-  return (
+  return isUserLoggedIn ? (
     <React.Fragment>
       <Header heading="My Account" path="My Account" />
       <section className={styles.profile}>
@@ -423,6 +441,7 @@ export default function account() {
                       label="New Password"
                       required
                       size="small"
+                      disabled={passwordLoading}
                     />
                     <TextField
                       type="password"
@@ -432,6 +451,7 @@ export default function account() {
                       label="Confirm Password"
                       required
                       size="small"
+                      disabled={passwordLoading}
                     />
                     {updatePasswordMessage.state !== "false" && (
                       <Typography
@@ -451,10 +471,20 @@ export default function account() {
                       type="submit"
                       variant="contained"
                       color="secondary"
-                      className={classes.btn}
+                      className={`${classes.changePasswordBtn} ${classes.btn}`}
                       disableElevation
+                      disabled={passwordLoading}
                     >
-                      Change Password
+                      {passwordLoading ? (
+                        <Loading width={20} color="#272727" />
+                      ) : (
+                        <Typography
+                          variant="caption"
+                          className={classes.changePasswordBtnText}
+                        >
+                          Change Password
+                        </Typography>
+                      )}
                     </Button>
                   </form>
                 </div>
@@ -496,27 +526,7 @@ export default function account() {
         </Card>
       </section>
     </React.Fragment>
+  ) : (
+    ""
   );
 }
-
-/* 
-
-<FormControl sx={{ m: 1, minWidth: 120 }}>
-  <InputLabel id="demo-simple-select-helper-label">Age</InputLabel>
-  <Select
-    labelId="demo-simple-select-helper-label"
-    id="demo-simple-select-helper"
-    value={age}
-    label="Age"
-    onChange={handleChange}
-  >
-    <MenuItem value="">
-      <em>None</em>
-    </MenuItem>
-    <MenuItem value={10}>Ten</MenuItem>
-    <MenuItem value={20}>Twenty</MenuItem>
-    <MenuItem value={30}>Thirty</MenuItem>
-  </Select>
-  <FormControl />
-
-*/
