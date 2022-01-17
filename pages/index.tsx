@@ -43,6 +43,12 @@ const useStyles = makeStyles({
     lineHeight: "12px",
     textTransform: "capitalize",
   },
+  mainTrendingProduct: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    flexDirection: "column",
+  },
   uniqueFeatureOfLatestTrendingProductsBtn: {
     padding: "14px 24px",
     minWidth: 157,
@@ -732,7 +738,10 @@ const Home = () => {
                 key={i}
                 href={`/products/${product.type[0]}/${product.id}`}
               >
-                <Grid item className={styles.mainTrendingProduct}>
+                <Grid
+                  item
+                  className={`${classes.mainTrendingProduct} ${styles.mainTrendingProduct}`}
+                >
                   <div className={styles.mainTrendingProductImage}>
                     <Image src={product.img} alt={product.title} />
                   </div>

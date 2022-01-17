@@ -84,16 +84,31 @@ const useStyles = makeStyles({
 });
 
 const SpecificProduct = () => {
-  const { userInfo, accountLoading, setCartItemCtx, isUserLoggedIn } =
-    useAppContext();
+  const {
+    userInfo,
+    accountLoading,
+    setCartItemCtx,
+    isUserLoggedIn,
+    currencyType,
+  } = useAppContext();
   const classes = useStyles();
   const router = useRouter();
   const productType = `${router.query.searchResult}`;
   const productId = +router.query.specificProduct;
   const [userCartItem, setUserCartItem] = useState([]);
   const [userWishlistItem, setUserWishlistItem] = useState([]);
+  const [currency, setCurrency] = useState(75);
 
-  /// setting user cart info
+  /**
+   * managing price whenevery currency type changes
+   */
+  useEffect(() => {
+    setCurrency(currencyType === "usd" ? 1 : 75);
+  }, [currencyType]);
+
+  /**
+   * setting user cart info
+   * */
   useEffect(() => {
     if (!isUserLoggedIn) {
       const localUserData = getLocalUserData();
@@ -101,6 +116,11 @@ const SpecificProduct = () => {
       setUserWishlistItem(localUserData.wishlist);
       return;
     }
+
+    if (accountLoading) {
+      return;
+    }
+
     const getUserData = async () => {
       const docRef = doc(db, "users", userInfo && userInfo.docId);
       const docSnap = await getDoc(docRef);
@@ -114,7 +134,7 @@ const SpecificProduct = () => {
       }
     };
     getUserData();
-  }, [isUserLoggedIn]);
+  }, [isUserLoggedIn, accountLoading]);
 
   const product = specificItem(productId, productType);
   const [productDetailsActiveLink, setProductDetailsActiveLink] =
@@ -234,7 +254,12 @@ const SpecificProduct = () => {
                         style={{ fontFamily: "Josefin Sans" }}
                         className={classes.color151875}
                       >
-                        ${product.price}
+                        {currency === 1 ? (
+                          <React.Fragment>&#36;</React.Fragment> // dollar
+                        ) : (
+                          <React.Fragment>&#8377;</React.Fragment> // rupee
+                        )}
+                        {product.price * currency}
                       </Typography>
                       <Typography
                         variant="body2"
@@ -244,7 +269,12 @@ const SpecificProduct = () => {
                         }}
                         color="secondary"
                       >
-                        ${product.orignalPrice}
+                        {currency === 1 ? (
+                          <React.Fragment>&#36;</React.Fragment> // dollar
+                        ) : (
+                          <React.Fragment>&#8377;</React.Fragment> // rupee
+                        )}
+                        {product.orignalPrice * currency}
                       </Typography>
                     </div>
 

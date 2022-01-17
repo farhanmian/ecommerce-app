@@ -56,9 +56,6 @@ a {
   height: 100%;
   box-shadow: 0 0 10px #ff0a74, 0 0 5px #ff0a74;
   opacity: 1;
-
-  -webkit-transform: rotate(3deg) translate(0px, -4px);
-  -ms-transform: rotate(3deg) translate(0px, -4px);
   transform: rotate(3deg) translate(0px, -4px);
 }
 

@@ -149,6 +149,7 @@ export default function login() {
         .then(() => {
           // Signed in
           // const user = userCredential.user; //
+          sendData();
           router.push("/");
         })
         .catch((error) => {
@@ -174,7 +175,6 @@ export default function login() {
           console.log("Error adding document: ", e);
         }
       };
-      sendData();
     };
 
     haveAccount ? signIn() : createAccount();

@@ -141,12 +141,21 @@ const Cart = () => {
     cartItemCtx,
     isUserLoggedIn,
     accountLoading,
+    currencyType,
   } = useAppContext();
   const heading = ["Product", "Price", "Quantity", "Total"];
   const [priceState, setPriceState] = useState(0);
   const [showModal, setShowModal] = useState(false);
   const [cartItemContainer, setCartItemContainer] = useState([]);
   const [cartId, setCartId] = useState([]);
+  const [currency, setCurrency] = useState(75);
+
+  /**
+   * managing price whenevery currency type changes
+   */
+  useEffect(() => {
+    setCurrency(currencyType === "usd" ? 1 : 75);
+  }, [currencyType]);
 
   /*
    *managing user cart ids
@@ -196,9 +205,12 @@ const Cart = () => {
   /**
    * calc discount and discount price
    */
-  const discount = Math.ceil(Math.random() * cartItemContainer.length) / 100;
+  const discount =
+    Math.ceil(Math.random() * 4 * cartItemContainer.length) / 100;
   const discountPrice =
     discount > 0 ? (priceState * discount).toFixed(2) : (priceState * 14) / 100;
+
+  console.log(discount);
 
   const price = [];
 
@@ -221,8 +233,8 @@ const Cart = () => {
    */
   useEffect(() => {
     const totalPrice = lodash.sum(price);
-    setPriceState(totalPrice);
-  }, [cartItemContainer]);
+    setPriceState(totalPrice * currency);
+  }, [cartItemContainer, currency]);
 
   /**
    * deleting item form the cart
@@ -390,7 +402,12 @@ const Cart = () => {
                         variant="caption"
                         className={`${classes.productPrice} ${classes.productText} ${classes.color15245E}`}
                       >
-                        ${product.price.toFixed(2)}
+                        {currency === 1 ? (
+                          <React.Fragment>&#36;</React.Fragment> // dollar
+                        ) : (
+                          <React.Fragment>&#8377;</React.Fragment> // rupee
+                        )}
+                        {(product.price * currency).toFixed(2)}
                       </Typography>
                       <span className={styles.displayFlexSb}>
                         <Remove
@@ -416,9 +433,15 @@ const Cart = () => {
                         variant="caption"
                         className={`${classes.cartProducttotalPrice} ${classes.color15245E} ${classes.productText}`}
                       >
-                        $
+                        {currency === 1 ? (
+                          <React.Fragment>&#36;</React.Fragment> // dollar
+                        ) : (
+                          <React.Fragment>&#8377;</React.Fragment> // rupee
+                        )}
                         {(
-                          cartItemContainer[i].quantity * product.price
+                          cartItemContainer[i].quantity *
+                          product.price *
+                          currency
                         ).toFixed(2)}
                       </Typography>
                     </Card>
@@ -450,7 +473,12 @@ const Cart = () => {
                     className={classes.color15245E}
                     style={{ fontWeight: 500 }}
                   >
-                    ${priceState.toFixed(2)}
+                    {currency === 1 ? (
+                      <React.Fragment>&#36;</React.Fragment> // dollar
+                    ) : (
+                      <React.Fragment>&#8377;</React.Fragment> // rupee
+                    )}
+                    {priceState.toFixed(2)}
                   </Typography>
                 </span>
 
@@ -468,7 +496,12 @@ const Cart = () => {
                     variant="subtitle2"
                     style={{ fontWeight: 500, color: "#11AE59" }}
                   >
-                    -$
+                    -
+                    {currency === 1 ? (
+                      <React.Fragment>&#36;</React.Fragment> // dollar
+                    ) : (
+                      <React.Fragment>&#8377;</React.Fragment> // rupee
+                    )}
                     {discountPrice}
                   </Typography>
                 </span>
@@ -505,7 +538,12 @@ const Cart = () => {
                     variant="subtitle2"
                     className={`${classes.cartTotalPrice} ${classes.color1D3178}`}
                   >
-                    ${priceState - +discountPrice}
+                    {currency === 1 ? (
+                      <React.Fragment>&#36;</React.Fragment> // dollar
+                    ) : (
+                      <React.Fragment>&#8377;</React.Fragment> // rupee
+                    )}
+                    {(priceState - +discountPrice).toFixed(2)}
                   </Typography>
                 </span>
 

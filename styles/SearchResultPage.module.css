@@ -49,6 +49,7 @@
   /* margin-bottom: 100px; */
   padding-bottom: 152px;
   position: relative;
+  -moz-column-gap: 35px;
   column-gap: 35px;
 }
 .searchResultSideFilterBar {

@@ -13,6 +13,12 @@ const useStyles = makeStyles({
   color151875: {
     color: "#151875",
   },
+  feature: {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+  },
   featureTitle: {
     marginBottom: 20,
     textTransform: "capitalize",
@@ -46,7 +52,7 @@ export default function Features() {
     <Grid container columnGap="28px" className={styles.featuresContainer}>
       {shopexFeaturesData.map((feature, i) => {
         return (
-          <Grid key={i} item className={styles.feature}>
+          <Grid key={i} item className={`${classes.feature} ${styles.feature}`}>
             <span className={styles.featureImage}>
               <Image src={feature.img} alt="img" />
             </span>

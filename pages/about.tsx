@@ -63,6 +63,7 @@ const useStyles = makeStyles({
   clientText: {
     marginTop: 14,
     marginBottom: 30,
+    minHeight: 60,
   },
 });
 
@@ -245,9 +246,10 @@ export default function about() {
             </Typography>
 
             <div className={styles.clientBtnContainer}>
-              {btns.map((btn) => {
+              {btns.map((btn, i) => {
                 return (
                   <button
+                    key={i}
                     className={`${styles.clientBtn} ${
                       btn === activeLink ? styles.activeClientBtn : ""
                     }`}

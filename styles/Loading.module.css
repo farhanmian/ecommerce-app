@@ -4,6 +4,7 @@
 .loadingInnerContainer {
   width: 100%;
   height: 100%;
+  -webkit-animation: rotate 0.9s ease-out infinite;
   animation: rotate 0.9s ease-out infinite;
 }
 
@@ -15,6 +16,12 @@
   border-top-right-radius: 110px; /* 100px of height + 10px of border */
   border: 2px solid;
   border-bottom: 0;
+}
+
+@-webkit-keyframes rotate {
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 @keyframes rotate {

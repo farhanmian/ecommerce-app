@@ -62,6 +62,7 @@
   fill: #fb2e86;
 }
 .heartSvg svg:hover {
+  -webkit-animation: popup 0.7s ease-in infinite;
   animation: popup 0.7s ease-in infinite;
 }
 
@@ -123,6 +124,12 @@
 }
 .productDetailsIcon {
   margin-right: 8px;
+}
+
+@-webkit-keyframes popup {
+  50% {
+    transform: scale(1.08);
+  }
 }
 
 @keyframes popup {

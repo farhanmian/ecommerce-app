@@ -13,6 +13,8 @@
 
 /* /////////////////   user profile info */
 .userProfileInfo {
+  width: -webkit-max-content;
+  width: -moz-max-content;
   width: max-content;
 }
 
@@ -26,6 +28,8 @@
 }
 
 .userInfoContainer {
+  width: -webkit-max-content;
+  width: -moz-max-content;
   width: max-content;
   min-width: 395px;
   position: relative;
@@ -69,6 +73,8 @@
 /*//////////////// user change password */
 
 .userOptionsContainer {
+  width: -webkit-max-content;
+  width: -moz-max-content;
   width: max-content;
   display: flex;
   flex-direction: column;
@@ -77,6 +83,8 @@
 
 .changePasswordContainer {
   text-align: center;
+  width: -webkit-max-content;
+  width: -moz-max-content;
   width: max-content;
 }
 

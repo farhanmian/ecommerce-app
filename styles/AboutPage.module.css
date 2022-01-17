@@ -22,7 +22,7 @@
 .features {
   margin: auto;
   margin-top: 105px;
-  max-height: 1168px;
+  /* max-height: 1168px; */
   text-align: center;
   margin-bottom: 100px;
 }
@@ -45,6 +45,7 @@
   max-width: 195px;
   margin: auto;
   margin-bottom: 25px;
+  -moz-column-gap: 15px;
   column-gap: 15px;
 }
 .clientImage {
@@ -96,4 +97,26 @@
 .activeClientBtn {
   width: 27px;
   background-color: #fb2e86;
+}
+
+/* /////////////////////////////// media queries */
+
+@media only screen and (max-width: 1200px) {
+  .aboutCompany {
+    flex-direction: column;
+  }
+  .aboutCompanyimageContainer {
+    width: 520px;
+  }
+  .textContainer {
+    text-align: center;
+    margin-top: 48px;
+  }
+}
+
+@media only screen and (max-width: 600px) {
+  .aboutCompanyimageContainer {
+    width: 90%;
+    height: auto;
+  }
 }

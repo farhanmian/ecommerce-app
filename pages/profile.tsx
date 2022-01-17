@@ -182,6 +182,7 @@ export default function account() {
   const [changeProfileInfo, setChangeProfileInfo] = useState(false);
   const [doesDataChanged, setdoesDataChanged] = useState(false);
   const [passwordLoading, setPasswordLoading] = useState(false);
+  const [signoutLoading, setSignoutLoading] = useState(false);
 
   const [userInfoState, dispatchUserInfoStateFn] = useReducer(
     userInfoReducerFn,
@@ -200,7 +201,7 @@ export default function account() {
     if (!isUserLoggedIn) {
       router.push("/login");
     }
-  }, [isUserLoggedIn]);
+  }, []);
 
   useEffect(() => {
     dispatchUserInfoStateFn({ type: "currency", value: currencyType });
@@ -279,7 +280,8 @@ export default function account() {
 
   const signoutHandler = () => {
     auth.signOut();
-    router.push("/");
+    setSignoutLoading(true);
+    window.location.pathname = "/";
   };
 
   useEffect(() => {
@@ -294,7 +296,7 @@ export default function account() {
     dispatchUserInfoStateFn({ type: "replaceData", data });
   }, [userInfo]);
 
-  return isUserLoggedIn ? (
+  return (
     <React.Fragment>
       <Header heading="My Account" path="My Account" />
       <section className={styles.profile}>
@@ -526,7 +528,5 @@ export default function account() {
         </Card>
       </section>
     </React.Fragment>
-  ) : (
-    ""
   );
 }

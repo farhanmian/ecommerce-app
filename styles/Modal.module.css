@@ -19,6 +19,7 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%) scale(1);
+  -webkit-animation: popup 0.4s ease-out forwards;
   animation: popup 0.4s ease-out forwards;
 }
 
@@ -27,6 +28,18 @@
 }
 .btnContainer > :first-child {
   margin-right: 30px;
+}
+
+@-webkit-keyframes popup {
+  0% {
+    transform: translate(-50%, -50%) scale(0);
+  }
+  70% {
+    transform: translate(-50%, -50%) scale(1.08);
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+  }
 }
 
 @keyframes popup {
