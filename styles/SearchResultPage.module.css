@@ -43,6 +43,13 @@
   cursor: pointer;
 }
 
+.lintText {
+  font-family: "Josefin Sans";
+  color: #575757;
+  font-weight: 300;
+  text-transform: none;
+}
+
 /* search result container */
 
 .searchResultsContainer {

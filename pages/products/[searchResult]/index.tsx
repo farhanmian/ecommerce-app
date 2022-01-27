@@ -3,20 +3,11 @@ import { doc, getDoc, updateDoc, getFirestore } from "firebase/firestore";
 import { useRouter } from "next/dist/client/router";
 import { useAppContext } from "../../../store/context/appContext";
 const db = getFirestore();
-import {
-  Typography,
-  makeStyles,
-  Select,
-  MenuItem,
-  // Checkbox,
-  // FormControlLabel,
-} from "@material-ui/core";
+import { Typography, makeStyles } from "@material-ui/core";
 import { Grid } from "@mui/material";
 import { Pagination } from "@mui/material";
 import Header from "../../../components/partials/Header/Header";
 import styles from "../../../styles/SearchResultPage.module.css";
-
-import ArrowDown from "../../../components/icons/ArrowDown";
 import GridIcon from "../../../components/icons/GridIcon";
 import Menu from "../../../components/icons/Menu";
 
@@ -27,67 +18,75 @@ import GridProduct from "../../../components/app/GridProduct/GridProduct";
 
 import { getLocalUserData } from "../../../store/localUserData";
 
-const useStyles = makeStyles({
-  color151875: {
-    color: "#151875",
-  },
-  searchResultLength: {
-    fontSize: 13,
-    fontFamily: "lato",
-    textTransform: "capitalize",
-    fontWeight: "bold",
-  },
-  select: {
-    fontSize: 16,
-    marginRight: 4,
-    "& > div": {
-      padding: "0 !important",
-      fontSize: 16,
-      fontFamily: "Lato",
-      fontWeight: 400,
-      color: "#8A8FB9",
-      "&:focus": {
-        backgroundColor: "transparent",
+const useStyles = makeStyles((theme) => {
+  return {
+    color151875: {
+      color: "#151875",
+    },
+    searchResultLength: {
+      fontSize: 13,
+      fontFamily: "lato",
+      textTransform: "capitalize",
+      fontWeight: "bold",
+    },
+    searchQueryHeading: {
+      textTransform: "capitalize",
+      [theme.breakpoints.down(500)]: {
+        fontSize: 20,
       },
     },
-    "& > svg": {
-      color: "#f1f1f1",
-      fontSize: 20,
+    select: {
+      fontSize: 16,
+      marginRight: 4,
+      "& > div": {
+        padding: "0 !important",
+        fontSize: 16,
+        fontFamily: "Lato",
+        fontWeight: 400,
+        color: "#8A8FB9",
+        "&:focus": {
+          backgroundColor: "transparent",
+        },
+      },
+      "& > svg": {
+        color: "#f1f1f1",
+        fontSize: 20,
+      },
     },
-  },
-  menuItem: {
-    fontSize: 16,
-    lineHeight: "16px",
-    fontWeight: 400,
-    color: "#000",
-    textTransform: "capitalize",
-    padding: "5px 10px",
-  },
-  productFilterHeading: {
-    fontSize: 20,
-    lineHeight: "30px",
-    fontWeight: 700,
-    textDecoration: "underline",
-    color: "#292C58",
-  },
-  checkboxFormControl: {
-    width: "100%",
-    height: 30,
-    marginBottom: 3,
-    "&> *": {
-      color: "#989BB5",
-      fontSize: 15,
-      lineHeight: "30px",
-      fontFamily: "lato",
+    menuItem: {
+      fontSize: 16,
+      lineHeight: "16px",
       fontWeight: 400,
-      "& > *": {
-        "& > svg": {
-          width: 20,
-          height: 20,
+      color: "#000",
+      textTransform: "capitalize",
+      padding: "5px 10px",
+    },
+    productFilterHeading: {
+      fontSize: 20,
+      lineHeight: "30px",
+      fontWeight: 700,
+      textDecoration: "underline",
+      color: "#292C58",
+    },
+    checkboxFormControl: {
+      width: "100%",
+      height: 30,
+      marginBottom: 3,
+      "&> *": {
+        color: "#989BB5",
+        fontSize: 15,
+        lineHeight: "30px",
+        fontFamily: "lato",
+        fontWeight: 400,
+        "& > *": {
+          "& > svg": {
+            width: 20,
+            height: 20,
+          },
         },
       },
     },
-  },
+  };
 });
 
 let isInitial = true;
@@ -96,7 +95,6 @@ export default function ProductsList() {
   const classes = useStyles();
   const router = useRouter();
   const { userInfo, setCartItemCtx, isUserLoggedIn } = useAppContext();
-  const [sortBy, setSortBy] = useState("best match");
   const [page, setPage] = useState(1);
   const [viewType, setViewType] = useState("row");
   const [userCartState, setUserCartState] = useState([]);
@@ -121,12 +119,10 @@ export default function ProductsList() {
   /**
    * getting page width
    */
-  useEffect(() => {
-    setWidth(window.innerWidth);
-  }, []);
 
   const handleResize = () => setWidth(window.innerWidth);
   useEffect(() => {
+    setWidth(window.innerWidth);
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, [handleResize]);
@@ -187,9 +183,6 @@ export default function ProductsList() {
 
   /////////////// function handlers
 
-  const sortChangeHandler = (event) => {
-    setSortBy(event.target.value);
-  };
   const pageChangeHandler = (
     event: React.ChangeEvent<unknown>,
     value: number
@@ -275,8 +268,7 @@ export default function ProductsList() {
               <div className={styles.searchInfo}>
                 <Typography
                   variant="h6"
-                  className={classes.color151875}
-                  style={{ textTransform: "capitalize" }}
+                  className={`${classes.searchQueryHeading} ${classes.color151875}`}
                 >
                   {`${searchQuery} Search Result`}
                 </Typography>
@@ -286,23 +278,35 @@ export default function ProductsList() {
                   color="secondary"
                 >
                   About {filteredData.length} results
+                  {width < 500 && (
+                    <span className={styles.lintText}>
+                      {viewType === "row"
+                        ? " / per-page: 10"
+                        : " / per-page: 12"}
+                    </span>
+                  )}
                 </Typography>
               </div>
               {/* result per page */}
-              <span style={{ marginRight: 27 }} className={styles.displayflex}>
-                <Typography
-                  variant="subtitle2"
-                  style={{ color: "#3F509E", marginRight: 8 }}
+              {width > 500 && (
+                <span
+                  style={{ marginRight: 27 }}
+                  className={styles.displayflex}
                 >
-                  Per Page:
-                </Typography>
-                <input
-                  className={styles.input}
-                  style={{ width: 55, height: 25 }}
-                  value={viewType === "row" ? "10" : "12"}
-                  readOnly
-                />
-              </span>
+                  <Typography
+                    variant="subtitle2"
+                    style={{ color: "#3F509E", marginRight: 8 }}
+                  >
+                    Per Page:
+                  </Typography>
+                  <input
+                    className={styles.input}
+                    style={{ width: 55, height: 25 }}
+                    value={viewType === "row" ? "10" : "12"}
+                    readOnly
+                  />
+                </span>
+              )}
 
               {width > 0 && width > 650 && (
                 <span className={styles.displayflex}>

@@ -87,9 +87,6 @@
 .navBottomLinksContainer > :not(:last-child) {
   margin-right: 35px;
 }
-.navBottomLinksContainer > :first-child {
-  margin-right: 21px;
-}
 
 .navBottomForm {
   max-width: 317px;
@@ -127,8 +124,64 @@
   }
 }
 
+@media only screen and (max-width: 900px) {
+  .navBottomInnerContainer {
+    margin: auto 10px;
+  }
+  .navBottomInnerContainer h5 {
+    margin-right: 15px;
+  }
+  .navBottomForm {
+    max-width: 250px;
+    min-width: 250px;
+  }
+  .navBottomLinksContainer > :not(:last-child) {
+    margin-right: 25px;
+  }
+}
+
+@media only screen and (max-width: 700px) {
+  .navBottomForm {
+    max-width: 250px;
+    min-width: max-content;
+    position: relative;
+  }
+  .navBottomLinksContainer {
+    margin-right: 100px;
+  }
+  .navBottomInput {
+    width: 160px;
+    height: 30px;
+    position: absolute;
+    display: none;
+    right: -4px;
+    top: 50%;
+    transform: translateY(-50%);
+    border-radius: 15px;
+    background-color: #fafafa;
+    color: #6c6c6c;
+  }
+}
+
 @media only screen and (max-width: 600px) {
   .navTopLinksContainer {
+    margin-right: 20px;
+  }
+  .navBottomLinksContainer {
+    margin-right: 50px;
+  }
+}
+
+@media only screen and (max-width: 400px) {
+  .navTopLinksContainer {
+    justify-content: space-around;
+    margin-right: 0;
+    margin: auto 10px;
+  }
+  .navBottomLinksContainer {
+    margin-right: 0;
+  }
+  .navBottomLinksContainer > :not(:last-child) {
     margin-right: 20px;
   }
 }

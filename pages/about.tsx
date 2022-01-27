@@ -24,6 +24,9 @@ const useStyles = makeStyles((theme) => {
       lineHeight: "48px",
       marginBottom: 14,
       color: "#151875",
+      [theme.breakpoints.down("xs")]: {
+        fontSize: 30,
+      },
     },
     aboutCompanyText: {
       lineHeight: "25.6px",
@@ -50,6 +53,9 @@ const useStyles = makeStyles((theme) => {
       textTransform: "capitalize",
       marginBottom: 64,
       color: "#151875",
+      [theme.breakpoints.down("xs")]: {
+        fontSize: 35,
+      },
     },
     clientName: {
       lineHeight: "25.6px",

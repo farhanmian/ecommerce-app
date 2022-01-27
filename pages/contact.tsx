@@ -7,71 +7,76 @@ import contactImg from "../assets/img/contactImg.png";
 import styles from "../styles/Contact.module.css";
 import Divider from "../components/partials/Divider/Divider";
 
-const useStyle = makeStyles({
-  textField: {
-    "& > label": {
+const useStyle = makeStyles((theme) => {
+  return {
+    textField: {
+      "& > label": {
+        color: "#8A8FB9",
+        fontWeight: 300,
+        fontSize: 16,
+      },
+      "& > div": {
+        fontSize: 16,
+        fontWeight: 300,
+      },
+    },
+    textFieldTextMsge: {
+      marginTop: "47px",
+      marginBottom: "30px",
+      "& > div": {
+        height: 166,
+        alignItems: "flex-start",
+      },
+    },
+    heading: {
+      lineHeight: "48px",
+      fontWeight: "bold",
+      color: "#151875",
+      [theme.breakpoints.down("xs")]: {
+        fontSize: 30,
+      },
+    },
+
+    color151875: {
+      color: "#151875",
+    },
+    pink2: { backgroundColor: "#FB2E86" },
+    skinny: { backgroundColor: "#FFB265" },
+    green: { backgroundColor: "#1BE982" },
+    descriptionText: {
+      paddingTop: "5px",
       color: "#8A8FB9",
-      fontWeight: 300,
-      fontSize: 16,
+      lineHeight: "25.6px",
+      fontFamily: "lato",
     },
-    "& > div": {
-      fontSize: 16,
-      fontWeight: 300,
+    text: {
+      lineHeight: "25.6px",
+      color: "#8A8FB9",
     },
-  },
-  textFieldTextMsge: {
-    marginTop: "47px",
-    marginBottom: "30px",
-    "& > div": {
-      height: 166,
-      alignItems: "flex-start",
+    infoAboutText: {
+      marginTop: "13px",
+      marginBottom: "42px",
     },
-  },
-  heading: {
-    lineHeight: "48px",
-    fontWeight: "bold",
-    color: "#151875",
-  },
+    getInTouchText: {
+      marginTop: "20px",
+    },
 
-  color151875: {
-    color: "#151875",
-  },
-  pink2: { backgroundColor: "#FB2E86" },
-  skinny: { backgroundColor: "#FFB265" },
-  green: { backgroundColor: "#1BE982" },
-  descriptionText: {
-    paddingTop: "5px",
-    color: "#8A8FB9",
-    lineHeight: "25.6px",
-    fontFamily: "lato",
-  },
-  text: {
-    lineHeight: "25.6px",
-    color: "#8A8FB9",
-  },
-  infoAboutText: {
-    marginTop: "13px",
-    marginBottom: "42px",
-  },
-  getInTouchText: {
-    marginTop: "20px",
-  },
-
-  formBtn: {
-    textTransform: "capitalize",
-    width: "157px",
-    height: "44px",
-    borderRadius: 3,
-    "&:hover": {
-      boxShadow: "1px 5px 5px rgba(0,0,0,.12)",
+    formBtn: {
+      textTransform: "capitalize",
+      width: "157px",
+      height: "44px",
+      borderRadius: 3,
+      "&:hover": {
+        boxShadow: "1px 5px 5px rgba(0,0,0,.12)",
+      },
+      "&:active": {
+        boxShadow: "none",
+      },
     },
-    "&:active": {
-      boxShadow: "none",
+    formBtnText: {
+      lineHeight: "25.6px",
     },
-  },
-  formBtnText: {
-    lineHeight: "25.6px",
-  },
+  };
 });
 
 const contactus = () => {

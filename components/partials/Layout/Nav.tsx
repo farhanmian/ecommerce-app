@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styles from "../../../styles/Nav.module.css";
 import {
   Typography,
@@ -6,6 +6,7 @@ import {
   Select,
   MenuItem,
   Button,
+  ClickAwayListener,
 } from "@material-ui/core";
 import { FormControl } from "@mui/material";
 
@@ -25,61 +26,91 @@ const db = getFirestore();
 
 const pagesLink = ["home", "products", "contact", "about"];
 
-const useStyles = makeStyles({
-  navHeading: {
-    marginRight: 88,
-    cursor: "pointer",
-    color: "#101750",
-    transition: "all .3s",
-    "&:hover": {
-      color: "#18296a",
+const useStyles = makeStyles((theme) => {
+  return {
+    navHeading: {
+      marginRight: 88,
+      cursor: "pointer",
+      color: "#101750",
+      transition: "all .3s",
+      "&:hover": {
+        color: "#18296a",
+      },
+      [theme.breakpoints.down(1000)]: {
+        fontSize: 32,
+      },
+      [theme.breakpoints.down(500)]: {
+        display: "none",
+      },
     },
-  },
-  topNavLinkText: {
-    lineHeight: "16px",
-    fontWeight: 600,
-    color: "#F1F1F1",
-  },
-  BottomNavLinkText: {
-    color: "#0D0E43",
-    cursor: "pointer",
-    textTransform: "capitalize",
-    borderBottom: "1.8px solid transparent",
-  },
-  activeLink: {
-    color: "#FB2E86",
-    borderBottomColor: "#FB2E86",
-  },
-  select: {
-    fontSize: 16,
-    "& > div": {
+    topNavLinkText: {
+      lineHeight: "16px",
+      fontWeight: 600,
+      color: "#F1F1F1",
+    },
+    BottomNavLinkText: {
+      color: "#0D0E43",
+      cursor: "pointer",
+      textTransform: "capitalize",
+      borderBottom: "1.8px solid transparent",
+    },
+    searchBtn: {
+      padding: 0,
+      maxWidth: 51,
+      minWidth: 51,
+      height: 40,
+      borderRadius: 0,
+      [theme.breakpoints.down(701)]: {
+        maxWidth: "max-content",
+        minWidth: "max-content",
+        background: "transparent",
+        marginLeft: "auto",
+        "&:hover": {
+          background: "transparent",
+        },
+        "&:active": {
+          background: "transparent",
+        },
+        "& > span > svg *": {
+          fill: "#4c4b4b",
+        },
+      },
+    },
+    activeLink: {
+      color: "#FB2E86",
+      borderBottomColor: "#FB2E86",
+    },
+    select: {
       fontSize: 16,
-      fontFamily: "Lato",
+      "& > div": {
+        fontSize: 16,
+        fontFamily: "Lato",
+        fontWeight: 400,
+        color: "#f1f1f1",
+        "&:focus": {
+          backgroundColor: "transparent",
+        },
+      },
+      "& > svg": {
+        color: "#f1f1f1",
+        fontSize: 20,
+      },
+    },
+    menuItem: {
+      fontSize: 16,
+      lineHeight: "16px",
       fontWeight: 400,
-      color: "#f1f1f1",
-      "&:focus": {
+      color: "#000",
+      textTransform: "capitalize",
+      padding: 0,
+    },
+    pageSelect: {
+      fontSize: 16,
+      "& div:focus": {
         backgroundColor: "transparent",
       },
     },
-    "& > svg": {
-      color: "#f1f1f1",
-      fontSize: 20,
-    },
-  },
-  menuItem: {
-    fontSize: 16,
-    lineHeight: "16px",
-    fontWeight: 400,
-    color: "#000",
-    textTransform: "capitalize",
-    padding: 0,
-  },
-  pageSelect: {
-    fontSize: 16,
-    "& div:focus": {
-      backgroundColor: "transparent",
-    },
-  },
+  };
 });
 
 export default function Nav() {
@@ -97,7 +128,16 @@ export default function Nav() {
 
   const classes = useStyles();
 
-  const [currency, setCurrency] = React.useState("usd");
+  const [currency, setCurrency] = useState("usd");
+  const [showSearchInput, setShowSearchInput] = useState(false);
+  const [width, setWidth] = useState(0);
+
+  const handleResize = () => setWidth(window.innerWidth);
+  useEffect(() => {
+    setWidth(window.innerWidth);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, [handleResize]);
 
   useEffect(() => {
     setCurrency(
@@ -128,6 +168,10 @@ export default function Nav() {
     updateCurrency();
   };
 
+  const showSearchInputHandler = () => {
+    setShowSearchInput(true);
+  };
+
   const formSubmitHandler = (e: React.FormEvent) => {
     e.preventDefault();
     const searchValue = searchInputRef.current?.value
@@ -137,7 +181,7 @@ export default function Nav() {
       return;
     }
     router.push(`/products/${searchValue}`);
-    searchInputRef.current.value = "";
+    setShowSearchInput(false);
   };
 
   return (
@@ -251,29 +295,39 @@ export default function Nav() {
             })}
           </div>
 
-          <form onSubmit={formSubmitHandler} className={styles.navBottomForm}>
-            <input
-              ref={searchInputRef}
-              type="text"
-              className={styles.navBottomInput}
-              required
-            />
-            <Button
-              type="submit"
-              variant="contained"
-              color="secondary"
-              disableElevation
-              style={{
-                padding: 0,
-                maxWidth: 51,
-                minWidth: 51,
-                height: 40,
-                borderRadius: 0,
-              }}
-            >
-              <SearchGlass />
-            </Button>
-          </form>
+          <ClickAwayListener
+            onClickAway={() => {
+              console.log("helloo");
+              setShowSearchInput(false);
+            }}
+          >
+            <form onSubmit={formSubmitHandler} className={styles.navBottomForm}>
+              <input
+                ref={searchInputRef}
+                type="text"
+                className={styles.navBottomInput}
+                style={{
+                  display:
+                    width < 700
+                      ? showSearchInput
+                        ? "block"
+                        : "none"
+                      : "block",
+                }}
+                required
+              />
+              <Button
+                type="submit"
+                variant="contained"
+                color="secondary"
+                disableElevation
+                className={classes.searchBtn}
+                onClick={showSearchInputHandler}
+              >
+                <SearchGlass />
+              </Button>
+            </form>
+          </ClickAwayListener>
         </div>
       </div>
     </nav>
