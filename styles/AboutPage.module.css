@@ -3,20 +3,6 @@
 }
 
 /*///////////////// about company  */
-.aboutCompany {
-  max-width: 1150px;
-  margin: auto;
-  margin-bottom: 106px;
-}
-
-.aboutCompanyimageContainer {
-  width: 570px;
-  height: 409px;
-}
-
-.textContainer {
-  max-width: 550px;
-}
 
 /* //////////////// features */
 .features {
@@ -97,26 +83,4 @@
 .activeClientBtn {
   width: 27px;
   background-color: #fb2e86;
-}
-
-/* /////////////////////////////// media queries */
-
-@media only screen and (max-width: 1200px) {
-  .aboutCompany {
-    flex-direction: column;
-  }
-  .aboutCompanyimageContainer {
-    width: 520px;
-  }
-  .textContainer {
-    text-align: center;
-    margin-top: 48px;
-  }
-}
-
-@media only screen and (max-width: 600px) {
-  .aboutCompanyimageContainer {
-    width: 90%;
-    height: auto;
-  }
 }

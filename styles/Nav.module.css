@@ -109,3 +109,26 @@
 .navBottomInput:focus {
   outline: none;
 }
+
+/* /////////////////////////////////// media querys */
+
+@media only screen and (max-width: 1200px) {
+  .navTopLinksContainer {
+    margin-right: 50px;
+  }
+  .navBottomInnerContainer {
+    margin: 0 50px;
+  }
+  .navBottomInnerContainer h5 {
+    margin-right: 30px;
+  }
+  .navBottomLinksContainer {
+    margin-right: 0;
+  }
+}
+
+@media only screen and (max-width: 600px) {
+  .navTopLinksContainer {
+    margin-right: 20px;
+  }
+}

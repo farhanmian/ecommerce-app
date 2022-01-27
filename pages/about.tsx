@@ -17,54 +17,83 @@ import client7 from "../assets/img/client7.png";
 import client8 from "../assets/img/client8.png";
 import Divider from "../components/partials/Divider/Divider";
 
-const useStyles = makeStyles({
-  aboutCompanyHeading: {
-    fontWeight: "bold",
-    lineHeight: "48px",
-    marginBottom: 14,
-    color: "#151875",
-  },
-  aboutCompanyText: {
-    lineHeight: "25.6px",
-    marginBottom: 48,
-    fontFamily: "lato",
-  },
-  aboutCompanyBtn: {
-    width: 145,
-    height: 45,
-    borderRadius: 3,
-    textTransform: "capitalize",
-    "&:hover": {
-      boxShadow: "1px 5px 5px rgba(0,0,0,.12)",
+const useStyles = makeStyles((theme) => {
+  return {
+    aboutCompanyHeading: {
+      fontWeight: "bold",
+      lineHeight: "48px",
+      marginBottom: 14,
+      color: "#151875",
     },
-    "&:active": {
-      boxShadow: "none",
+    aboutCompanyText: {
+      lineHeight: "25.6px",
+      marginBottom: 48,
+      fontFamily: "lato",
     },
-  },
-  aboutCompanyBtnText: {
-    lineHeight: "25.6px",
-    fontFamily: "lato",
-  },
-  heading: {
-    textTransform: "capitalize",
-    marginBottom: 64,
-    color: "#151875",
-  },
-  clientName: {
-    lineHeight: "25.6px",
-    fontFamily: "lato",
-    fontWeight: 600,
-    textTransform: "capitalize",
-  },
-  clientProfession: {
-    fontSize: 10,
-    textTransform: "capitalize",
-  },
-  clientText: {
-    marginTop: 14,
-    marginBottom: 30,
-    minHeight: 60,
-  },
+    aboutCompanyBtn: {
+      width: 145,
+      height: 45,
+      borderRadius: 3,
+      textTransform: "capitalize",
+      "&:hover": {
+        boxShadow: "1px 5px 5px rgba(0,0,0,.12)",
+      },
+      "&:active": {
+        boxShadow: "none",
+      },
+    },
+    aboutCompanyBtnText: {
+      lineHeight: "25.6px",
+      fontFamily: "lato",
+    },
+    heading: {
+      textTransform: "capitalize",
+      marginBottom: 64,
+      color: "#151875",
+    },
+    clientName: {
+      lineHeight: "25.6px",
+      fontFamily: "lato",
+      fontWeight: 600,
+      textTransform: "capitalize",
+    },
+    clientProfession: {
+      fontSize: 10,
+      textTransform: "capitalize",
+    },
+    clientText: {
+      marginTop: 14,
+      marginBottom: 30,
+      minHeight: 60,
+    },
+
+    aboutCompany: {
+      maxWidth: 1150,
+      margin: "auto",
+      marginBottom: 106,
+      [theme.breakpoints.down("lg")]: {
+        flexDirection: "column",
+      },
+    },
+    aboutCompanyimageContainer: {
+      width: 570,
+      height: 409,
+      [theme.breakpoints.down("lg")]: {
+        width: 520,
+      },
+      [theme.breakpoints.down("sm")]: {
+        width: "90%",
+        height: "auto",
+      },
+    },
+    textContainer: {
+      maxWidth: 550,
+      [theme.breakpoints.down("lg")]: {
+        textAlign: "center",
+        marginTop: 48,
+      },
+    },
+  };
 });
 
 const clientData = [
@@ -148,12 +177,12 @@ export default function about() {
           container
           columnGap="30px"
           alignItems="center"
-          className={styles.aboutCompany}
+          className={classes.aboutCompany}
         >
-          <Grid item className={styles.aboutCompanyimageContainer}>
+          <Grid item className={classes.aboutCompanyimageContainer}>
             <Image src={contactUsImg} alt="contactusimg" />
           </Grid>
-          <Grid item className={styles.textContainer}>
+          <Grid item className={classes.textContainer}>
             <Typography variant="h3" className={classes.aboutCompanyHeading}>
               Know About Our Ecomerce Business, History
             </Typography>

@@ -86,3 +86,11 @@
 .searchResultIconContainer svg > * {
   fill: #535399;
 }
+
+/* ////////////////// media queries */
+
+@media only screen and (max-width: 1000px) {
+  .searchResult {
+    width: 95vw;
+  }
+}

@@ -16,6 +16,7 @@ const Products = () => {
         <Grid
           container
           columnGap="53px"
+          justifyContent="center"
           rowGap="81px"
           className={styles.productsContainer}
         >
@@ -25,6 +26,11 @@ const Products = () => {
                 key={product.id}
                 product={product}
                 href={`products/${product.type}`}
+                showIcons={false}
+                toggleCartHandler={null}
+                toggleWishlistHandler={null}
+                userWishlistState={null}
+                userCartState={null}
               />
             );
           })}

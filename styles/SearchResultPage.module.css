@@ -1,12 +1,15 @@
 .searchControlInfoContainer {
-  max-width: 1171px;
+  margin-top: 60px;
+}
+.searchControlInfoInnerContainer {
+  max-width: 1000px;
   height: 44px;
   margin: auto;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 60px;
 }
+
 .searchControlSortDropdown {
   border: 1px solid #e7e6ef;
   display: flex;
@@ -77,4 +80,12 @@
 }
 .pagination button {
   border-radius: 50%;
+}
+
+/*///////// media queries  */
+
+@media only screen and (max-width: 1000px) {
+  .searchControlInfoInnerContainer {
+    max-width: 95vw;
+  }
 }

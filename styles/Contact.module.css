@@ -119,6 +119,7 @@
   .textContainer {
     max-width: 550px;
     text-align: center;
+    justify-content: center;
   }
   .infoAboutUs {
     max-width: 550px;
@@ -133,6 +134,7 @@
   }
   .contactWayInfo {
     width: 500px;
+    text-align: start;
   }
 
   .contactInfo {

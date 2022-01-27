@@ -182,7 +182,6 @@ export default function account() {
   const [changeProfileInfo, setChangeProfileInfo] = useState(false);
   const [doesDataChanged, setdoesDataChanged] = useState(false);
   const [passwordLoading, setPasswordLoading] = useState(false);
-  const [signoutLoading, setSignoutLoading] = useState(false);
 
   const [userInfoState, dispatchUserInfoStateFn] = useReducer(
     userInfoReducerFn,
@@ -280,7 +279,6 @@ export default function account() {
 
   const signoutHandler = () => {
     auth.signOut();
-    setSignoutLoading(true);
     window.location.pathname = "/";
   };
 

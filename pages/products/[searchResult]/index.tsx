@@ -101,6 +101,7 @@ export default function ProductsList() {
   const [viewType, setViewType] = useState("row");
   const [userCartState, setUserCartState] = useState([]);
   const [userWishlistState, setUserWishlistState] = useState([]);
+  const [width, setWidth] = useState(0); // default width, detect on server.
 
   const query = router.query.searchResult;
   const searchQuery = query && query.toString().replace(/-/g, " ");
@@ -117,6 +118,22 @@ export default function ProductsList() {
   );
 
   //////////// useEffects
+  /**
+   * getting page width
+   */
+  useEffect(() => {
+    setWidth(window.innerWidth);
+  }, []);
+
+  const handleResize = () => setWidth(window.innerWidth);
+  useEffect(() => {
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, [handleResize]);
+
+  useEffect(() => {
+    width > 0 && width <= 650 && setViewType("grid");
+  }, [width]);
 
   /**
    * handling smooth scrolling
@@ -254,104 +271,75 @@ export default function ProductsList() {
             id="searchControlInfoContainer"
             className={styles.searchControlInfoContainer}
           >
-            <div className={styles.searchInfo}>
-              <Typography
-                variant="h6"
-                className={classes.color151875}
-                style={{ textTransform: "capitalize" }}
-              >
-                {`${searchQuery} Search Result`}
-              </Typography>
-              <Typography
-                variant="overline"
-                className={classes.searchResultLength}
-                color="secondary"
-              >
-                About {filteredData.length} results
-              </Typography>
-            </div>
-            {/* result per page */}
-            <span style={{ marginRight: 27 }} className={styles.displayflex}>
-              <Typography
-                variant="subtitle2"
-                style={{ color: "#3F509E", marginRight: 8 }}
-              >
-                Per Page:
-              </Typography>
-              <input
-                className={styles.input}
-                style={{ width: 55, height: 25 }}
-                value={viewType === "row" ? "10" : "12"}
-                readOnly
-              />
-            </span>
-
-            <div className={styles.displayflex}>
-              <Typography
-                variant="subtitle2"
-                style={{ color: "#3F509E", marginRight: 8 }}
-              >
-                Sort By:
-              </Typography>
-              <span className={styles.searchControlSortDropdown}>
-                <Select
-                  className={classes.select}
-                  labelId="demo-customized-select-label"
-                  id="demo-customized-select"
-                  value={sortBy}
-                  onChange={sortChangeHandler}
-                  disableUnderline
+            <div className={styles.searchControlInfoInnerContainer}>
+              <div className={styles.searchInfo}>
+                <Typography
+                  variant="h6"
+                  className={classes.color151875}
+                  style={{ textTransform: "capitalize" }}
                 >
-                  {sortBy === "best match" ? (
-                    <MenuItem className={classes.menuItem} value={sortBy}>
-                      Best Match
-                    </MenuItem>
-                  ) : (
-                    <MenuItem className={classes.menuItem} value="best match">
-                      Best Match
-                    </MenuItem>
-                  )}
-                  <MenuItem className={classes.menuItem} value="low to high">
-                    Low To High
-                  </MenuItem>
-
-                  <MenuItem className={classes.menuItem} value="high to low">
-                    High To Low
-                  </MenuItem>
-                </Select>
-                <ArrowDown />
+                  {`${searchQuery} Search Result`}
+                </Typography>
+                <Typography
+                  variant="overline"
+                  className={classes.searchResultLength}
+                  color="secondary"
+                >
+                  About {filteredData.length} results
+                </Typography>
+              </div>
+              {/* result per page */}
+              <span style={{ marginRight: 27 }} className={styles.displayflex}>
+                <Typography
+                  variant="subtitle2"
+                  style={{ color: "#3F509E", marginRight: 8 }}
+                >
+                  Per Page:
+                </Typography>
+                <input
+                  className={styles.input}
+                  style={{ width: 55, height: 25 }}
+                  value={viewType === "row" ? "10" : "12"}
+                  readOnly
+                />
               </span>
-            </div>
 
-            <span className={styles.displayflex}>
-              <Typography variant="subtitle2" style={{ color: "#3F509E" }}>
-                View:
-              </Typography>
-              <span className={styles.searchControlViewIconContainer}>
-                <span
-                  className={styles.displayflex}
-                  onClick={() => {
-                    setViewType("grid");
-                  }}
-                >
-                  <GridIcon />
+              {width > 0 && width > 650 && (
+                <span className={styles.displayflex}>
+                  <Typography variant="subtitle2" style={{ color: "#3F509E" }}>
+                    View:
+                  </Typography>
+                  <span className={styles.searchControlViewIconContainer}>
+                    <span
+                      className={styles.displayflex}
+                      onClick={() => {
+                        setViewType("grid");
+                      }}
+                    >
+                      <GridIcon />
+                    </span>
+                    <span
+                      className={styles.displayflex}
+                      onClick={() => {
+                        setViewType("row");
+                      }}
+                    >
+                      <Menu />
+                    </span>
+                  </span>
+                  <input
+                    className={styles.input}
+                    value={viewType}
+                    readOnly
+                    style={{
+                      width: 162,
+                      height: 30,
+                      textTransform: "capitalize",
+                    }}
+                  />
                 </span>
-                <span
-                  className={styles.displayflex}
-                  onClick={() => {
-                    setViewType("row");
-                  }}
-                >
-                  <Menu />
-                </span>
-              </span>
-              <input
-                className={styles.input}
-                value={viewType}
-                readOnly
-                style={{ width: 162, height: 30, textTransform: "capitalize" }}
-              />
-            </span>
+              )}
+            </div>
           </section>
           {/* search result container */}
           <section className={styles.searchResultsContainer}>
@@ -388,6 +376,11 @@ export default function ProductsList() {
                         key={product.id}
                         product={product}
                         href={`${searchQuery}/${product.id}`}
+                        toggleCartHandler={toggleCartHandler}
+                        toggleWishlistHandler={toggleWishlistHandler}
+                        userCartState={userCartState}
+                        userWishlistState={userWishlistState}
+                        showIcons={true}
                       />
                     );
                   })}
@@ -404,7 +397,7 @@ export default function ProductsList() {
                 />
               </div>
             )}
-          </section>{" "}
+          </section>
         </React.Fragment>
       ) : (
         <Typography
@@ -418,68 +411,3 @@ export default function ProductsList() {
     </React.Fragment>
   );
 }
-
-/*
-
-<Typography style={{ textAlign: "center", margin: "10rem" }} variant="h3">
-      No Search Result Found !!
-    </Typography>
-
-<div className={styles.searchResultSideFilterBar}>
-          <div className={styles.priceFilterContainer}>
-            <Typography
-              variant="body2"
-              className={classes.productFilterHeading}
-            >
-              Price Filter
-            </Typography>
-            {priceCheckboxes.map((label) => {
-              return (
-                <FormControlLabel
-                  className={classes.checkboxFormControl}
-                  label={label}
-                  onChange={() => {
-                    priceFilterChangeHandler(label);
-                  }}
-                  control={
-                    <Checkbox
-                      // checked={checked[0] && checked[1]}
-                      // indeterminate={checked[0] !== checked[1]}
-                      // onChange={handleChange1}
-                      color="secondary"
-                    />
-                  }
-                />
-              );
-            })}
-
-            
-          </div>
-          <div className={styles.ratingContainer}>
-            <Typography
-              variant="body2"
-              className={classes.productFilterHeading}
-            >
-              Rating Item
-            </Typography>
-            {stars.map((star) => {
-              return (
-                <FormControlLabel
-                  className={classes.checkboxFormControl}
-                  label={stars.map((i) => (
-                    <Star color={i <= star ? "#FFC107" : "#B2B2B2"} />
-                  ))}
-                  control={
-                    <Checkbox
-                    // checked={checked[0] && checked[1]}
-                    // indeterminate={checked[0] !== checked[1]}
-                    // onChange={handleChange1}
-                    />
-                  }
-                />
-              );
-            })}
-          </div>
-        </div>
-
-        **/
