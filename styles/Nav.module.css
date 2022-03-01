@@ -15,7 +15,7 @@
 
 .navTopLinksContainer {
   width: 100%;
-  max-width: 1060px;
+  max-width: 1164px;
   display: flex;
   align-items: center;
   justify-content: flex-end;
@@ -67,8 +67,7 @@
 }
 
 .navBottomInnerContainer {
-  /* max-width: 1060px because i have remove some links link :- blog */
-  max-width: 1060px;
+  max-width: 1164px;
   max-height: 40px;
   min-height: 40px;
   margin: auto;

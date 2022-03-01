@@ -33,99 +33,111 @@ import { useAppContext } from "../store/context/appContext";
 import Features from "../components/partials/Features/Features";
 import { useRouter } from "next/dist/client/router";
 
-const useStyles = makeStyles({
-  headerBtn: {
-    padding: "16px 40px",
-    borderRadius: 2,
-    textTransform: "capitalize",
-  },
-  featuredProductViewBtnText: {
-    lineHeight: "12px",
-    textTransform: "capitalize",
-  },
-  mainTrendingProduct: {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    flexDirection: "column",
-  },
-  uniqueFeatureOfLatestTrendingProductsBtn: {
-    padding: "14px 24px",
-    minWidth: 157,
-    borderRadius: 2,
-    marginRight: 19,
-    textTransform: "capitalize",
-    fontWeight: "bold",
-  },
-  btnEffect: {
-    "&:hover": {
-      boxShadow: "1px 5px 5px rgba(0,0,0,.12)",
+const useStyles = makeStyles((theme) => {
+  return {
+    heading: {
+      [theme.breakpoints.down(1300)]: {
+        fontSize: 40,
+        lineHeight: "55px",
+      },
+      [theme.breakpoints.down(800)]: {
+        fontSize: 30,
+        lineHeight: "40px",
+      },
     },
-    "&:active": {
-      boxShadow: "none",
+    headerBtn: {
+      padding: "16px 40px",
+      borderRadius: 2,
+      textTransform: "capitalize",
     },
-  },
-  greenBtn: {
-    maxWidth: 94,
-    minWidth: 94,
-    minHeight: 29,
-    padding: 0,
-    borderRadius: 2,
-    backgroundColor: "#08D15F",
-    color: "#fff",
-    position: "absolute",
-    transition: "all .2s",
-    "&:hover": {
-      boxShadow: "0px 3px 4px rgba(0,0,0,.12)",
-      backgroundColor: "#03B851",
+    featuredProductViewBtnText: {
+      lineHeight: "12px",
+      textTransform: "capitalize",
     },
-    "&:active": {
-      boxShadow: "none",
+    mainTrendingProduct: {
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      flexDirection: "column",
     },
-  },
-  fontJosefinSans: {
-    fontFamily: "Josefin Sans",
-  },
+    uniqueFeatureOfLatestTrendingProductsBtn: {
+      padding: "14px 24px",
+      minWidth: 157,
+      borderRadius: 2,
+      marginRight: 19,
+      textTransform: "capitalize",
+      fontWeight: "bold",
+    },
+    btnEffect: {
+      "&:hover": {
+        boxShadow: "1px 5px 5px rgba(0,0,0,.12)",
+      },
+      "&:active": {
+        boxShadow: "none",
+      },
+    },
+    greenBtn: {
+      maxWidth: 94,
+      minWidth: 94,
+      minHeight: 29,
+      padding: 0,
+      borderRadius: 2,
+      backgroundColor: "#08D15F",
+      color: "#fff",
+      position: "absolute",
+      transition: "all .2s",
+      "&:hover": {
+        boxShadow: "0px 3px 4px rgba(0,0,0,.12)",
+        backgroundColor: "#03B851",
+      },
+      "&:active": {
+        boxShadow: "none",
+      },
+    },
+    fontJosefinSans: {
+      fontFamily: "Josefin Sans",
+    },
 
-  featuredProduct: {
-    transition: "all .2s",
-    "& > span": {
+    featuredProduct: {
+      transition: "all .2s",
+      "& > span": {
+        color: "#151875",
+      },
+      "&:hover > *": {
+        transition: "all .2s",
+        color: "#fff",
+      },
+    },
+    latestProductsLink: {
+      fontWeight: 400,
+      textTransform: "capitalize",
+      fontFamily: "lato",
+      cursor: "pointer",
+      borderBottom: "2px solid transparent",
+    },
+    latestProductPrice: {
+      fontFamily: "Josefin Sans",
+      lineHeight: "16px",
+      marginRight: 8.57,
+    },
+
+    color151875: {
       color: "#151875",
     },
-    "&:hover > *": {
-      transition: "all .2s",
-      color: "#fff",
+    darkPurple: {
+      color: "#1A0B5B",
     },
-  },
-  latestProductsLink: {
-    fontWeight: 400,
-    textTransform: "capitalize",
-    fontFamily: "lato",
-    cursor: "pointer",
-    borderBottom: "2px solid transparent",
-  },
-  latestProductPrice: {
-    fontFamily: "Josefin Sans",
-    lineHeight: "16px",
-    marginRight: 8.57,
-  },
-
-  color151875: {
-    color: "#151875",
-  },
-  darkPurple: {
-    color: "#1A0B5B",
-  },
-  displayFlex: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  latestProductTitle: {
-    lineHeight: "18.75px",
-    transform: "rotate(0.36deg)",
-    borderBottom: "2px solid #EEEFFB",
-  },
+    displayFlex: {
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    latestProductTitle: {
+      lineHeight: "18.75px",
+      transform: "rotate(0.36deg)",
+      borderBottom: "2px solid #EEEFFB",
+    },
+  };
 });
 
 const Home = () => {
@@ -288,7 +300,11 @@ const Home = () => {
             >
               Best Furniture For Your Castle....
             </Typography>
-            <Typography variant="h1" style={{ marginBottom: 12 }}>
+            <Typography
+              variant="h1"
+              style={{ marginBottom: 12 }}
+              className={classes.heading}
+            >
               New Furniture Collection Trends in 2022
             </Typography>
             <Typography
@@ -297,7 +313,7 @@ const Home = () => {
               color="primary"
             >
               Lorem ipsum dolor sit amet, consectetur adipiscing elit. Magna in
-              est adipiscing <br /> in phasellus non in justo.
+              est adipiscing in phasellus non in justo.
             </Typography>
 
             <NextLink href="/products">

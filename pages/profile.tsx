@@ -78,7 +78,7 @@ const useStyles = makeStyles({
   editIcon: {
     fill: "#fff",
   },
-  avtiveIcon: {
+  activeIcon: {
     boxShadow: "none",
     backgroundImage:
       "linear-gradient(to right bottom, #ebe2e6, #f8f1f4, #e2e2e2)",
@@ -311,7 +311,7 @@ export default function account() {
                 {!changeProfileInfo && (
                   <span
                     className={`${styles.editIcon} ${
-                      changeProfileInfo ? classes.avtiveIcon : ""
+                      changeProfileInfo ? classes.activeIcon : ""
                     }`}
                     onClick={() => {
                       setChangeProfileInfo(true);
