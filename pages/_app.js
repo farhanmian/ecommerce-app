@@ -20,10 +20,24 @@ const firebaseApp = initializeApp({
   messagingSenderId: "222051021700",
   appId: "1:222051021700:web:3697467bca1f5de58863d1",
 });
-
 import { AppWrapper } from "../store/context/appContext";
-
 import theme from "../theme";
+
+/**
+ * setting google analytics
+ */
+(function (c, l, a, r, i, t, y) {
+  c[a] =
+    c[a] ||
+    function () {
+      (c[a].q = c[a].q || []).push(arguments);
+    };
+  t = l.createElement(r);
+  t.async = 1;
+  t.src = "https://www.clarity.ms/tag/" + i;
+  y = l.getElementsByTagName(r)[0];
+  y.parentNode.insertBefore(t, y);
+})(window, document, "clarity", "script", "b56lfibufw");
 
 function MyApp({ Component, pageProps }) {
   return (
