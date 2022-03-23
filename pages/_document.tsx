@@ -35,6 +35,23 @@ class MyDocument extends Document {
             rel="stylesheet"
           ></link>
 
+          <script
+            async
+            src={"https://www.googletagmanager.com/gtag/js?id=G-45J62XX86S"}
+          />
+          <script
+            dangerouslySetInnerHTML={{
+              __html: `
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-45J62XX86S', {
+              page_path: window.location.pathname,
+            });
+          `,
+            }}
+          />
+
           <link rel="preconnect" href="https://fonts.googleapis.com" />
           <link rel="preconnect" href="https://fonts.gstatic.com" />
           <link
