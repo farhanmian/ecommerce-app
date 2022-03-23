@@ -10,6 +10,7 @@ const firebaseApp = initializeApp({
   storageBucket: "ecommerce-app-8b5d3.appspot.com",
   messagingSenderId: "222051021700",
   appId: "1:222051021700:web:3697467bca1f5de58863d1",
+  measurementId: "G-GEYWGY5QE5",
 });
 
 import {

@@ -1019,6 +1019,91 @@ const Home = () => {
       </section>
       <Divider />
 
+      {/* top categories section */}
+      <section className={styles.topCategories}>
+        <Typography variant="h2" className={classes.color151875}>
+          Top Categories
+        </Typography>
+        <Grid
+          container
+          columnGap="40px"
+          className={styles.topCategoriesInnerContainer}
+        >
+          {topCategoriesItemData.map((product) => {
+            return (
+              product.categoryLink.includes(topCategoryActiveLink) && (
+                <Grid key={product.id} item className={styles.topCategory}>
+                  <div className={styles.topCategoryImageContainer}>
+                    <div className={styles.topCategoryImage}>
+                      <Image src={product.img} alt={product.title} />
+                    </div>
+                    <NextLink
+                      href={`products/${product.type[0]}/${product.id}`}
+                    >
+                      <Button
+                        variant="contained"
+                        className={`${styles.topCategoryImageBtn} ${classes.greenBtn}`}
+                        disableElevation
+                      >
+                        <Typography
+                          variant="overline"
+                          style={{
+                            textTransform: "capitalize",
+                            lineHeight: "12px",
+                          }}
+                        >
+                          View Shop
+                        </Typography>
+                      </Button>
+                    </NextLink>
+                  </div>
+                  <Typography
+                    variant="subtitle1"
+                    style={{
+                      fontSize: 20,
+                      lineHeight: "20px",
+                      marginBottom: 13,
+                    }}
+                    className={classes.color151875}
+                  >
+                    {product.title}
+                  </Typography>
+                  <Typography
+                    variant="subtitle2"
+                    style={{ lineHeight: "16px", fontFamily: "Josefin Sans" }}
+                    className={`${classes.displayFlex} ${classes.color151875}`}
+                  >
+                    {currency === 1 ? (
+                      <React.Fragment>&#36;</React.Fragment> // dollar
+                    ) : (
+                      <React.Fragment>&#8377;</React.Fragment> // rupee
+                    )}
+                    {product.price * currency}
+                  </Typography>
+                </Grid>
+              )
+            );
+          })}
+
+          <div className={styles.topCategoryBtnContainer}>
+            {topCategoryBtnData.map((btn, i) => {
+              return (
+                <span
+                  key={i}
+                  className={`${styles.topCategoryBtn} ${
+                    topCategoryActiveLink === btn
+                      ? styles.topCategoryActiveBtn
+                      : ""
+                  }`}
+                  onClick={() => {
+                    setTopCategoryActiveLink(btn);
+                  }}
+                />
+              );
+            })}
+          </div>
+        </Grid>
+      </section>
       <Divider />
     </React.Fragment>
   );
