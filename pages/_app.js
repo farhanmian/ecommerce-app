@@ -42,6 +42,8 @@ import theme from "../theme";
   y.parentNode.insertBefore(t, y);
 })(window, document, "clarity", "script", "b5l6b5810u");
 
+console.log(".");
+
 function MyApp({ Component, pageProps }) {
   return (
     <AppWrapper>
