@@ -37,7 +37,7 @@ import theme from "../theme";
   t.src = "https://www.clarity.ms/tag/" + i;
   y = l.getElementsByTagName(r)[0];
   y.parentNode.insertBefore(t, y);
-})(window, document, "clarity", "script", "b56lfibufw");
+})(window, document, "clarity", "script", "b5l6b5810u");
 
 function MyApp({ Component, pageProps }) {
   return (
