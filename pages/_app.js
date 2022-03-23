@@ -2,6 +2,7 @@ import "../styles/globals.css";
 import Layout from "../components/partials/Layout/Layout";
 import { ThemeProvider } from "@material-ui/core";
 import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
 import NProgress from "nprogress";
 import Router from "next/router";
 
@@ -20,6 +21,8 @@ const firebaseApp = initializeApp({
   messagingSenderId: "222051021700",
   appId: "1:222051021700:web:3697467bca1f5de58863d1",
 });
+const analytics = getAnalytics(firebaseApp);
+
 import { AppWrapper } from "../store/context/appContext";
 import theme from "../theme";
 
